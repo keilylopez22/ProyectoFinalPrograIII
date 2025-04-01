@@ -1,24 +1,30 @@
-/*using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiECommerce.Modelo;
 using Microsoft.EntityFrameworkCore;
 namespace ApiECommerce.Data
 {
-    public class ECommersContext : DBContext
+    public class ECommersContext : DbContext
     {
-        public DBSet<Proveedor> Proveedores {get; set;}
+        //public DbSet<Proveedor> Proveedores {get; set;}
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString = "server=sql5.freesqldatabase.com;port=3306;database=sql5769382;user=sql5769382;password=AdGnpPleA8;";
-
-        optionsBuilder.UseMySql(connectionString);
+        //la siguiente linea me la dio chat
+        optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 30)));
+        //optionsBuilder.UseMySql(connectionString);
         // O si usas PostgreSQL: optionsBuilder.UseNpgsql("TuConnectionStringAqui");
 
         
        
+    }*/
+        public ECommersContext(DbContextOptions<ECommersContext> options) : base(options)
+        {
+        }
+        public DbSet<Proveedor> proveedores { get; set; } // Cambia 'DBSet' a 'DbSet'
+
     }
-        
-    }
-}*/
+}
