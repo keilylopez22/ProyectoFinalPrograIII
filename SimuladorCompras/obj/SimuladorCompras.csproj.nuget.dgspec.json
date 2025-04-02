@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\keily\\Documents\\programacion III\\proyectoprogramacion3\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj": {}
+    "C:\\Users\\CHRIS\\Desktop\\ProyectoFinal_PrograIII\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj": {}
   },
   "projects": {
-    "C:\\Users\\keily\\Documents\\programacion III\\proyectoprogramacion3\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj": {
+    "C:\\Users\\CHRIS\\Desktop\\ProyectoFinal_PrograIII\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\keily\\Documents\\programacion III\\proyectoprogramacion3\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj",
+        "projectUniqueName": "C:\\Users\\CHRIS\\Desktop\\ProyectoFinal_PrograIII\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj",
         "projectName": "SimuladorCompras",
-        "projectPath": "C:\\Users\\keily\\Documents\\programacion III\\proyectoprogramacion3\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj",
-        "packagesPath": "C:\\Users\\keily\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\keily\\Documents\\programacion III\\proyectoprogramacion3\\ProyectoFinal_PrograIII\\SimuladorCompras\\obj\\",
+        "projectPath": "C:\\Users\\CHRIS\\Desktop\\ProyectoFinal_PrograIII\\ProyectoFinal_PrograIII\\SimuladorCompras\\SimuladorCompras.csproj",
+        "packagesPath": "C:\\Users\\CHRIS\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\CHRIS\\Desktop\\ProyectoFinal_PrograIII\\ProyectoFinal_PrograIII\\SimuladorCompras\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\keily\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\CHRIS\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -39,7 +43,8 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        }
+        },
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -55,7 +60,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

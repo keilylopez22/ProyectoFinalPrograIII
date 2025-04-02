@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  superbodega-api:
+    build: .
+    container_name: superbodega-api
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    restart: always
