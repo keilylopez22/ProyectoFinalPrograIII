@@ -22,7 +22,7 @@ namespace ProyectoFinal_PrograIII.Data
             base.OnModelCreating(modelBuilder);
 
             // Configuración de relaciones (Fluent API)
-            modelBuilder.Entity<Compra>()
+            /*modelBuilder.Entity<Compra>()
                 .HasOne(c => c.Proveedor)
                 .WithMany(p => p.Compras)
                 .HasForeignKey(c => c.Id_Proveedor);
@@ -50,6 +50,6 @@ namespace ProyectoFinal_PrograIII.Data
                 .WithMany(co => co.DetallesCompra)
                 .HasForeignKey(dc => dc.Id_Compras)
                 .OnDelete(DeleteBehavior.Cascade); // Configura el comportamiento ON DELETE CASCADE
-        }
+        */}
     }
 }
