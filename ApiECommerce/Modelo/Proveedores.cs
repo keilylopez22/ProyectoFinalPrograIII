@@ -1,13 +1,24 @@
-using System.Collections.Generic;
-
-namespace ProyectoFinal_PrograIII.Modelo
+public class Proveedor
 {
-    public class Proveedor
+    public int Id
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; }
-        // Otras propiedades del proveedor
+        get; set;
 
-        public ICollection<Compra> Compras { get; set; }
     }
+    public string Nombre
+    {
+        get; set;
+    }
+    public string Direccion
+    {
+        get; set;
+    }
+    public int Nit{get; set;}
+    public string Correo_Electronico{get; set;}
+   
+    public int Telefono
+    {
+        get; set;
+    }
+
 }
