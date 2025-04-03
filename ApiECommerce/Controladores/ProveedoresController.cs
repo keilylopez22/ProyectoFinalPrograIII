@@ -1,14 +1,14 @@
-using System;
+using Microsoft.AspNetCore.Mvc; // Para ControllerBase, RouteAttribute, ApiControllerAttribute, ActionResult, IActionResult, etc.
+using ProyectoFinal_PrograIII.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
+using ProyectoFinal_PrograIII.Data;  // Para ApplicationDbContext (si lo inyectas directamente en el controlador)
+using ProyectoFinal_PrograIII.Servicio; // Si estás usando una capa de servicios
+using ProyectoFinal_PrograIII.ApiECommerce.IServices;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using ApiECommerce.Data;  
-using ApiECommerce.Modelo;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore; // Necesario para DbContext, EntityState y DbUpdateConcurrencyException
 
-
-namespace ApiECommerce.Controladores
+namespace ProyectoFinal_PrograIII.Controladores
+//namespace ApiECommerce.Controladores
 {
     [Route("api/[controller]")]  // Esto hará que las URLs sean /api/proveedores
     [ApiController]
@@ -16,8 +16,9 @@ namespace ApiECommerce.Controladores
 
     public class ProveedoresController : ControllerBase
     {
-        private readonly ECommersContext _context;
-        public ProveedoresController(ECommersContext context)
+        //private readonly ECommersContext _context;
+        private readonly ApplicationDbContext _context;
+        public ProveedoresController(ApplicationDbContext context)
         {
             _context = context;
             

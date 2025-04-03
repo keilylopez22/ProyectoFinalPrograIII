@@ -1,4 +1,4 @@
-namespace ApiECommerce.Modelo
+namespace ProyectoFinal_PrograIII.Modelo
 {
 public class Proveedor
 {
@@ -12,6 +12,7 @@ public class Proveedor
     public string Correo_Electronico{get; set; }/*chat*/ = string.Empty;
 
     public int Telefono { get; set; }
+
 
 
     }

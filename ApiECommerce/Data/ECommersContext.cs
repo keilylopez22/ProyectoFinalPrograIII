@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,11 +20,11 @@ namespace ApiECommerce.Data
 
         
        
-    }*/
-        public ECommersContext(DbContextOptions<ECommersContext> options) : base(options)
+    }
+        /*public ECommersContext(DbContextOptions<ECommersContext> options) : base(options)
         {
         }
-        public DbSet<Proveedor> proveedores { get; set; } // Cambia 'DBSet' a 'DbSet'
+        public DbSet<Proveedor> Proveedores { get; set; } // Cambia 'DBSet' a 'DbSet'
 
     }
-}
+}*/
