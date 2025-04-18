@@ -3,7 +3,7 @@ Id int AUTO_INCREMENT primary key,
 Nombre varchar(50) not null,
 Direccion varchar(100) not null,
 Nit int not null,
-Correo_Electronico varchar(100),
+CorreoElectronico varchar(100),
 Telefono int
 );
 
@@ -12,51 +12,51 @@ Id int AUTO_INCREMENT primary key,
 Nombre varchar(50) not null,
 Direccion varchar(100) not null,
 Nit int not null,
-Correo_Electronico varchar(100),
+CorreoElectronico varchar(100),
 Telefono int
 );
 
 create table productos (
-Id_productos int AUTO_INCREMENT primary key, 
+Id int AUTO_INCREMENT primary key, 
 Nombre varchar(100) not null,
 Precio decimal not null,
 Existencias int not null
 );
-
 create table compras(
 Id int AUTO_INCREMENT primary key,
 Total decimal not null,
 Fecha datetime,
 Estado varchar(50),
-Id_Proveedor INT NOT NULL,
-FOREIGN KEY (Id) REFERENCES proveedores(Id)
+IdProveedor INT NOT NULL,
+FOREIGN KEY (IdProveedor) REFERENCES proveedores(Id)
 );
-
 create table pedidos (
 Id int AUTO_INCREMENT primary key,
 Total decimal not null,
 Fecha datetime not null,
 Estado ENUM('Pendiente', 'Enviado', 'Entregado', 'Cancelado') NOT NULL,
-Id_cliente int not null,
-foreign key(Id) references clientes(Id) on delete cascade
+IdCliente int not null,
+foreign key(IdCliente) references clientes(Id) on delete cascade
 );
 
-create table detalle_pedido ( 
+create table detallePedido ( 
 Id int AUTO_INCREMENT primary key,
 CantidadProductos int not null,
 SubTotal decimal not null,
-Id_Productos int not null,
-Id_Pedidos int  not null,
-foreign key(Id_Productos) references productos(Id_productos) on delete cascade,
-foreign key(Id_Pedidos) references pedidos(Id) ON DELETE CASCADE
+IdProductos int not null,
+IdPedidos int  not null,
+foreign key(IdProductos) references productos(Id) on delete cascade,
+foreign key(IdPedidos) references pedidos(Id) ON DELETE CASCADE
 );
 
-create table detalle_compras ( 
+create table detalleCompras ( 
 Id int AUTO_INCREMENT primary key,
 CantidadProductos int not null,
 SubTotal decimal not null,
-Id_Productos int not null,
-Id_Compras int  not null,
-foreign key(Id_Productos) references productos(Id_productos) on delete cascade,
-foreign key(Id_Compras) references compras(Id) ON DELETE CASCADE
+IdProductos int not null,
+IdCompras int  not null,
+foreign key(IdProductos) references productos(Id) on delete cascade,
+foreign key(IdCompras) references compras(Id) ON DELETE CASCADE
 );
+
+

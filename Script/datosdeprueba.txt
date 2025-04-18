@@ -1,0 +1,118 @@
+INSERT INTO proveedores (Nombre, Direccion, Nit, Correo_Electronico, Telefono) VALUES
+('Proveedor A', 'Calle 1, Zona 1', 1234567, 'proveedora@example.com', 5551234),
+('Proveedor B', 'Avenida 3, Zona 5', 2345678, 'proveedorb@example.com', 5552345),
+('Proveedor C', 'Boulevard Central', 3456789, 'proveedorc@example.com', 5553456),
+('Proveedor D', 'Colonia Vista Hermosa', 4567890, 'proveedord@example.com', 5554567),
+('Proveedor E', 'Zona Industrial', 5678901, 'proveedore@example.com', 5555678);
+
+INSERT INTO productos (Nombre, Precio, Existencias) VALUES
+('Laptop HP', 8500.00, 10),
+('Mouse Inalámbrico', 150.00, 100),
+('Teclado Mecánico', 320.00, 50),
+('Monitor Samsung 24"', 1200.00, 25),
+('Silla Ergonómica', 1300.00, 15),
+('Router WiFi', 700.00, 40),
+('Memoria USB 64GB', 90.00, 200),
+('Disco Duro 1TB', 550.00, 30),
+('Impresora HP', 950.00, 12),
+('Cámara Web Full HD', 300.00, 60);
+
+INSERT INTO compras (Total, Fecha, Estado, IdProveedor) VALUES
+
+(875.50, '2024-01-10 14:20:00', 'Completado', 2),
+(1400.00, '2024-01-15 09:45:00', 'Cancelado', 3),
+
+(310.00, '2024-01-21 11:10:00', 'Completado', 2),
+(670.80, '2024-01-25 13:00:00', 'Pendiente', 4),
+(134.50, '2024-01-28 15:30:00', 'Cancelado', 5),
+(555.75, '2024-02-01 10:15:00', 'Completado', 3),
+(412.30, '2024-02-05 12:45:00', 'Pendiente', 2),
+
+(920.00, '2024-02-12 14:30:00', 'Pendiente', 5),
+(78.90, '2024-02-15 10:50:00', 'Cancelado', 4),
+(309.40, '2024-02-18 11:20:00', 'Pendiente', 2),
+(699.99, '2024-02-22 13:10:00', 'Completado', 3),
+
+(200.00, '2024-03-01 09:25:00', 'Pendiente', 2),
+(345.60, '2024-03-03 10:45:00', 'Completado', 4),
+(512.80, '2024-03-07 12:30:00', 'Pendiente', 5),
+
+(625.30, '2024-03-15 11:50:00', 'Pendiente', 3);
+
+SELECT  * FROM 	clientes  ;
+
+INSERT INTO clientes (Nombre, Direccion, Nit, CorreoElectronico, Telefono) VALUES
+('Ana Martínez', 'Calle Real, Zona 1', 1001234, 'ana.martinez@email.com', 45671234),
+('Luis Pérez', 'Avenida Central, Zona 3', 1005678, 'luis.perez@email.com', 45781234),
+('Carmen Rodríguez', 'Colonia La Paz, Zona 5', 1009012, 'carmen.rodri@email.com', 45891234),
+('José Ramírez', 'Barrio El Centro, Zona 2', 1012345, 'jose.ramirez@email.com', 45901234),
+('María López', 'Residencial Jardines, Zona 4', 1015678, 'maria.lopez@email.com', 45011234),
+('Carlos Gómez', 'Boulevard Las Flores', 1019012, 'carlos.gomez@email.com', 45121234),
+('Patricia Morales', 'Colonia Las Rosas', 1022345, 'patricia.morales@email.com', 45231234),
+('Fernando Díaz', 'Zona Industrial, Sector B', 1025678, 'fernando.diaz@email.com', 45341234),
+('Lucía Herrera', 'Aldea El Carmen', 1029012, 'lucia.herrera@email.com', 45451234),
+('Javier Castillo', 'Zona 10, Edificio Aurora', 1032345, 'javier.castillo@email.com', 45561234);
+
+
+INSERT INTO pedidos (Total, Fecha, Estado, IdCliente) VALUES
+(850.00, '2024-01-02 10:00:00', 'Pendiente', 1),
+(1200.50, '2024-01-04 13:15:00', 'Enviado', 2),
+(560.00, '2024-01-07 09:40:00', 'Entregado', 3),
+(975.25, '2024-01-09 15:30:00', 'Cancelado', 1),
+(640.80, '2024-01-12 11:10:00', 'Pendiente', 4),
+(1320.00, '2024-01-15 12:45:00', 'Enviado', 2),
+(475.99, '2024-01-18 10:20:00', 'Entregado', 5),
+(890.00, '2024-01-21 14:50:00', 'Cancelado', 3),
+(310.75, '2024-01-25 16:00:00', 'Pendiente', 4),
+(780.60, '2024-01-28 09:30:00', 'Entregado', 2);
+
+
+
+INSERT INTO detallePedido (CantidadProductos, SubTotal, IdProductos, IdPedidos) VALUES
+(2, 100.00, 1, 11),
+(1, 50.00, 2, 11),
+(3, 150.00, 3, 12),
+(1, 80.00, 4, 12),
+(5, 250.00, 5, 13),
+(2, 120.00, 6, 13),
+(4, 200.00, 7, 14),
+(1, 90.00, 8, 14),
+(3, 160.00, 9, 15),
+(2, 110.00, 10, 15),
+(1, 60.00, 1, 16),
+(2, 140.00, 2, 16),
+(3, 135.00, 3, 17),
+(1, 75.00, 4, 17),
+(2, 95.00, 5, 18),
+(4, 190.00, 6, 18),
+(1, 55.00, 7, 19),
+(2, 130.00, 8,19),
+(3, 145.00, 9, 20),
+(1, 85.00, 10, 20);
+
+
+SELECT * FROM  compras  ;
+INSERT INTO detalleCompras (CantidadProductos, SubTotal, IdProductos, IdCompras) VALUES
+(10, 500.00, 1, 1),
+(8, 400.00, 2, 1),
+(12, 600.00, 3, 2),
+(5, 250.00, 4, 2),
+(6, 300.00, 5, 3),
+(7, 350.00, 6, 3),
+(4, 200.00, 7, 4),
+(3, 150.00, 8, 4),
+(9, 450.00, 9, 5),
+(2, 100.00, 10, 5),
+(6, 330.00, 1, 6),
+(5, 275.00, 2, 6),
+(7, 360.00, 3, 7),
+(3, 165.00, 4, 7),
+(4, 210.00, 5, 8),
+(6, 310.00, 6, 8),
+(2, 105.00, 7, 9),
+(5, 260.00, 8, 9),
+(4, 190.00, 9, 10),
+(3, 180.00, 10, 10);
+
+
+
