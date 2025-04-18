@@ -7,7 +7,7 @@ namespace ProyectoFinal_PrograIII.Modelo
     {
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
-        public int Id_Proveedor { get; set; } // Clave foránea
+        public int IdProveedor { get; set; } // Clave foránea
         // Otras propiedades de la compra
 
         public Proveedor Proveedor { get; set; } // Propiedad de navegación
