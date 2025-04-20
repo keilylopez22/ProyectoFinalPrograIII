@@ -11,22 +11,22 @@ namespace ProyectoFinal_PrograIII.Data
 
         public DbSet<Cliente> clientes { get; set; }
         public DbSet<Proveedor> proveedores { get; set; }
-        public DbSet<Producto> Productos { get; set; }
-        public DbSet<Compra> Compras { get; set; }
-        public DbSet<Pedido> Pedidos { get; set; }
-        public DbSet<DetallePedido> DetallesPedido { get; set; }
-        public DbSet<DetalleCompra> DetallesCompra { get; set; }
+        public DbSet<Producto> productos { get; set; }
+        public DbSet<Compra> compras { get; set; }
+        public DbSet<Pedido> pedidos { get; set; }
+        public DbSet<DetallePedido> detallePedido { get; set; }
+        public DbSet<DetalleCompra> detalleCompras { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
             // Configuración de relaciones (Fluent API)
-            /*modelBuilder.Entity<Compra>()
+            modelBuilder.Entity<Compra>()
                 .HasOne(c => c.Proveedor)
-                .WithMany(p => p.Compras)
-                .HasForeignKey(c => c.Id_Proveedor);
-
+                .WithMany()
+                .HasForeignKey(c => c.IdProveedor);
+            /*
             modelBuilder.Entity<DetallePedido>()
                 .HasOne(dp => dp.Producto)
                 .WithMany(pr => pr.DetallesPedido)
@@ -42,14 +42,31 @@ namespace ProyectoFinal_PrograIII.Data
             modelBuilder.Entity<DetalleCompra>()
                 .HasOne(dc => dc.Producto)
                 .WithMany(pr => pr.DetallesCompra)
-                .HasForeignKey(dc => dc.Id_Productos)
+                .HasForeignKey(dc => dc.IdProductos)
                 .OnDelete(DeleteBehavior.Cascade); // Configura el comportamiento ON DELETE CASCADE
-
+            
             modelBuilder.Entity<DetalleCompra>()
-                .HasOne(dc => dc.Compra)
-                .WithMany(co => co.DetallesCompra)
-                .HasForeignKey(dc => dc.Id_Compras)
+                //.HasOne(dc => dc.Compra)
+                //.WithMany()
+                .HasForeignKey(dc => dc.IdCompras)
                 .OnDelete(DeleteBehavior.Cascade); // Configura el comportamiento ON DELETE CASCADE
-        */}
+                */
+
+                /*modelBuilder.Entity<DetalleCompra>()
+                .HasOne(d => d.Compra)
+                .WithMany(c => c.DetalleCompras)
+                .HasForeignKey(d => d.IdCompras); // Aquí va el nombre real de la columna en la DB
+
+
+                
+
+                modelBuilder.Entity<DetalleCompra>()
+                .HasOne(d => d.Producto)
+                .WithMany()
+                .HasForeignKey(d => d.IdProductos);*/
+
+
+
+        }
     }
 }

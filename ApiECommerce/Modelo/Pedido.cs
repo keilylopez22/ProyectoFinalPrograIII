@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProyectoFinal_PrograIII.Modelo
 {
@@ -7,10 +8,15 @@ namespace ProyectoFinal_PrograIII.Modelo
     {
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
-        public int IdCliente { get; set; } // Clave foránea
-        // Otras propiedades del pedido
 
-        public Cliente Cliente { get; set; } // Propiedad de navegación
+        [ForeignKey("Cliente")]
+        public int IdCliente { get; set; }
+
+        public double Total { get; set; }
+        public string Estado { get; set; }
+
+        public Cliente Cliente { get; set; }
+
         public ICollection<DetallePedido> DetallesPedido { get; set; }
     }
 }

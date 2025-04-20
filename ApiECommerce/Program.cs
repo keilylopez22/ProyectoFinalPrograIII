@@ -18,6 +18,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IClienteService, ClienteServicio>();
 builder.Services.AddScoped<IReporteServicio, ReporteServicio>();
 
+builder.Services.AddScoped<IComprasServicio, CompraServicio>();
+builder.Services.AddScoped<IPedidosServicio, PedidoServicio>();
+builder.Services.AddScoped<IProductoServicio, ProductoServicio>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -10,7 +10,10 @@ namespace ProyectoFinal_PrograIII.Modelo
         public int IdProveedor { get; set; } // Clave foránea
         // Otras propiedades de la compra
 
+        public double Total {get; set;}
+
+        public string Estado {get; set;}
         public Proveedor Proveedor { get; set; } // Propiedad de navegación
-        public ICollection<DetalleCompra> DetallesCompra { get; set; }
+        public ICollection<DetalleCompra> DetalleCompras { get; set; }
     }
 }
