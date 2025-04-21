@@ -21,21 +21,38 @@ namespace ProyectoFinal_PrograIII.Controladores
         }
 
          [HttpGet("compras")]
-        public async Task<IActionResult> GetReporteCompras()
+        public async Task<IActionResult> GetReporteCompras(
+
+            [FromQuery] DateTime? fechaInicio,
+            [FromQuery] DateTime? fechaFin,
+            [FromQuery] int? Idproducto,
+            [FromQuery] int? IdProveedor)
+        
         {
-            var archivo = await _reporteServicio.GenerarReporteCompras();
+            var archivo = await _reporteServicio.GenerarReporteCompras(fechaInicio, fechaFin, Idproducto, IdProveedor);
             //aqui se esta retornando el reporte en formato excel
             return File(archivo, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ReporteCompras.xlsx");
 
         }
-        [HttpGet("pedidos")]
-        public async Task<IActionResult> GetReportePedidos()
-        {
-            var archivo = await _reporteServicio.GenerarReportePedidos();
-            //aqui se esta retornando el reporte en formato excel
-            return File(archivo, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ReportePedidos.xlsx");
 
+
+        [HttpGet("pedidos")]
+        public async Task<IActionResult> GetReportePedidos(
+            [FromQuery] DateTime? fechaInicio,
+            [FromQuery] DateTime? fechaFin,
+            [FromQuery] int? Idproducto,
+            [FromQuery] int? Idcliente)
+            
+        {
+            var archivo = await _reporteServicio.GenerarReportePedidos(fechaInicio, fechaFin, Idproducto, Idcliente, null);
+            
+            return File(archivo, 
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                "ReportePedidos.xlsx");
         }
+
+
+        
 
     }
 }

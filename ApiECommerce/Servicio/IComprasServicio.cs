@@ -15,6 +15,14 @@ namespace ProyectoFinal_PrograIII.Servicio// Para tus modelos (asegúrate de que
         Task<bool> CrearComprasAsync(Compra compra);
         Task<bool> ActualizarComprasAsync(Compra compra);
         Task<bool> EliminarComprasAsync(int id);
+
+
+        Task<IEnumerable<Compra>> ObtenerComprasAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdProductos = null,
+            int? IdProveedor = null);
+        
     }
 
 
@@ -34,6 +42,38 @@ namespace ProyectoFinal_PrograIII.Servicio// Para tus modelos (asegúrate de que
             Include(p  => p.DetalleCompras).
             ToListAsync();
         }
+
+        //filtros
+        public async Task<IEnumerable<Compra>> ObtenerComprasAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdProductos = null,
+            int? IdProveedor = null)
+        {
+            var query = _context.compras
+                .Include(c => c.Proveedor)
+                .Include(c => c.DetalleCompras)
+                    .ThenInclude(dc => dc.Producto) // Asumiendo que DetalleCompra tiene navegación a Producto
+                .AsQueryable();
+
+            // Filtro por rango de fechas
+            if (fechaInicio.HasValue)
+                query = query.Where(c => c.Fecha >= fechaInicio.Value);
+
+            if (fechaFin.HasValue)
+                query = query.Where(c => c.Fecha <= fechaFin.Value);
+
+            // Filtro por proveedor
+            if (IdProveedor.HasValue)
+                query = query.Where(c => c.IdProveedor == IdProveedor.Value);
+
+            // Filtro por producto
+            if (IdProductos.HasValue)
+                query = query.Where(c => c.DetalleCompras.Any(dc => dc.IdProductos == IdProductos.Value));
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Compra> ObtenerComprasAsync(int id)
         {
             

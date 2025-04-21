@@ -15,6 +15,14 @@ namespace ProyectoFinal_PrograIII.Servicio
         Task<bool> CrearPedidosAsync(Pedido pedido);
         Task<bool> ActualizarPedidosAsync(Pedido pedido);
         Task<bool> EliminarPedidosAsync(int id);
+
+        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdProducto = null,
+            int? IdCliente = null,
+            int? IdProveedor = null);
+        
     }
 
 
@@ -34,6 +42,42 @@ namespace ProyectoFinal_PrograIII.Servicio
             Include(p  => p.DetallesPedido).
             ToListAsync();
         }
+
+        //Aplicar Filtros
+        public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdProducto = null,
+            int? IdCliente = null,
+            int? IdProveedor = null)
+        {
+        var query = _context.pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallesPedido)
+                    .ThenInclude(dp => dp.Producto) // Asumiendo que DetallesPedido tiene una relación con Producto
+                .AsQueryable();
+
+            // Filtro por rango de fechas (periodo de tiempo)
+            if (fechaInicio.HasValue)
+                query = query.Where(p => p.Fecha >= fechaInicio.Value);
+
+            if (fechaFin.HasValue)
+                query = query.Where(p => p.Fecha <= fechaFin.Value);
+
+            // Filtro por cliente
+            if (IdCliente.HasValue)
+                query = query.Where(p => p.IdCliente == IdCliente.Value);
+
+            // Filtro por producto
+            if (IdProducto.HasValue)
+                query = query.Where(p => p.DetallesPedido.Any(dp => dp.IdProductos == IdProducto.Value));
+
+            // Filtro por proveedor
+            
+                       
+            return await query.ToListAsync();
+        }
+
         public async Task<Pedido> ObtenerPedidosAsync(int id)
         {
             
