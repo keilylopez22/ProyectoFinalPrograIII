@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
 using ProyectoFinal_PrograIII.Modelo;
 using ProyectoFinal_PrograIII.Data;
+using ProyectoFinal_PrograIII.DTOs;
 
 namespace ProyectoFinal_PrograIII.Servicio
 {
@@ -22,6 +23,11 @@ namespace ProyectoFinal_PrograIII.Servicio
             int? IdProducto = null,
             int? IdCliente = null,
             int? IdProveedor = null);
+
+
+            //para cambiar el estado del pedido
+            Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
+
         
     }
 
@@ -120,6 +126,59 @@ namespace ProyectoFinal_PrograIII.Servicio
 
         }
 
- 
+        //para el cambio de estado del pedido
+        public async Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado)
+        {
+            var pedido = await _context.pedidos.FindAsync(id);
+            if (pedido == null)
+            {
+                return new ResultadoCambioEstado
+                {
+                    Exitoso = false,
+                    Mensaje = "Pedido no encontrado."
+                };
+            }
+
+            var estadoActual = pedido.Estado?.Trim().ToLower();
+            nuevoEstado = nuevoEstado?.Trim().ToLower();
+
+            var estadosPermitidos = new[] { "pendiente", "enviado", "entregado", "cancelado" };
+            if (!estadosPermitidos.Contains(nuevoEstado))
+            {
+                return new ResultadoCambioEstado
+                {
+                    Exitoso = false,
+                    Mensaje = $"Estado '{nuevoEstado}' no es válido. Los estados válidos son: Pendiente, Enviado, Entregado, Cancelado."
+                };
+            }
+
+            var transicionesValidas = new Dictionary<string, List<string>>
+            {
+                { "pendiente", new List<string> { "enviado", "cancelado" } },
+                { "enviado",   new List<string> { "entregado", "cancelado" } },
+                { "entregado", new List<string>() },
+                { "cancelado", new List<string>() }
+            };
+
+            if (!transicionesValidas.ContainsKey(estadoActual) || !transicionesValidas[estadoActual].Contains(nuevoEstado))
+            {
+                return new ResultadoCambioEstado
+                {
+                    Exitoso = false,
+                    Mensaje = $"No se puede cambiar el estado de '{estadoActual}' a '{nuevoEstado}'."
+                };
+            }
+
+            // Aplica el cambio
+            pedido.Estado = char.ToUpper(nuevoEstado[0]) + nuevoEstado.Substring(1); // "enviado" → "Enviado"
+            _context.pedidos.Update(pedido);
+            await _context.SaveChangesAsync();
+
+            return new ResultadoCambioEstado
+            {
+                Exitoso = true,
+                Mensaje = "Estado del pedido actualizado exitosamente."
+            };
+        }
     }
 }

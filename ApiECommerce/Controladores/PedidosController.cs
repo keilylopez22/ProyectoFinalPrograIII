@@ -5,6 +5,7 @@ using ProyectoFinal_PrograIII.Servicio; // Si estás usando una capa de servicio
 using ProyectoFinal_PrograIII.ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ProyectoFinal_PrograIII.DTOs;
 
 namespace ProyectoFinal_PrograIII.Controladores
 {
@@ -71,5 +72,19 @@ namespace ProyectoFinal_PrograIII.Controladores
             }
             return NotFound();
         }
+
+        //para el cambio de estado del pedido
+        [HttpPatch("{id}/estado")]
+        public async Task<IActionResult> CambiarEstadoPedido(int id, [FromBody] EstadoPedidoDTO estado)
+        {
+            var resultado = await _pedidosServicio.CambiarEstadoPedidoAsync(id, estado.Estado);
+
+            if (resultado.Exitoso)
+                return Ok(new { mensaje = resultado.Mensaje });
+
+            return BadRequest(new { error = resultado.Mensaje });
+        }
+
+
     }
 }
