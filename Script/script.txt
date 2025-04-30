@@ -16,11 +16,17 @@ CorreoElectronico varchar(100),
 Telefono int
 );
 
+CREATE  table  categorias (
+Id int AUTO_INCREMENT primary key,
+Nombre varchar (50));
+
+
 create table productos (
 Id int AUTO_INCREMENT primary key, 
 Nombre varchar(100) not null,
 Precio decimal not null,
-Existencias int not null
+Existencias int not null,
+IdCategoria int 
 );
 create table compras(
 Id int AUTO_INCREMENT primary key,

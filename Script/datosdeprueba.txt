@@ -5,6 +5,15 @@ INSERT INTO proveedores (Nombre, Direccion, Nit, Correo_Electronico, Telefono) V
 ('Proveedor D', 'Colonia Vista Hermosa', 4567890, 'proveedord@example.com', 5554567),
 ('Proveedor E', 'Zona Industrial', 5678901, 'proveedore@example.com', 5555678);
 
+
+
+
+INSERT INTO categorias (Nombre) values
+('Portatiles'),
+('Perifericos'),
+('Muebles'),
+('Accesorios');
+
 INSERT INTO productos (Nombre, Precio, Existencias) VALUES
 ('Laptop HP', 8500.00, 10),
 ('Mouse Inalámbrico', 150.00, 100),
@@ -113,6 +122,8 @@ INSERT INTO detalleCompras (CantidadProductos, SubTotal, IdProductos, IdCompras)
 (5, 260.00, 8, 9),
 (4, 190.00, 9, 10),
 (3, 180.00, 10, 10);
+
+
 
 
 
