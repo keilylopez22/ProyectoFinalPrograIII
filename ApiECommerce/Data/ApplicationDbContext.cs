@@ -16,6 +16,7 @@ namespace ProyectoFinal_PrograIII.Data
         public DbSet<Pedido> pedidos { get; set; }
         public DbSet<DetallePedido> detallePedido { get; set; }
         public DbSet<DetalleCompra> detalleCompras { get; set; }
+        public DbSet<Categoria> categorias { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

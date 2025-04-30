@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProyectoFinal_PrograIII.Modelo
 {
@@ -10,6 +11,11 @@ namespace ProyectoFinal_PrograIII.Modelo
         public  decimal Precio {get; set;}
 
         public int Existencias {get; set;}
+        
+
+        [ForeignKey("Categoria")]
+        public int IdCategoria { get; set; }
+        public Categoria Categoria { get; set; }
         // Otras propiedades del producto
 
        

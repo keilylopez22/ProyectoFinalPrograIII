@@ -21,11 +21,15 @@ namespace ProyectoFinal_PrograIII.Controladores
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos()
+        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos(
+            [FromQuery] int? categoriaId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
-            var productos = await _productoService.ObtenerProductosAsync();
+            var productos = await _productoService.ObtenerProductosAsync(categoriaId, pageNumber, pageSize);
             return Ok(productos);
         }
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProducto(int id)

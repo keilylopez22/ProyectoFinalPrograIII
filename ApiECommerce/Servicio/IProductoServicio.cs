@@ -10,11 +10,12 @@ namespace ProyectoFinal_PrograIII.Servicio
 {
     public interface IProductoServicio
     {
-        Task<IEnumerable<Producto>> ObtenerProductosAsync();
+        Task<IEnumerable<Producto>> ObtenerProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 10);
         Task<Producto> ObtenerProductosAsync(int id);
         Task<bool> CrearProductosAsync(Producto producto);
         Task<bool> ActualizarProductosAsync(Producto producto);
         Task<bool> EliminarProductosAsync(int id);
+        
  
     }
     public class ProductoServicio:IProductoServicio
@@ -26,15 +27,36 @@ namespace ProyectoFinal_PrograIII.Servicio
             _context = context;
 
         }
-
-        public async Task<IEnumerable<Producto>> ObtenerProductosAsync()
+        
+        public async Task<IEnumerable<Producto>> ObtenerProductosAsync(int? IdCategoria = null, int pageNumber = 1, int pageSize = 10)
         {
-            return await _context.productos.ToListAsync();
+            // Construir la consulta base incluyendo la categoría
+            var query = _context.productos
+                .Include(p => p.Categoria)
+                .AsQueryable();
 
+            // Filtro por categoría si se proporciona un ID
+            if (IdCategoria.HasValue)
+            {
+                query = query.Where(p => p.IdCategoria == IdCategoria.Value);
+            }
+
+            // Aplicar paginación
+            query = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize);
+
+            // Ejecutar la consulta
+            return await query.ToListAsync();
         }
+
         public async Task<Producto> ObtenerProductosAsync(int id)
         {
-            return await _context.productos.FindAsync(id);
+            // Incluir la categoría relacionada al producto
+            // y buscar el producto por su ID   
+
+            return await _context.productos.Include(p => p.Categoria).FirstOrDefaultAsync(p => p.Id == id);
+            
 
         }
         public async Task<bool> CrearProductosAsync(Producto producto)
