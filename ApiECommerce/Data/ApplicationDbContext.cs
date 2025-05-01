@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using ProyectoFinal_PrograIII.Modelo; // Asegúrate de que la ruta sea correcta
+using ApiECommerce.Modelo; // Asegúrate de que la ruta sea correcta
 
-namespace ProyectoFinal_PrograIII.Data
+namespace ApiECommerce.Data
 {
     public class ApplicationDbContext : DbContext
     {

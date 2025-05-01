@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
-using ProyectoFinal_PrograIII.Modelo;
-using ProyectoFinal_PrograIII.Data;
+using ApiECommerce.Modelo;
+using ApiECommerce.Data;
 using ProyectoFinal_PrograIII.DTOs;
 
-namespace ProyectoFinal_PrograIII.Servicio
+namespace ApiECommerce.Servicio
 {
     public interface IPedidosServicio
     {

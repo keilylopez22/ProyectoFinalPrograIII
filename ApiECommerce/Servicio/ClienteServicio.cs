@@ -1,11 +1,11 @@
-using ProyectoFinal_PrograIII.Modelo; // Si tus modelos están en este namespace
-using ProyectoFinal_PrograIII.Data;  // Si tu ApplicationDbContext está en este namespace
+using ApiECommerce.Modelo; // Si tus modelos están en este namespace
+using ApiECommerce.Data;  // Si tu ApplicationDbContext está en este namespace
 using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
-using ProyectoFinal_PrograIII.ApiECommerce.IServices;
+using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ProyectoFinal_PrograIII.Servicio
+namespace ApiECommerce.Servicio
 {
     public class ClienteServicio : IClienteService
     {

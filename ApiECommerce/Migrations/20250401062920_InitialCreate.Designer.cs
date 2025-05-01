@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProyectoFinal_PrograIII.Data;
+using ApiECommerce.Data;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace ProyectoFinalPrograIII.Migrations
                 .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Cliente", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Cliente", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -51,7 +51,7 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Compra", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Compra", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,7 +70,7 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("Compras");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.DetalleCompra", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.DetalleCompra", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -97,7 +97,7 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("DetallesCompra");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.DetallePedido", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.DetallePedido", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -124,7 +124,7 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("DetallesPedido");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Pedido", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Pedido", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,7 +146,7 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("Pedidos");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Producto", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Producto", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,7 +161,7 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("Productos");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Proveedor", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Proveedor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -176,9 +176,9 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.ToTable("Proveedores");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Compra", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Compra", b =>
                 {
-                    b.HasOne("ProyectoFinal_PrograIII.Modelo.Proveedor", "Proveedor")
+                    b.HasOne("ApiECommerce.Modelo.Proveedor", "Proveedor")
                         .WithMany("Compras")
                         .HasForeignKey("Id_Proveedor")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -187,15 +187,15 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.Navigation("Proveedor");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.DetalleCompra", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.DetalleCompra", b =>
                 {
-                    b.HasOne("ProyectoFinal_PrograIII.Modelo.Compra", "Compra")
+                    b.HasOne("ApiECommerce.Modelo.Compra", "Compra")
                         .WithMany("DetallesCompra")
                         .HasForeignKey("Id_Compras")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProyectoFinal_PrograIII.Modelo.Producto", "Producto")
+                    b.HasOne("ApiECommerce.Modelo.Producto", "Producto")
                         .WithMany("DetallesCompra")
                         .HasForeignKey("Id_Productos")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -206,15 +206,15 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.DetallePedido", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.DetallePedido", b =>
                 {
-                    b.HasOne("ProyectoFinal_PrograIII.Modelo.Pedido", "Pedido")
+                    b.HasOne("ApiECommerce.Modelo.Pedido", "Pedido")
                         .WithMany("DetallesPedido")
                         .HasForeignKey("Id_Pedidos")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProyectoFinal_PrograIII.Modelo.Producto", "Producto")
+                    b.HasOne("ApiECommerce.Modelo.Producto", "Producto")
                         .WithMany("DetallesPedido")
                         .HasForeignKey("Id_Productos")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -225,9 +225,9 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Pedido", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Pedido", b =>
                 {
-                    b.HasOne("ProyectoFinal_PrograIII.Modelo.Cliente", "Cliente")
+                    b.HasOne("ApiECommerce.Modelo.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -236,24 +236,24 @@ namespace ProyectoFinalPrograIII.Migrations
                     b.Navigation("Cliente");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Compra", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Compra", b =>
                 {
                     b.Navigation("DetallesCompra");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Pedido", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Pedido", b =>
                 {
                     b.Navigation("DetallesPedido");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Producto", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Producto", b =>
                 {
                     b.Navigation("DetallesCompra");
 
                     b.Navigation("DetallesPedido");
                 });
 
-            modelBuilder.Entity("ProyectoFinal_PrograIII.Modelo.Proveedor", b =>
+            modelBuilder.Entity("ApiECommerce.Modelo.Proveedor", b =>
                 {
                     b.Navigation("Compras");
                 });

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc; 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ProyectoFinal_PrograIII.Servicio;
-namespace ProyectoFinal_PrograIII.Controladores
+using ApiECommerce.Servicio;
+namespace ApiECommerce.Controladores
 
 
 //namespace ApiECommerce.Controladores

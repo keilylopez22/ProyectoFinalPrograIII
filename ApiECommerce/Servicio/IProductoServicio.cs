@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ProyectoFinal_PrograIII.Modelo;
-using ProyectoFinal_PrograIII.Data;
+using ApiECommerce.Modelo;
+using ApiECommerce.Data;
 using Microsoft.EntityFrameworkCore; 
 
-namespace ProyectoFinal_PrograIII.Servicio
+namespace ApiECommerce.Servicio
 {
     public interface IProductoServicio
     {

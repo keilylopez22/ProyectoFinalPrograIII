@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc; // Para ControllerBase, RouteAttribute, ApiControllerAttribute, ActionResult, IActionResult, etc.
-using ProyectoFinal_PrograIII.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
-using ProyectoFinal_PrograIII.Data;  // Para ApplicationDbContext (si lo inyectas directamente en el controlador)
-using ProyectoFinal_PrograIII.Servicio; // Si estás usando una capa de servicios
-using ProyectoFinal_PrograIII.ApiECommerce.IServices;
+using ApiECommerce.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
+using ApiECommerce.Data;  // Para ApplicationDbContext (si lo inyectas directamente en el controlador)
+using ApiECommerce.Servicio; // Si estás usando una capa de servicios
+using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ProyectoFinal_PrograIII.Controladores
+namespace ApiECommerce.Controladores
 {
     [Route("api/[controller]")]
     [ApiController]

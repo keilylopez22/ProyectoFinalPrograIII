@@ -1,8 +1,8 @@
-using ProyectoFinal_PrograIII.Modelo;
+using ApiECommerce.Modelo;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ProyectoFinal_PrograIII.ApiECommerce.IServices
+namespace ApiECommerce.IServices
 {
     public interface IClienteService
     {

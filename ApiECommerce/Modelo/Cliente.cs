@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace ProyectoFinal_PrograIII.Modelo
+namespace ApiECommerce.Modelo
 {
     public class Cliente
     {

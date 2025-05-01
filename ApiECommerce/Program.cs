@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProyectoFinal_PrograIII.ApiECommerce.IServices;
-using ProyectoFinal_PrograIII.Servicio;
-using ProyectoFinal_PrograIII.Data; // Asegúrate de tener esta línea
+using ApiECommerce.IServices;
+using ApiECommerce.Servicio;
+using ApiECommerce.Data; // Asegúrate de tener esta línea
 
 var builder = WebApplication.CreateBuilder(args);
 

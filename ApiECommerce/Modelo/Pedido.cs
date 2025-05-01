@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProyectoFinal_PrograIII.Modelo
+namespace ApiECommerce.Modelo
 {
     public class Pedido
     {

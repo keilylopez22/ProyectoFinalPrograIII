@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-namespace ProyectoFinal_PrograIII.Modelo
+namespace ApiECommerce.Modelo
 {
     public class Categoria
     {

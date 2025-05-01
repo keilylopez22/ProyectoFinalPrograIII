@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace ProyectoFinal_PrograIII.Servicio
+namespace ApiECommerce.Servicio
 {
     public interface IReporteServicio
     {

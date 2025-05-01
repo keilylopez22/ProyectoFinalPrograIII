@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
 using System.Threading.Tasks;
-using ProyectoFinal_PrograIII.Modelo;
-using ProyectoFinal_PrograIII.Data;
-namespace ProyectoFinal_PrograIII.Servicio// Para tus modelos (asegúrate de que el namespace sea correcto)
+using ApiECommerce.Modelo;
+using ApiECommerce.Data;
+namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespace sea correcto)
 
 {
     public interface IComprasServicio
