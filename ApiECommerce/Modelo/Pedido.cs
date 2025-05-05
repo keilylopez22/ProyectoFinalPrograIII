@@ -12,7 +12,7 @@ namespace ApiECommerce.Modelo
         [ForeignKey("Cliente")]
         public int IdCliente { get; set; }
 
-        public double Total { get; set; }
+        public decimal Total { get; set; }
         public string Estado { get; set; }
 
         public Cliente Cliente { get; set; }

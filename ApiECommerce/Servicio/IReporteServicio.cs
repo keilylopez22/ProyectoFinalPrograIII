@@ -117,7 +117,9 @@ namespace ApiECommerce.Servicio
                 {
                     var filaDeDatos = hojaPedidos.CreateRow(fila++);
                     filaDeDatos.CreateCell(0).SetCellValue(pedido.Id);
-                    filaDeDatos.CreateCell(1).SetCellValue(pedido.Total);
+                    //CONVIERTE EL TOTAL A DOUBLE PARA QUE NO ME DE ERROR EN EL EXCEL
+                    filaDeDatos.CreateCell(1).SetCellValue(Convert.ToDouble(pedido.Total));
+                    //filaDeDatos.CreateCell(1).SetCellValue(pedido.Total);
                     filaDeDatos.CreateCell(2).SetCellValue(pedido.Fecha.ToString("dd/MM/yyyy"));
                     filaDeDatos.CreateCell(3).SetCellValue(pedido.Estado);
                     filaDeDatos.CreateCell(4).SetCellValue(pedido.IdCliente);

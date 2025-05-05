@@ -12,6 +12,7 @@ namespace ApiECommerce.Modelo
 
         [ForeignKey("Producto")]
         public int IdProductos { get; set; }
+        public decimal SubTotal { get; set; }
 
         public int CantidadProductos { get; set; }
         public decimal PrecioUnitario { get; set; }

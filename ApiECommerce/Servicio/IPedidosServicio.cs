@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
 using ApiECommerce.Modelo;
 using ApiECommerce.Data;
-using ProyectoFinal_PrograIII.DTOs;
+using ApiECommerce.DTOs;
 
 namespace ApiECommerce.Servicio
 {
@@ -14,6 +14,7 @@ namespace ApiECommerce.Servicio
         Task<IEnumerable<Pedido>> ObtenerPedidosAsync();
         Task<Pedido> ObtenerPedidosAsync(int id);
         Task<bool> CrearPedidosAsync(Pedido pedido);
+        Task<PedidoResultado?> CrearPedidosAsync(PedidoDTO pedidoDto);
         Task<bool> ActualizarPedidosAsync(Pedido pedido);
         Task<bool> EliminarPedidosAsync(int id);
 
@@ -105,6 +106,62 @@ namespace ApiECommerce.Servicio
             return true;
 
         }
+
+        //Sobrecarga del método CrearPedidosAsync para recibir un PedidoDto
+
+        public async Task<PedidoResultado> CrearPedidosAsync(PedidoDTO pedidoDto)
+        {
+            if (pedidoDto == null || pedidoDto.DetallesPedido == null || !pedidoDto.DetallesPedido.Any())
+            {
+                return new PedidoResultado { Exito = false, Mensaje = "El pedido está vacío o es inválido." };
+            }
+
+            decimal totalPedido = 0;
+            var detallesPedido = new List<DetallePedido>();
+
+            foreach (var item in pedidoDto.DetallesPedido)
+            {
+                var producto = await _context.productos.FindAsync(item.IdProductos);
+
+                if (producto == null)
+                {
+                    return new PedidoResultado { Exito = false, Mensaje = $"Producto con ID {item.IdProductos} no encontrado." };
+                }
+
+                if (producto.Existencias < item.CantidadProductos)
+                {
+                    return new PedidoResultado { Exito = false, Mensaje = $"Stock insuficiente para el producto '{producto.Nombre}'." };
+                }
+
+                decimal precioUnitario = producto.Precio;
+
+                producto.Existencias -= item.CantidadProductos;
+                totalPedido += precioUnitario * item.CantidadProductos;
+
+                detallesPedido.Add(new DetallePedido
+                {
+                    IdProductos = item.IdProductos,
+                    CantidadProductos = item.CantidadProductos,
+                    PrecioUnitario = precioUnitario,
+                    SubTotal = precioUnitario * item.CantidadProductos
+                });
+            }
+
+            var pedido = new Pedido
+            {
+                Fecha = pedidoDto.Fecha,
+                IdCliente = pedidoDto.IdCliente,
+                Estado = "Pendiente",
+                Total = totalPedido,
+                DetallesPedido = detallesPedido
+            };
+
+            await _context.pedidos.AddAsync(pedido);
+            await _context.SaveChangesAsync();
+
+            return new PedidoResultado { Exito = true, Pedido = pedido };
+        }
+
         public async Task<bool> ActualizarPedidosAsync(Pedido pedido)
         {
             _context.pedidos.Update(pedido);

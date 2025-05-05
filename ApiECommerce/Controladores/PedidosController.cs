@@ -3,9 +3,10 @@ using ApiECommerce.Modelo; // Para tus modelos (asegúrate de que el namespace s
 using ApiECommerce.Data;  // Para ApplicationDbContext (si lo inyectas directamente en el controlador)
 using ApiECommerce.Servicio; // Si estás usando una capa de servicios
 using ApiECommerce.IServices;
+using ApiECommerce.DTOs; // Para tus DTOs (asegúrate de que el namespace sea correcto)
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ProyectoFinal_PrograIII.DTOs;
+
 
 namespace ApiECommerce.Controladores
 {
@@ -37,16 +38,21 @@ namespace ApiECommerce.Controladores
             }
             return Ok(pedido);
         }
-
+        
         [HttpPost]
-        public async Task<ActionResult<Pedido>> CrearPedidos([FromBody] Pedido pedido)
+        public async Task<ActionResult> CrearPedidos([FromBody] PedidoDTO pedidoDto)
         {
-            if (await _pedidosServicio.CrearPedidosAsync(pedido))
+            var resultado = await _pedidosServicio.CrearPedidosAsync(pedidoDto);
+
+            if (resultado.Exito && resultado.Pedido != null)
             {
-                return CreatedAtAction(nameof(GetPedidos), new { id = pedido.Id }, pedido);
+                return CreatedAtAction(nameof(GetPedido), new { id = resultado.Pedido.Id }, resultado.Pedido);
             }
-            return BadRequest("Error al crear el pedido.");
+
+            return BadRequest(resultado.Mensaje);
         }
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarPedidos(int id, [FromBody] Pedido pedido)
