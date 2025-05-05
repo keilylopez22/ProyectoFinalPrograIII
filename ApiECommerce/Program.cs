@@ -22,6 +22,7 @@ builder.Services.AddScoped<IComprasServicio, CompraServicio>();
 builder.Services.AddScoped<IPedidosServicio, PedidoServicio>();
 builder.Services.AddScoped<IProductoServicio, ProductoServicio>();
 builder.Services.AddScoped<IKafkaProductorServicio, KafkaProductorServicio>();
+builder.Services.AddHostedService<KafkaPedidoConsumidor>();
 
 var app = builder.Build();
 
