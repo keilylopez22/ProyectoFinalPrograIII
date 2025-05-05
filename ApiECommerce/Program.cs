@@ -21,6 +21,7 @@ builder.Services.AddScoped<IReporteServicio, ReporteServicio>();
 builder.Services.AddScoped<IComprasServicio, CompraServicio>();
 builder.Services.AddScoped<IPedidosServicio, PedidoServicio>();
 builder.Services.AddScoped<IProductoServicio, ProductoServicio>();
+builder.Services.AddScoped<IKafkaProductorServicio, KafkaProductorServicio>();
 
 var app = builder.Build();
 

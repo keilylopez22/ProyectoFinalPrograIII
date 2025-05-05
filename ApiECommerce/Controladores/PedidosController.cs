@@ -15,12 +15,19 @@ namespace ApiECommerce.Controladores
     public class PedidosController : ControllerBase
     {
        private readonly IPedidosServicio _pedidosServicio;
+       private readonly IKafkaProductorServicio _kafkaProductorServicio; // Inyección del servicio de Kafka
+    
+          // Constructor
+          public PedidosController(IPedidosServicio pedidosServicio, IKafkaProductorServicio kafkaProductorServicio)
+          {
+                _pedidosServicio = pedidosServicio;
+                _kafkaProductorServicio = kafkaProductorServicio;
+          }
+    
+          // Constructor alternativo (si no usas Kafka)
+          // Puedes eliminar este constructor si no lo necesitas
 
-    public PedidosController(IPedidosServicio pedidosServicio)
-        {
-            _pedidosServicio = pedidosServicio;
-        }
-
+       
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidos()
         {
@@ -38,6 +45,15 @@ namespace ApiECommerce.Controladores
             }
             return Ok(pedido);
         }
+
+        //version asincrona de peddido
+        [HttpPost("V2")]
+        public async Task<IActionResult> CrearPedidoKafka([FromBody] PedidoKafkaDTO pedido)
+        {
+            await _kafkaProductorServicio.EnviarPedidoAsync(pedido);
+            return Accepted("El pedido fue enviado para su procesamiento.");
+        }
+
         
         [HttpPost]
         public async Task<ActionResult> CrearPedidos([FromBody] PedidoDTO pedidoDto)
