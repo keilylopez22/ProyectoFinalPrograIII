@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiECommerce", "ApiECommerce\ApiECommerce.csproj", "{C901AEAF-AA8A-4718-A726-24E2CB0E8A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiECommerce", "ApiECommerce\ApiECommerce.csproj", "{C901AEAF-AA8A-4718-A726-24E2CB0E8A00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimuladorCompras", "SimuladorCompras\SimuladorCompras.csproj", "{D64C6C1A-C2BA-4F34-A229-AC275EE5C750}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimuladorCompras", "SimuladorCompras\SimuladorCompras.csproj", "{D64C6C1A-C2BA-4F34-A229-AC275EE5C750}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerceWebAppFrontend", "ECommerceWebAppFrontend\ECommerceWebAppFrontend.csproj", "{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,8 +43,23 @@ Global
 		{D64C6C1A-C2BA-4F34-A229-AC275EE5C750}.Release|x64.Build.0 = Release|Any CPU
 		{D64C6C1A-C2BA-4F34-A229-AC275EE5C750}.Release|x86.ActiveCfg = Release|Any CPU
 		{D64C6C1A-C2BA-4F34-A229-AC275EE5C750}.Release|x86.Build.0 = Release|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Debug|x64.Build.0 = Debug|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Debug|x86.Build.0 = Debug|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Release|x64.ActiveCfg = Release|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Release|x64.Build.0 = Release|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Release|x86.ActiveCfg = Release|Any CPU
+		{538BC8B9-8134-4614-9FB7-1C4CE1BE81A8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {74B621DC-ABBC-4D68-B5A1-D901F55B8197}
 	EndGlobalSection
 EndGlobal
