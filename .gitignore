@@ -5,3 +5,6 @@ SimuladorCompras/obj/Debug
 .vs
 ApiECommerce/obj
 SimuladorCompras/obj
+ECommerceWebAppFrontend/bin
+ECommerceWebAppFrontend/obj
+ApiECommerce.Shared/bin

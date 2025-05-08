@@ -1,0 +1,12 @@
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\bin\Debug\net8.0\ApiECommerce.Shared.deps.json
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\bin\Debug\net8.0\ApiECommerce.Shared.dll
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\bin\Debug\net8.0\ApiECommerce.Shared.pdb
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.AssemblyInfoInputs.cache
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.AssemblyInfo.cs
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.csproj.CoreCompileInputs.cache
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.sourcelink.json
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.dll
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\refint\ApiECommerce.Shared.dll
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ApiECommerce.Shared.pdb
+C:\Users\keily\Documents\programacion III\proyectoprogramacion3\ProyectoFinal_PrograIII\ApiECommerce.Shared\obj\Debug\net8.0\ref\ApiECommerce.Shared.dll
