@@ -1,4 +1,4 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<div class="top-row ps-3 navbar navbar-dark bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">ECommerceWebAppFrontend</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -7,21 +7,59 @@
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass nav-scrollable bg-dark text-white">
     <nav class="flex-column">
+        <!-- Home -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link text-white" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
+
+        <!-- Opciones usuario -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+            <NavLink class="nav-link text-white" href="catalogo">
+                <span class="bi bi-grid-3x3-gap-fill-nav-menu" aria-hidden="true"></span> Catálogo
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            <NavLink class="nav-link text-white" href="carrito">
+                <span class="bi bi-cart-fill-nav-menu" aria-hidden="true"></span> Carrito
+            </NavLink>
+        </div>
+
+        <!-- Opciones administrador -->
+        <hr class="text-secondary mx-3"/>
+        <div class="px-3 text-muted fw-bold">Administrador</div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link text-white" href="admin/productos">
+                <span class="bi bi-box-seam-fill-nav-menu" aria-hidden="true"></span> Productos
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link text-white" href="admin/clientes">
+                <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Clientes
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link text-white" href="admin/proveedores">
+                <span class="bi bi-truck-nav-menu" aria-hidden="true"></span> Proveedores
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link text-white" href="admin/pedidos">
+                <span class="bi bi-bag-check-fill-nav-menu" aria-hidden="true"></span> Pedidos
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link text-white" href="admin/compras">
+                <span class="bi bi-basket-fill-nav-menu" aria-hidden="true"></span> Compras
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link text-white" href="admin/reportes">
+                <span class="bi bi-bar-chart-fill-nav-menu" aria-hidden="true"></span> Reportes
             </NavLink>
         </div>
     </nav>
