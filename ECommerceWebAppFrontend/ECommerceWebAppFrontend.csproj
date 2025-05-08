@@ -10,5 +10,9 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all" />
   </ItemGroup>
+  <!--esto hace referencia a la biblioteca compartida de modelos-->  
+  <ItemGroup>
+    <ProjectReference Include="..\ApiECommerce.Shared\ApiECommerce.Shared.csproj" />
+  </ItemGroup>
 
 </Project>

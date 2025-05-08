@@ -1,0 +1,178 @@
+@page "/admin/productos"
+@using ApiECommerce.Modelo
+@using ECommerceWebAppFrontend.Services
+@inject ProductoService ProductoService
+
+<h3 class="titulo">Gestión de productos</h3>
+
+@if (productos == null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <div class="filtros">
+        <select @onchange="OnCategoriaChanged">
+            <option value="">-- Todas las categorías --</option>
+            @foreach (var cat in categorias)
+            {
+                <option value="@cat.Id">@cat.Nombre</option>
+            }
+        </select>
+
+    </div>
+
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Existencias</th>
+                <th>Precio</th>
+                <th>Categoría</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var producto in productos)
+            {
+                <tr>
+                    <td>@producto.Nombre</td>
+                    <td>@producto.Existencias</td>
+                    <td>@producto.Precio.ToString("C")</td>
+                    <td>@producto.Categoria?.Nombre</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" @onclick="() => EditarProducto(producto)">Editar</button>
+                        <button class="btn btn-danger btn-sm" @onclick="() => EliminarProducto(producto.Id)">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="paginacion">
+        <button class="btn btn-outline-primary" @onclick="PaginaAnterior" disabled="@(_paginaActual == 1)">Anterior</button>
+        <span class="mx-2">Página @_paginaActual</span>
+        <button class="btn btn-outline-primary" @onclick="PaginaSiguiente">Siguiente</button>
+    </div>
+
+    <h4 class="mt-4">@((productoSeleccionado.Id == 0 ? "Nuevo producto" : "Editar producto"))</h4>
+    <div class="formulario">
+        <input class="form-control my-1" placeholder="Nombre" @bind="productoSeleccionado.Nombre" />
+        <input class="form-control my-1" type="number" placeholder="Existencias" @bind="productoSeleccionado.Existencias" />
+        <input class="form-control my-1" type="number" step="0.01" placeholder="Precio" @bind="productoSeleccionado.Precio" />
+        <select class="form-control my-1" @bind="productoSeleccionado.IdCategoria">
+            <option disabled selected value="">-- Selecciona Categoría --</option>
+            @foreach (var cat in categorias)
+            {
+                <option value="@cat.Id">@cat.Nombre</option>
+            }
+        </select>
+
+        <div class="mt-2">
+            <button class="btn btn-success me-2" @onclick="ConfirmarGuardar">Guardar</button>
+            <button class="btn btn-secondary" @onclick="CancelarEdicion">Cancelar</button>
+        </div>
+    </div>
+}
+
+@code {
+    private List<Producto>? productos;
+    private List<Categoria> categorias = new();
+    private Producto productoSeleccionado = new();
+    private int? categoriaSeleccionadaId = null;
+    private int _paginaActual = 1;
+    private const int _tamanioPagina = 5;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categorias = await ProductoService.ObtenerCategoriasAsync();
+        await CargarProductos();
+    }
+
+    private async Task CargarProductos()
+    {
+        productos = await ProductoService.ObtenerProductosAsync(categoriaSeleccionadaId, _paginaActual, _tamanioPagina);
+    }
+
+    private async Task FiltrarPorCategoria(ChangeEventArgs e)
+    {
+        categoriaSeleccionadaId = string.IsNullOrEmpty(e.Value?.ToString()) ? null : int.Parse(e.Value.ToString());
+        _paginaActual = 1;
+        await CargarProductos();
+    }
+
+    private async Task PaginaSiguiente()
+    {
+        _paginaActual++;
+        await CargarProductos();
+    }
+
+    private async Task PaginaAnterior()
+    {
+        if (_paginaActual > 1)
+        {
+            _paginaActual--;
+            await CargarProductos();
+        }
+    }
+
+    private void EditarProducto(Producto producto)
+    {
+        productoSeleccionado = new Producto
+        {
+            Id = producto.Id,
+            Nombre = producto.Nombre,
+            Existencias = producto.Existencias,
+            Precio = producto.Precio,
+            IdCategoria = producto.IdCategoria
+        };
+    }
+
+    private async Task ConfirmarGuardar()
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "¿Estás segura de que deseas guardar este producto?"))
+        {
+            await GuardarProducto();
+        }
+    }
+
+    private async Task GuardarProducto()
+    {
+        if (productoSeleccionado.Id == 0)
+        {
+            await ProductoService.CrearProductoAsync(productoSeleccionado);
+        }
+        else
+        {
+            await ProductoService.ModificarProductoAsync(productoSeleccionado);
+        }
+
+        productoSeleccionado = new Producto();
+        await CargarProductos();
+    }
+
+    private void CancelarEdicion()
+    {
+        productoSeleccionado = new Producto();
+    }
+
+    private async Task EliminarProducto(int id)
+    {
+        if (await JSRuntime.InvokeAsync<bool>("confirm", "¿Seguro que deseas eliminar este producto?"))
+        {
+            await ProductoService.EliminarProductoAsync(id);
+            await CargarProductos();
+        }
+    }
+
+    private async Task OnCategoriaChanged(ChangeEventArgs e)
+    {
+        var valor = e.Value?.ToString();
+        categoriaSeleccionadaId = string.IsNullOrWhiteSpace(valor) ? null : int.Parse(valor);
+        _paginaActual = 1;
+        await CargarProductos();
+    }
+
+
+    [Inject] IJSRuntime JSRuntime { get; set; }
+}
