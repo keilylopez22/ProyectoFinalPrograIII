@@ -23,7 +23,8 @@
   <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
 </ItemGroup>
 <ItemGroup>
-    <ProjectReference Include="..\Modelo\ApiECommerce.Modelo.csproj" />
+     <!--esto hace referencia a la biblioteca compartida de modelos-->
+    <ProjectReference Include="..\ApiECommerce.Shared\ApiECommerce.Shared.csproj" />
 </ItemGroup>
 
 </Project>

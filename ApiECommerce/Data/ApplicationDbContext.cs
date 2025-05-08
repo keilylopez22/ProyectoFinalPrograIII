@@ -17,6 +17,8 @@ namespace ApiECommerce.Data
         public DbSet<DetallePedido> detallePedido { get; set; }
         public DbSet<DetalleCompra> detalleCompras { get; set; }
         public DbSet<Categoria> categorias { get; set; }
+       
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

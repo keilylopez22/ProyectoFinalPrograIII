@@ -22,10 +22,26 @@ builder.Services.AddScoped<IComprasServicio, CompraServicio>();
 builder.Services.AddScoped<IPedidosServicio, PedidoServicio>();
 builder.Services.AddScoped<IProductoServicio, ProductoServicio>();
 builder.Services.AddScoped<IKafkaProductorServicio, KafkaProductorServicio>();
-builder.Services.AddHostedService<KafkaPedidoConsumidor>();
+builder.Services.AddScoped<ICategoriaServicio, CategoriaServicio>();
+//builder.Services.AddHostedService<KafkaPedidoConsumidor>();
+
+
+//habilitar cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirFrontend",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5056") // ← URL del frontend
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+
 
 var app = builder.Build();
-
+app.UseCors("PermitirFrontend");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -38,6 +54,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers(); // Si vas a crear una API con controladores
+
+
+
+
 
 app.Run();
 

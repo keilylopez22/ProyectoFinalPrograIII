@@ -5,6 +5,7 @@ using ApiECommerce.Servicio; // Si estás usando una capa de servicios
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ApiECommerce.DTOs; // Para tus DTOs (asegúrate de que el namespace sea correcto)
 
 namespace ApiECommerce.Controladores
 {
@@ -43,8 +44,15 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpPost]
-        public async Task<ActionResult<Producto>> CrearProducto([FromBody] Producto producto)
+        public async Task<ActionResult<Producto>> CrearProducto([FromBody] ProductoDTO dto)
         {
+            var producto = new Producto
+            {
+                Nombre = dto.Nombre,
+                Existencias = dto.Existencias,
+                Precio = dto.Precio,
+                IdCategoria = dto.IdCategoria
+            };
             if (await _productoService.CrearProductosAsync(producto))
             {
                 return CreatedAtAction(nameof(GetProducto), new { id = producto.Id }, producto);
@@ -53,8 +61,19 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarProducto(int id, [FromBody] Producto producto)
+        public async Task<IActionResult> ActualizarProducto(int id, [FromBody] ProductoDTO dto)
         {
+            var producto = new Producto
+            {
+                Id = id,
+                Nombre = dto.Nombre,
+                Existencias = dto.Existencias,
+                Precio = dto.Precio,
+                IdCategoria = dto.IdCategoria
+            };
+
+            // Verificar si el ID en la ruta coincide con el ID del producto
+        
             if (id != producto.Id)
             {
                 return BadRequest("El ID del producto no coincide con el ID de la ruta.");
