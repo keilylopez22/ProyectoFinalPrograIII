@@ -16,9 +16,21 @@ namespace ApiECommerce.Servicio
             _context = context;
         }
 
-        public async Task<IEnumerable<Cliente>> ObtenerClientesAsync()
+        public async Task<IEnumerable<Cliente>> ObtenerClientesAsync(string? nombre= null, int pageNumber = 1, int pageSize = 10)
         {
-            return await _context.clientes.ToListAsync();
+            if (!string.IsNullOrEmpty(nombre))
+            {
+                return await _context.clientes
+                    .Where(c => c.Nombre.Contains(nombre))
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+            }
+            
+            return await _context.clientes
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<Cliente> ObtenerClienteAsync(int id)

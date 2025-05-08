@@ -20,9 +20,14 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes()
+        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes(
+            [FromQuery] string? nombre,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+        )
         {
-            var clientes = await _clienteService.ObtenerClientesAsync();
+
+            var clientes = await _clienteService.ObtenerClientesAsync(nombre, pageNumber, pageSize);
             return Ok(clientes);
         }
 
