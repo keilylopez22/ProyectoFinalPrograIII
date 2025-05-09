@@ -1,11 +1,13 @@
-using Microsoft.AspNetCore.Mvc; // Para ControllerBase, RouteAttribute, ApiControllerAttribute, ActionResult, IActionResult, etc.
-using ApiECommerce.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
-using ApiECommerce.Data;  // Para ApplicationDbContext (si lo inyectas directamente en el controlador)
-using ApiECommerce.Servicio; // Si estás usando una capa de servicios
+using Microsoft.AspNetCore.Mvc; 
+using ApiECommerce.Modelo; 
+using ApiECommerce.Data;  
+using ApiECommerce.Servicio; 
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore; // Necesario para DbContext, EntityState y DbUpdateConcurrencyException
+using Microsoft.EntityFrameworkCore; 
+using ApiECommerce.DTOs;
+
 
 namespace ApiECommerce.Controladores
 //namespace ApiECommerce.Controladores
@@ -28,9 +30,29 @@ namespace ApiECommerce.Controladores
 
         [HttpGet]// Ruta: /api/Proveedores
         [Produces("application/json")]  // Esto le indica a Swagger que la respuesta será JSON
-        public async Task<ActionResult<IEnumerable<Proveedor>>> GetProveedores()
+        public async Task<ActionResult<ResultadoProveedores>>GetProveedores(
+            [FromQuery] string? nombre,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+        )
         {
-            return await _context.proveedores.ToListAsync();
+            var query = _context.proveedores.AsQueryable();
+
+            if (!string.IsNullOrEmpty(nombre))
+                query = query.Where(c => c.Nombre.Contains(nombre));
+
+            var total = query.Count();
+            var proveedores = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var resultado = new ResultadoProveedores
+            {
+                Proveedores = proveedores,
+                Total = total
+            };
+            return resultado;
         }
       
         [HttpGet("{id}")] // Ruta: /api/Proveedores/{id} - Así Swagger sabrá diferenciarlos
