@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ApiECommerce.DTOs;
 
 namespace ApiECommerce.Servicio
 {
@@ -16,9 +17,26 @@ namespace ApiECommerce.Servicio
             _context = context;
         }
 
-        public async Task<IEnumerable<Cliente>> ObtenerClientesAsync(string? nombre= null, int pageNumber = 1, int pageSize = 10)
+        public async Task<ResultadoClientes> ObtenerClientesAsync(string? nombre= null, int pageNumber = 1, int pageSize = 10)
         {
+            var query = _context.clientes.AsQueryable();
+
             if (!string.IsNullOrEmpty(nombre))
+                query = query.Where(c => c.Nombre.Contains(nombre));
+
+            var total = query.Count();
+            var clientes = query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var resultado = new ResultadoClientes
+            {
+                Clientes = clientes,
+                Total = total
+            };
+            return resultado;
+            /*if (!string.IsNullOrEmpty(nombre))
             {
                 return await _context.clientes
                     .Where(c => c.Nombre.Contains(nombre))
@@ -30,7 +48,7 @@ namespace ApiECommerce.Servicio
             return await _context.clientes
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
+                .ToListAsync();*/
         }
 
         public async Task<Cliente> ObtenerClienteAsync(int id)

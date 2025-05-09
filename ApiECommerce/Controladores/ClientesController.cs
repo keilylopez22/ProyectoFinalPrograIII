@@ -5,7 +5,8 @@ using ApiECommerce.Servicio; // Si estás usando una capa de servicios
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using System.Linq; // Para IQueryable y LINQ
+using ApiECommerce.DTOs; // Para ResultadoClientes (asegúrate de que el namespace sea correcto)
 namespace ApiECommerce.Controladores
 {
     [Route("api/[controller]")]
@@ -20,7 +21,7 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetClientes(
+        public async Task<ActionResult<ResultadoClientes>> GetClientes(
             [FromQuery] string? nombre,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10
@@ -30,6 +31,10 @@ namespace ApiECommerce.Controladores
             var clientes = await _clienteService.ObtenerClientesAsync(nombre, pageNumber, pageSize);
             return Ok(clientes);
         }
+
+
+        
+
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Cliente>> GetCliente(int id)
