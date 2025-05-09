@@ -17,6 +17,11 @@ namespace ECommerceWebAppFrontend
             // Agregar el HttpClient para la API de productos
             builder.Services.AddScoped<ProductoService>();
             builder.Services.AddScoped<ClienteService>();
+            builder.Services.AddScoped<ProveedorService>();
+            builder.Services.AddScoped<PedidoService>();
+            builder.Services.AddScoped<ReporteService>();
+            builder.Services.AddScoped<CompraService>();
+            
 
 
             await builder.Build().RunAsync();

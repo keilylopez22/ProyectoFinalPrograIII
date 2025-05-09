@@ -1,0 +1,199 @@
+@page "/admin/proveedores" 
+@inject ProveedorService ProveedorService
+@inject IJSRuntime JS
+
+<h3 class="mt-4 mb-3 text-primary fw-bold">📋 Gestión de Proveedores</h3>
+
+<div class="row">
+    <div class="col-md-5">
+        <EditForm Model="@proveedor" OnValidSubmit="@GuardarProveedor">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="card shadow-sm p-4">
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <InputText class="form-control" @bind-Value="proveedor.Nombre" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Dirección</label>
+                    <InputText class="form-control" @bind-Value="proveedor.Direccion" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">NIT</label>
+                    <InputNumber class="form-control" @bind-Value="proveedor.Nit" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Correo Electrónico</label>
+                    <InputText class="form-control" type="email" @bind-Value="proveedor.CorreoElectronico" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Teléfono</label>
+                    <InputNumber class="form-control" @bind-Value="proveedor.Telefono" />
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success" type="submit">
+                        @((proveedor.Id == 0) ? "➕ Agregar" : "🔄 Actualizar")
+                    </button>
+                    <button class="btn btn-secondary" type="button" @onclick="LimpiarFormulario">Cancelar</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+
+    <div class="col-md-7 mt-3">
+        <div class="input-group mb-3">
+            <span class="input-group-text">🔍 Buscar</span>
+            <input type="text" class="form-control" placeholder="Nombre del proveedor..." 
+                   @bind="filtroNombre" />
+            <button class="btn btn-outline-secondary" type="button" title="Refrescar lista" @onclick="RefrescarProveedores">
+                🔄
+            </button>
+        </div>
+
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Dirección</th>
+                    <th>NIT</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (proveedores.Any())
+                {
+                    @foreach (var p in proveedores)
+                    {
+                        <tr>
+                            <td>@p.Nombre</td>
+                            <td>@p.Direccion</td>
+                            <td>@p.Nit</td>
+                            <td>@p.CorreoElectronico</td>
+                            <td>@p.Telefono</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-warning me-1" @onclick="() => EditarProveedor(p)">✏️</button>
+                                <button class="btn btn-sm btn-danger" @onclick="() => EliminarProveedor(p.Id)">🗑️</button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center">No hay proveedores que coincidan</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- PAGINACIÓN -->
+        <div class="d-flex justify-content-between align-items-center">
+            <span>Mostrando página @paginaActual</span>
+            <div>
+                <button class="btn btn-outline-primary me-1" @onclick="PaginaAnterior" disabled="@(!PuedeRetroceder)">⬅️ Anterior</button>
+                <button class="btn btn-outline-primary" @onclick="PaginaSiguiente" disabled="@(!PuedeAvanzar)">Siguiente ➡️</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Proveedor> proveedores = new();
+    private Proveedor proveedor = new();
+    private string filtroNombre = string.Empty;
+
+    // Paginación
+    private int paginaActual = 1;
+    private int elementosPorPagina = 5;
+    private bool hayMasPaginas = false;
+
+    private bool PuedeAvanzar => hayMasPaginas;
+    private bool PuedeRetroceder => paginaActual > 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarProveedores();
+    }
+
+    private async Task CargarProveedores()
+    {
+        var resultado = await ProveedorService.ObtenerProveedoresAsync(filtroNombre ?? string.Empty, paginaActual, elementosPorPagina);
+        proveedores = resultado.Proveedores;
+        hayMasPaginas = proveedores.Count == elementosPorPagina;
+    }
+
+    private async Task GuardarProveedor()
+    {
+        if (proveedor.Id == 0)
+        {
+            await ProveedorService.CrearProveedorAsync(proveedor);
+        }
+        else
+        {
+            await ProveedorService.ModificarProveedorAsync(proveedor);
+        }
+
+        LimpiarFormulario();
+        await CargarProveedores();
+    }
+
+    private void EditarProveedor(Proveedor p)
+    {
+        proveedor = new Proveedor
+        {
+            Id = p.Id,
+            Nombre = p.Nombre,
+            Direccion = p.Direccion,
+            Nit = p.Nit,
+            CorreoElectronico = p.CorreoElectronico,
+            Telefono = p.Telefono
+        };
+    }
+
+    private async Task EliminarProveedor(int id)
+    {
+        var confirm = await JS.InvokeAsync<bool>("confirm", "¿Estás seguro de eliminar este proveedor?");
+        if (confirm)
+        {
+            await ProveedorService.EliminarProveedorAsync(id);
+            await CargarProveedores();
+        }
+    }
+
+    private void LimpiarFormulario()
+    {
+        proveedor = new Proveedor();
+    }
+
+    private async Task PaginaAnterior()
+    {
+        if (PuedeRetroceder)
+        {
+            paginaActual--;
+            await CargarProveedores();
+        }
+    }
+
+    private async Task PaginaSiguiente()
+    {
+        if (PuedeAvanzar)
+        {
+            paginaActual++;
+            await CargarProveedores();
+        }
+    }
+
+    private async Task RefrescarProveedores()
+    {
+        paginaActual = 1;
+        await CargarProveedores();
+    }
+}
