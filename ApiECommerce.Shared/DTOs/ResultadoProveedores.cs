@@ -6,10 +6,9 @@ using ApiECommerce.Modelo;
 
 namespace ApiECommerce.DTOs
 {
-    public class ResultadoClientes
+    public class ResultadoProveedores
     {
-        public List<Cliente> Clientes { get; set; }
-        public int Total { get; set; }
+        public List<Proveedor> Proveedores { get; set; } 
+        public int Total { get; set; } 
     }
-
 }
