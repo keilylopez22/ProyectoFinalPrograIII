@@ -16,6 +16,7 @@ namespace ECommerceWebAppFrontend
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5172") });
             // Agregar el HttpClient para la API de productos
             builder.Services.AddScoped<ProductoService>();
+            builder.Services.AddScoped<ClienteService>();
 
 
             await builder.Build().RunAsync();

@@ -1,8 +1,8 @@
-using System.Net.Http;                      // Para HttpClient
-using System.Net.Http.Json;                 // Para métodos como GetFromJsonAsync y PostAsJsonAsync
-using System.Threading.Tasks;               // Para Task y async/await
-using System.Collections.Generic;           // Para List<T>
-using ApiECommerce.Modelo;                  // O el namespace donde tengas definida tu clase Producto
+using System.Net.Http;                   
+using System.Net.Http.Json;                 
+using System.Threading.Tasks;               
+using System.Collections.Generic;           
+using ApiECommerce.Modelo;                  
 
 namespace ECommerceWebAppFrontend.Services
 {
