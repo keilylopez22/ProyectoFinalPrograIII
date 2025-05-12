@@ -41,13 +41,15 @@ namespace ApiECommerce.Servicio
             _context = context;
 
          }
+        
+        // Agregar este método a la clase PedidoServicio
+        
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync()
         {
-
-            return await _context.pedidos.
-            Include(p => p.Cliente).
-            Include(p  => p.DetallesPedido).
-            ToListAsync();
+            return await _context.pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallesPedido)
+                .ToListAsync();
         }
 
         //Aplicar Filtros
@@ -87,12 +89,10 @@ namespace ApiECommerce.Servicio
 
         public async Task<Pedido> ObtenerPedidosAsync(int id)
         {
-            
-            return await _context.pedidos.
-            Include(p => p.Cliente).
-            Include(p  => p.DetallesPedido).
-            FirstOrDefaultAsync(p => p.Id == id );
-            
+            return await _context.pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallesPedido)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task<bool> CrearPedidosAsync(Pedido pedido)
         {

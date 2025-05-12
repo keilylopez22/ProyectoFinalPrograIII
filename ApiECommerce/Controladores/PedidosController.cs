@@ -30,13 +30,16 @@ namespace ApiECommerce.Controladores
        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidos()
+        
         {
             var pedidos = await _pedidosServicio.ObtenerPedidosAsync();
             return Ok(pedidos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pedido>> GetPedido(int id)
+        public async Task<ActionResult<Pedido>> GetPedido(int id,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10)
         {
             var pedido = await _pedidosServicio.ObtenerPedidosAsync(id);
             if (pedido == null)
