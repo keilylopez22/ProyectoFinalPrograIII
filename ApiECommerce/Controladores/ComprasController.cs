@@ -22,9 +22,15 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Compra>>> GetCompras()
+        public async Task<ActionResult<IEnumerable<Compra>>> GetCompras(
+            [FromQuery] DateTime? fechaInicio = null,
+            [FromQuery] DateTime? fechaFin = null,
+            [FromQuery] int? IdProveedor = null,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+        )
         {
-            var compras = await _comprasServicio.ObtenerComprasAsync();
+            var compras = await _comprasServicio.ObtenerComprasAsync(fechaInicio,fechaFin,IdProveedor, pageNumber, pageSize);
             return Ok(compras);
         }
 

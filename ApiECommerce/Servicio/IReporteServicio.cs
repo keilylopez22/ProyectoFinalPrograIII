@@ -17,7 +17,11 @@ namespace ApiECommerce.Servicio
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProductos = null,
-            int? IdProveedor = null);
+            int? IdProveedor = null,
+            int pageNumber = 1,
+            int pageSize = 10
+            );
+
         
         
 
@@ -47,15 +51,21 @@ namespace ApiECommerce.Servicio
            DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProductos = null,
-            int? IdProveedor = null)
+            int? IdProveedor = null,
+            int pageNumber = 1,
+            int pageSize = 10
+
+            )
          {
             //consulta que devuelve la lista de compras
             var compras =  await _comprasServicio.ObtenerComprasAsync
             (
             fechaInicio,
             fechaFin,
-            IdProductos,
-            IdProveedor);
+            IdProveedor,
+            pageNumber,
+            pageSize
+            );
       
 
             //aqui estoy crreando el archivo excel 
