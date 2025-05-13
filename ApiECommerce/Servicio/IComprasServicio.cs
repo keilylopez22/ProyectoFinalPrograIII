@@ -20,8 +20,11 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
         Task<IEnumerable<Compra>> ObtenerComprasAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
-            int? IdProductos = null,
-            int? IdProveedor = null);
+            int? IdProveedor = null,
+            int pageNumber = 1,
+            int pageSize = 10
+
+            );
         
     }
 
@@ -47,8 +50,11 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
         public async Task<IEnumerable<Compra>> ObtenerComprasAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
-            int? IdProductos = null,
-            int? IdProveedor = null)
+            int? IdProveedor = null,
+            int pageNumber = 1,
+            int pageSize = 10
+            )
+
         {
             var query = _context.compras
                 .Include(c => c.Proveedor)
@@ -66,10 +72,6 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
             // Filtro por proveedor
             if (IdProveedor.HasValue)
                 query = query.Where(c => c.IdProveedor == IdProveedor.Value);
-
-            // Filtro por producto
-            if (IdProductos.HasValue)
-                query = query.Where(c => c.DetalleCompras.Any(dc => dc.IdProductos == IdProductos.Value));
 
             return await query.ToListAsync();
         }
