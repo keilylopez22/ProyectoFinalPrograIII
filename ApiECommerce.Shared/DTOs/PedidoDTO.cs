@@ -10,7 +10,6 @@ namespace ApiECommerce.DTOs
     {
         public DateTime Fecha { get; set; }
         public int IdCliente { get; set; }
-        
         public List<DetallePedidoDto> DetallesPedido { get; set; } = new();
     }
 

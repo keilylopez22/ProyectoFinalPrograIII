@@ -1,0 +1,85 @@
+@page "/admin/pedidos"
+@inject PedidoService PedidoService
+
+@using ApiECommerce.Modelo
+
+<h3 class="text-center my-4">📦 Lista de Pedidos</h3>
+
+@if (pedidos == null)
+{
+    <p>Cargando pedidos...</p>
+}
+else if (!pedidos.Any())
+{
+    <div class="alert alert-info text-center">No hay pedidos registrados.</div>
+}
+else
+{
+    <table class="table table-hover table-bordered shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Cliente</th>
+                <th scope="col">Fecha</th>
+                <th scope="col">Total (Q)</th>
+                <th scope="col" class="text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pedido in pedidos)
+            {
+                <tr>
+                    <td>@pedido.Id</td>
+                    <td>@pedido.Cliente</td>
+                    <td>@pedido.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>@pedido.Total.ToString("F2")</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-primary me-1" @onclick="() => VerDetalles(pedido.Id)">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                        <button class="btn btn-sm btn-warning me-1" @onclick="() => EditarPedido(pedido.Id)">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger" @onclick="() => EliminarPedido(pedido.Id)">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Pedido>? pedidos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pedidos = await PedidoService.ObtenerPedidosAsync();
+    }
+
+    private void VerDetalles(int id)
+    {
+        // Aquí puedes navegar a otra vista o mostrar un modal
+        Console.WriteLine($"Ver detalles del pedido {id}");
+    }
+
+    private void EditarPedido(int id)
+    {
+        // Navegar o abrir un formulario de edición
+        Console.WriteLine($"Editar pedido {id}");
+    }
+
+    private async Task EliminarPedido(int id)
+    {
+        bool confirmado = await JSRuntime.InvokeAsync<bool>("confirm", $"¿Estás seguro de eliminar el pedido #{id}?");
+        if (confirmado)
+        {
+            await PedidoService.EliminarPedidoAsync(id);
+            pedidos = await PedidoService.ObtenerPedidosAsync();
+        }
+    }
+
+    [Inject]
+    public IJSRuntime JSRuntime { get; set; } = default!;
+}
