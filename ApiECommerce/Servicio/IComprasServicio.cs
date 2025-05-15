@@ -6,6 +6,7 @@ using ApiECommerce.Modelo;
 using ApiECommerce.Data;
 using ApiECommerce.Shared.DTOs; // Para tus DTOs
 //using ApiECommerce.Shared.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
+
 namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespace sea correcto)
 
 

@@ -36,8 +36,11 @@ namespace ApiECommerce.Servicio
     public class PedidoServicio:IPedidosServicio
     {
          private readonly ApplicationDbContext _context;
-         public PedidoServicio(ApplicationDbContext context)
+        private readonly IMovimientosInventarioServicio _movimientoInventarioServicio;
+            //Constructor
+         public PedidoServicio(ApplicationDbContext context , IMovimientosInventarioServicio movimientoInventarioServicio)
          {
+            _movimientoInventarioServicio = movimientoInventarioServicio;
             _context = context;
 
          }
@@ -158,6 +161,17 @@ namespace ApiECommerce.Servicio
 
             await _context.pedidos.AddAsync(pedido);
             await _context.SaveChangesAsync();
+
+             // Registrar los movimientos de inventario tipo compra
+            foreach (var detalle in pedido.DetallesPedido)
+            {
+                await _movimientoInventarioServicio.RegistrarMovimientoCompraAsync(
+                    detalle.IdProductos,
+                    detalle.CantidadProductos,
+                    pedido.Id,
+                    $"Pedido registrado el {DateTime.Now}"
+                );
+            }
 
             return new PedidoResultado { Exito = true, Pedido = pedido };
         }
