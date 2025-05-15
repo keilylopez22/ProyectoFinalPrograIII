@@ -123,6 +123,8 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
 
                 // Sumar existencias al producto
                 producto.Existencias += item.CantidadProductos;
+                //acrualizar el precio del producto
+                producto.Precio = (decimal)item.PrecioUnitario;
 
                 double precioUnitario = item.PrecioUnitario;
                 double subTotal = precioUnitario * item.CantidadProductos;
