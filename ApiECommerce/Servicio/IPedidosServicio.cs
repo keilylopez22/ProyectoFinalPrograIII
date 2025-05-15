@@ -11,54 +11,62 @@ namespace ApiECommerce.Servicio
 {
     public interface IPedidosServicio
     {
-        Task<IEnumerable<Pedido>> ObtenerPedidosAsync();
+        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdCliente = null,
+            int? pageNumber = 1,
+            int? pageSize = 10
+        );
         Task<Pedido> ObtenerPedidosAsync(int id);
         Task<bool> CrearPedidosAsync(Pedido pedido);
         Task<PedidoResultado?> CrearPedidosAsync(PedidoDTO pedidoDto);
         Task<bool> ActualizarPedidosAsync(Pedido pedido);
         Task<bool> EliminarPedidosAsync(int id);
+        Task<Pedido?> ObtenerPedidoPorIdAsync(int id);
 
-        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
-            DateTime? fechaInicio = null,
-            DateTime? fechaFin = null,
-            int? IdProducto = null,
-            int? IdCliente = null,
-            int? IdProveedor = null);
-
-
-            //para cambiar el estado del pedido
-            Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
+        //para cambiar el estado del pedido
+        Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
 
         
     }
 
 
-    public class PedidoServicio:IPedidosServicio
+    public class PedidoServicio: IPedidosServicio
     {
          private readonly ApplicationDbContext _context;
          public PedidoServicio(ApplicationDbContext context)
          {
             _context = context;
 
-         }
-        
-        // Agregar este método a la clase PedidoServicio
-        
+        }
+
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync()
+        {
+        return await _context.pedidos
+        .Include(p => p.Cliente)
+        .Include(p => p.DetallesPedido)
+        .ToListAsync();
+     }
+
+     public async Task<Pedido?> ObtenerPedidoPorIdAsync(int id)
         {
             return await _context.pedidos
                 .Include(p => p.Cliente)
                 .Include(p => p.DetallesPedido)
-                .ToListAsync();
+                    .ThenInclude(dp => dp.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        // Agregar este método a la clase PedidoServicio
         //Aplicar Filtros
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
-            int? IdProducto = null,
             int? IdCliente = null,
-            int? IdProveedor = null)
+            int? pageNumber = 1,
+            int? pageSize = 10
+        )
         {
         var query = _context.pedidos
                 .Include(p => p.Cliente)
@@ -76,13 +84,6 @@ namespace ApiECommerce.Servicio
             // Filtro por cliente
             if (IdCliente.HasValue)
                 query = query.Where(p => p.IdCliente == IdCliente.Value);
-
-            // Filtro por producto
-            if (IdProducto.HasValue)
-                query = query.Where(p => p.DetallesPedido.Any(dp => dp.IdProductos == IdProducto.Value));
-
-            // Filtro por proveedor
-            
                        
             return await query.ToListAsync();
         }

@@ -29,22 +29,32 @@ namespace ApiECommerce.Controladores
 
        
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidos()
+        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidos(
+            [FromQuery] DateTime? fechaInicio = null,
+            [FromQuery] DateTime? fechaFin = null,
+            [FromQuery] int? IdCliente = null,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10
+        )
         
         {
-            var pedidos = await _pedidosServicio.ObtenerPedidosAsync();
+            var pedidos = await _pedidosServicio.ObtenerPedidosAsync(
+            fechaInicio,
+            fechaFin,  
+            IdCliente,
+            pageNumber,
+            pageSize
+            );
             return Ok(pedidos);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pedido>> GetPedido(int id,
-            [FromQuery] int pageNumber = 1,
-            [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<Pedido>> GetPedido(int id)
         {
-            var pedido = await _pedidosServicio.ObtenerPedidosAsync(id);
+            var pedido = await _pedidosServicio.ObtenerPedidoPorIdAsync(id);
             if (pedido == null)
             {
-                return NotFound();
+                return NotFound($"No se encontró el pedido con ID {id}");
             }
             return Ok(pedido);
         }

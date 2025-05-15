@@ -100,12 +100,12 @@ namespace ApiECommerce.Servicio
          
          {
             
+            //consulta que devuelve la lista de pedidos-Modificada
             var pedidos = await _pedidosServicio.ObtenerPedidosAsync(
             fechaInicio,
             fechaFin,
-            IdProducto,
-            IdCliente,
-            IdProveedor);
+            IdCliente
+            );
             //aqui estoy crreando el archivo excel 
             using(var workbook= new XSSFWorkbook())
             {
