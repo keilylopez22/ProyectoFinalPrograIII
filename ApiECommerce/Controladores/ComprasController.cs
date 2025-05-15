@@ -5,6 +5,8 @@ using ApiECommerce.Servicio; // Si estás usando una capa de servicios
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ApiECommerce.Shared.DTOs; // Para tus DTOs (asegúrate de que el namespace sea correcto)
+using ApiECommerce.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
 
 namespace ApiECommerce.Controladores
 {
@@ -38,14 +40,17 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpPost]
-        public async Task<ActionResult<Compra>> CrearCompras([FromBody] Compra compra)
+        public async Task<ActionResult<CompraResultado>> CrearCompras([FromBody] CompraDTO compraDto)
         {
-            if (await _comprasServicio.CrearComprasAsync(compra))
+            /*if (await _comprasServicio.CrearComprasAsync(compraDto))
             {
                 return CreatedAtAction(nameof(GetCompras), new { id = compra.Id }, compra);
-            }
-            return BadRequest("Error al crear la compra.");
+            }*/
+            var resultado = await _comprasServicio.CrearComprasAsync(compraDto);
+            return  Ok (resultado);
+            
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> ActualizarCompras(int id, [FromBody] Compra compra)

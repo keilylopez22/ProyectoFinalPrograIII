@@ -17,6 +17,7 @@ namespace ApiECommerce.Data
         public DbSet<DetallePedido> detallePedido { get; set; }
         public DbSet<DetalleCompra> detalleCompras { get; set; }
         public DbSet<Categoria> categorias { get; set; }
+        public DbSet<MovimientosInventario> movimientosInventario { get; set; }
        
 
 
@@ -67,7 +68,13 @@ namespace ApiECommerce.Data
                 .HasOne(d => d.Producto)
                 .WithMany()
                 .HasForeignKey(d => d.IdProductos);*/
+            modelBuilder.Entity<MovimientosInventario>()
+                .Property(m => m.TipoDocumento)
+                .HasConversion<string>();
 
+            modelBuilder.Entity<MovimientosInventario>()
+                .Property(m => m.TipoMovimiento)
+                .HasConversion<string>();
 
 
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiECommerce.Modelo;
 
 namespace ApiECommerce.DTOs
 {
@@ -18,6 +19,13 @@ namespace ApiECommerce.DTOs
         public int IdProductos { get; set; }
         public int CantidadProductos { get; set; }
         
+    }
+
+    public class PedidoResultado
+    {
+        public bool Exito { get; set; }
+        public string? Mensaje { get; set; }
+        public Pedido? Pedido { get; set; }
     }
 
 }
