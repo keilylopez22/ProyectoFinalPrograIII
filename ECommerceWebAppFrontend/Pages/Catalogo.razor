@@ -1,0 +1,116 @@
+@using ApiECommerce.DTOs
+@using ECommerceWebAppFrontend.Services 
+@page "/catalogo"
+@inject ProductoService ProductoService
+@inject CategoriaService CategoriaService
+
+<h3 class="mt-4 mb-3 text-success fw-bold">🛍️ Catálogo de Productos</h3>
+
+<!-- Filtro por categoría -->
+<div class="mb-4">
+    <label class="form-label fw-semibold">📂 Categoría:</label>
+    <select class="form-select" @onchange="FiltrarPorCategoria">
+        <option value="">Todas</option>
+        @foreach (var categoria in categorias)
+        {
+            <option value="@categoria.Id">@categoria.Nombre</option>
+        }
+    </select>
+</div>
+
+<p>Productos encontrados: @productos?.Count()</p>
+
+<!-- Grid de tarjetas de productos -->
+@if (productos is null)
+{
+    <p>Cargando productos...</p>
+}
+else if (productos.Count == 0)
+{
+    <div class="alert alert-info">No hay productos que coincidan con el filtro.</div>
+}
+else
+{
+    <div class="row">
+        @foreach (var producto in productos)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="@producto.ImagenUrl" class="card-img-top" alt="@producto.Nombre" style="object-fit: cover; height: 200px;" />
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@producto.Nombre</h5>
+                        <p class="card-text">@producto.Descripcion</p>
+                        <p class="card-text fw-bold text-primary">💵 $@producto.Precio</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <span>Página @paginaActual</span>
+        <div>
+            <button class="btn btn-outline-secondary me-2" @onclick="PaginaAnterior" disabled="@(!PuedeRetroceder)">⬅️ Anterior</button>
+            <button class="btn btn-outline-secondary" @onclick="PaginaSiguiente" disabled="@(!PuedeAvanzar)">Siguiente ➡️</button>
+        </div>
+    </div>
+}
+
+@code {
+    private List<ProductoDTO> productos = new();
+    private List<CategoriaDTO> categorias = new();
+    private int? categoriaSeleccionada = null;
+
+    // Paginación
+    private int paginaActual = 1;
+    private int elementosPorPagina = 6;
+    private int totalElementos = 0;
+
+    private bool PuedeAvanzar => (paginaActual * elementosPorPagina) < totalElementos;
+    private bool PuedeRetroceder => paginaActual > 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarCategorias();
+        await CargarProductos();
+    }
+
+    private async Task CargarCategorias()
+    {
+        categorias = await CategoriaService.ObtenerCategoriasAsync();
+    }
+
+    private async Task CargarProductos()
+    {
+        var resultado = await ProductoService.ObtenerProductosAsync(categoriaSeleccionada, paginaActual, elementosPorPagina);
+        productos = resultado.Productos;
+        totalElementos = resultado.TotalElementos;
+    }
+
+    private async Task FiltrarPorCategoria(ChangeEventArgs e)
+    {
+        var valor = e.Value?.ToString();
+        categoriaSeleccionada = string.IsNullOrWhiteSpace(valor) ? null : int.Parse(valor);
+        paginaActual = 1;
+        await CargarProductos();
+    }
+
+    private async Task PaginaAnterior()
+    {
+        if (PuedeRetroceder)
+        {
+            paginaActual--;
+            await CargarProductos();
+        }
+    }
+
+    private async Task PaginaSiguiente()
+    {
+        if (PuedeAvanzar)
+        {
+            paginaActual++;
+            await CargarProductos();
+        }
+    }
+}

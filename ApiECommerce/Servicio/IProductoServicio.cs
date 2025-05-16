@@ -5,70 +5,76 @@ using System.Threading.Tasks;
 using ApiECommerce.Modelo;
 using ApiECommerce.Data;
 using Microsoft.EntityFrameworkCore; 
+using ApiECommerce.DTOs;
 
 namespace ApiECommerce.Servicio
 {
     public interface IProductoServicio
     {
-        Task<IEnumerable<Producto>> ObtenerProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 10);
-        Task<Producto> ObtenerProductosAsync(int id);
+        Task<ResultadoPaginadoProductoDTO> ObtenerProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 10);
+        Task<Producto> ObtenerProductoPorIdAsync(int id);
         Task<bool> CrearProductosAsync(Producto producto);
         Task<bool> ActualizarProductosAsync(Producto producto);
         Task<bool> EliminarProductosAsync(int id);
-        
- 
     }
-    public class ProductoServicio:IProductoServicio
+
+    public class ProductoServicio : IProductoServicio
     {
         private readonly ApplicationDbContext _context;
 
         public ProductoServicio(ApplicationDbContext context)
         {
             _context = context;
-
         }
-        
-        public async Task<IEnumerable<Producto>> ObtenerProductosAsync(int? IdCategoria = null, int pageNumber = 1, int pageSize = 10)
+
+        public async Task<ResultadoPaginadoProductoDTO> ObtenerProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 10)
         {
-            // Construir la consulta base incluyendo la categoría
-            var query = _context.productos
-                .Include(p => p.Categoria)
-                .AsQueryable();
+            var query = _context.productos.AsQueryable();
 
-            // Filtro por categoría si se proporciona un ID
-            if (IdCategoria.HasValue)
-            {
-                query = query.Where(p => p.IdCategoria == IdCategoria.Value);
-            }
+            if (categoriaId.HasValue)
+                query = query.Where(p => p.IdCategoria.HasValue && p.IdCategoria == categoriaId.Value);
 
-            // Aplicar paginación
-            query = query
+            var total = await query.CountAsync();
+
+            var productos = await query
                 .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize);
+                .Take(pageSize)
+                .Select(p => new ProductoDTO
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    Precio = p.Precio,
+                    Existencias = p.Existencias,
+                    IdCategoria = p.IdCategoria,
+                    ImagenUrl = p.ImagenUrl ?? "",
+                    Descripcion = p.Descripcion ?? ""
+                })
+                .ToListAsync();
 
-            // Ejecutar la consulta
-            return await query.ToListAsync();
+            return new ResultadoPaginadoProductoDTO
+            {
+                Productos = productos,
+                TotalElementos = total,
+                PaginaActual = pageNumber,
+                ElementosPorPagina = pageSize
+            };
         }
 
-        public async Task<Producto> ObtenerProductosAsync(int id)
+        public async Task<Producto> ObtenerProductoPorIdAsync(int id)
         {
-            // Incluir la categoría relacionada al producto
-            // y buscar el producto por su ID   
-
             return await _context.productos.Include(p => p.Categoria).FirstOrDefaultAsync(p => p.Id == id);
-            
-
         }
+
         public async Task<bool> CrearProductosAsync(Producto producto)
         {
             await _context.productos.AddAsync(producto);
             await _context.SaveChangesAsync();
             return true;
-
         }
+
         public async Task<bool> ActualizarProductosAsync(Producto producto)
-        { 
-             if (producto == null || !await _context.productos.AnyAsync(c => c.Id == producto.Id))
+        {
+            if (producto == null || !await _context.productos.AnyAsync(c => c.Id == producto.Id))
             {
                 return false;
             }
@@ -76,8 +82,8 @@ namespace ApiECommerce.Servicio
             _context.Entry(producto).State = EntityState.Modified;
             var result = await _context.SaveChangesAsync();
             return result > 0;
-
         }
+
         public async Task<bool> EliminarProductosAsync(int id)
         {
             var producto = await _context.productos.FindAsync(id);
@@ -86,12 +92,8 @@ namespace ApiECommerce.Servicio
                 _context.productos.Remove(producto);
                 await _context.SaveChangesAsync();
                 return true;
-
             }
             return false;
-
         }
-
-        
     }
 }

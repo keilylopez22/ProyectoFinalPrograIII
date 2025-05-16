@@ -22,7 +22,7 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetProductos(
+        public async Task<ActionResult<ResultadoPaginadoProductoDTO>> GetProductos(
             [FromQuery] int? categoriaId,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10)
@@ -35,13 +35,14 @@ namespace ApiECommerce.Controladores
         [HttpGet("{id}")]
         public async Task<ActionResult<Producto>> GetProducto(int id)
         {
-            var producto = await _productoService.ObtenerProductosAsync(id);
+            var producto = await _productoService.ObtenerProductoPorIdAsync(id);
             if (producto == null)
             {
-                return NotFound();
+            return NotFound();
             }
             return Ok(producto);
         }
+
 
         [HttpPost]
         public async Task<ActionResult<Producto>> CrearProducto([FromBody] ProductoDTO dto)

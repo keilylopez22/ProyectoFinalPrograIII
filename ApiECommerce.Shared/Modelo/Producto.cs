@@ -11,10 +11,13 @@ namespace ApiECommerce.Modelo
         public  decimal Precio {get; set;}
 
         public int Existencias {get; set;}
+
+        public string? ImagenUrl { get; set; } // <-- Agrega esta línea si no existe
+        public string? Descripcion { get; set; }
         
 
         [ForeignKey("Categoria")]
-        public int IdCategoria { get; set; }
+        public int? IdCategoria { get; set; }
         public Categoria Categoria { get; set; }
         // Otras propiedades del producto
 

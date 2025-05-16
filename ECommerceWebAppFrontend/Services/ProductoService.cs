@@ -1,8 +1,9 @@
 using System.Net.Http;                   
 using System.Net.Http.Json;                 
 using System.Threading.Tasks;               
-using System.Collections.Generic;           
-using ApiECommerce.Modelo;                  
+using System.Collections.Generic;  
+using ApiECommerce.DTOs;         
+//using ApiECommerce.Modelo;                  
 
 namespace ECommerceWebAppFrontend.Services
 {
@@ -12,32 +13,32 @@ namespace ECommerceWebAppFrontend.Services
 
         public ProductoService(HttpClient http) => _http = http;
 
-        public async Task<List<Producto>> ObtenerProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 10)
-        {
+        public async Task<ResultadoPaginadoProductoDTO> ObtenerProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 10)
+        { 
             string url = $"api/Producto?pageNumber={pageNumber}&pageSize={pageSize}";
 
             if (categoriaId.HasValue)
             {
                 url += $"&categoriaId={categoriaId.Value}";
-            }
+            } 
 
-            var response = await _http.GetFromJsonAsync<List<Producto>>(url);
-            return response ?? new List<Producto>();
+            var response = await _http.GetFromJsonAsync<ResultadoPaginadoProductoDTO>(url);
+            return response ?? new ResultadoPaginadoProductoDTO();
         }
 
-        public async Task<List<Categoria>> ObtenerCategoriasAsync()
+               // Si necesitas obtener categorías, usa el DTO también
+        public async Task<List<CategoriaDTO>> ObtenerCategoriasAsync()
         {
-            var response = await _http.GetFromJsonAsync<List<Categoria>>("api/Categorias");
-            return response ?? new List<Categoria>();
-        }   
+            var response = await _http.GetFromJsonAsync<List<CategoriaDTO>>("api/Categorias");
+            return response ?? new List<CategoriaDTO>();
+        }
 
-
-        public async Task CrearProductoAsync(Producto producto) =>
+        // Métodos para crear, modificar y eliminar productos pueden seguir usando ProductoDTO
+        public async Task CrearProductoAsync(ProductoDTO producto) =>
             await _http.PostAsJsonAsync("api/Producto", producto);
 
-        public async Task ModificarProductoAsync(Producto producto)
+        public async Task ModificarProductoAsync(ProductoDTO producto)
         {
-            Console.WriteLine($"Modificando producto: {producto.Id}");
             await _http.PutAsJsonAsync($"api/Producto/{producto.Id}", producto);
         }
 
