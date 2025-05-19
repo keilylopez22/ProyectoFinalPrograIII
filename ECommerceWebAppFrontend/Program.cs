@@ -18,11 +18,12 @@ namespace ECommerceWebAppFrontend
             builder.Services.AddScoped<ProductoService>();
             builder.Services.AddScoped<ClienteService>();
             builder.Services.AddScoped<ProveedorService>();
-            builder.Services.AddScoped<PedidoService>();
+            //builder.Services.AddScoped<PedidoService>();
             builder.Services.AddScoped<ReporteService>();
             builder.Services.AddScoped<CompraService>();
-            
+            builder.Services.AddScoped<PedidoService>();
 
+            
 
             await builder.Build().RunAsync();
         }
