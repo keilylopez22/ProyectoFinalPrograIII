@@ -22,6 +22,22 @@ namespace ECommerceWebAppFrontend.Services
             return response ?? new ResultadoClientes();
         }
 
+        //Se agrega un nuevo método para obtener todos los clientes en pedidos
+        //Agregado por Chamo
+        public async Task<List<Cliente>> ObtenerTodosLosClientesAsync()
+        {
+            try
+            {
+                var resultado = await ObtenerClientesAsync("", 1, 1000); //Traer todos los clientes
+                return resultado?.Clientes ?? new List<Cliente>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener clientes: {ex.Message}");
+                return new List<Cliente>();
+            }
+        }
+
         public async Task CrearClienteAsync(Cliente cliente) =>
             await http.PostAsJsonAsync("api/clientes", cliente);
 
