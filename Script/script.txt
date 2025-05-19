@@ -66,3 +66,6 @@ foreign key(IdCompras) references compras(Id) ON DELETE CASCADE
 );
 
 
+//agregar nuevos campos a la tabla productos
+ALTER TABLE productos MODIFY COLUMN ImagenUrl TEXT NULL;
+ALTER TABLE productos ADD COLUMN Descripcion VARCHAR(255) NULL;
