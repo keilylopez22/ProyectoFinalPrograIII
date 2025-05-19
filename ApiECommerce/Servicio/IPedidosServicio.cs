@@ -37,13 +37,15 @@ namespace ApiECommerce.Servicio
     {
          private readonly ApplicationDbContext _context;
         private readonly IMovimientosInventarioServicio _movimientoInventarioServicio;
-            //Constructor
-         public PedidoServicio(ApplicationDbContext context , IMovimientosInventarioServicio movimientoInventarioServicio)
-         {
+        private readonly IKafkaProductorServicio _kafkaProductorServicio;
+        //Constructor
+        public PedidoServicio(ApplicationDbContext context, IMovimientosInventarioServicio movimientoInventarioServicio, IKafkaProductorServicio kafkaProductorServicio)
+        {
+            _kafkaProductorServicio = kafkaProductorServicio;
             _movimientoInventarioServicio = movimientoInventarioServicio;
             _context = context;
 
-         }
+        }
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync()
         {
 
@@ -154,6 +156,7 @@ namespace ApiECommerce.Servicio
             {
                 Fecha = pedidoDto.Fecha,
                 IdCliente = pedidoDto.IdCliente,
+                Cliente = await _context.clientes.FindAsync(pedidoDto.IdCliente),
                 Estado = "Pendiente",
                 Total = totalPedido,
                 DetallesPedido = detallesPedido
@@ -172,6 +175,17 @@ namespace ApiECommerce.Servicio
                     $"Pedido registrado el {DateTime.Now}"
                 );
             }
+
+            // Enviar el pedido a Kafka
+            var evento = new PedidoEventoDTO
+            {
+                Evento = "PedidoCreado",
+                PedidoId = pedido.Id,
+                Estado = pedido.Estado,
+                ClienteEmail = pedido.Cliente.CorreoElectronico
+            };
+
+            await _kafkaProductorServicio.EnviarEventoAsync("pedidos-eventos", evento);
 
             return new PedidoResultado { Exito = true, Pedido = pedido };
         }
@@ -200,7 +214,7 @@ namespace ApiECommerce.Servicio
         //para el cambio de estado del pedido
         public async Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado)
         {
-            var pedido = await _context.pedidos.FindAsync(id);
+            var pedido = await _context.pedidos.Include(p => p.Cliente).FirstOrDefaultAsync(p => p.Id == id );
             if (pedido == null)
             {
                 return new ResultadoCambioEstado
@@ -244,6 +258,20 @@ namespace ApiECommerce.Servicio
             pedido.Estado = char.ToUpper(nuevoEstado[0]) + nuevoEstado.Substring(1); // "enviado" → "Enviado"
             _context.pedidos.Update(pedido);
             await _context.SaveChangesAsync();
+
+            // Enviar el evento a Kafka
+            var evento = new PedidoEventoDTO
+            {
+                Evento = "EstadoPedidoCambiado",
+                PedidoId = id,
+                Estado = nuevoEstado,
+                EstadoAnterior = estadoActual,
+                EstadoNuevo = nuevoEstado,
+                ClienteEmail = pedido.Cliente.CorreoElectronico
+            };
+
+            await _kafkaProductorServicio.EnviarEventoAsync("pedidos-eventos", evento);
+
 
             return new ResultadoCambioEstado
             {
