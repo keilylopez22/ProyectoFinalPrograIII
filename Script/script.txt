@@ -65,4 +65,20 @@ foreign key(IdProductos) references productos(Id) on delete cascade,
 foreign key(IdCompras) references compras(Id) ON DELETE CASCADE
 );
 
+-- programacionIII.movimientosInventario definition
+
+CREATE TABLE `movimientosInventario` (
+  `IdMovimiento` int NOT NULL AUTO_INCREMENT,
+  `IdProducto` int NOT NULL,
+  `TipoMovimiento` enum('entrada','salida') NOT NULL,
+  `Cantidad` int NOT NULL,
+  `FechaMovimiento` datetime DEFAULT CURRENT_TIMESTAMP,
+  `TipoDocumento` enum('compra','venta','ajuste','devolucion') NOT NULL,
+  `IdDocumento` int NOT NULL,
+  `Notas` text,
+  PRIMARY KEY (`IdMovimiento`),
+  KEY `IdProducto` (`IdProducto`),
+  CONSTRAINT `movimientosinventario_ibfk_1` FOREIGN KEY (`IdProducto`) REFERENCES `productos` (`Id`)
+) 
+
 

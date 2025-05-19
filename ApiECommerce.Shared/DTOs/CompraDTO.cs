@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ApiECommerce.Modelo;
 
-namespace ApiECommerce.Shared.DTOs
+namespace ApiECommerce.DTOs
 {
     public class CompraDTO
     {
