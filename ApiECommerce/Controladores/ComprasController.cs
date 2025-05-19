@@ -5,6 +5,7 @@ using ApiECommerce.Servicio; // Si estás usando una capa de servicios
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ApiECommerce.DTOs;
 
 namespace ApiECommerce.Controladores
 {
@@ -20,7 +21,7 @@ namespace ApiECommerce.Controladores
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Compra>>> GetCompras(
+        public async Task<ActionResult<ResultadoCompras>> GetCompras(
             [FromQuery] DateTime? fechaInicio = null,
             [FromQuery] DateTime? fechaFin = null,
             [FromQuery] int? IdProveedor = null,

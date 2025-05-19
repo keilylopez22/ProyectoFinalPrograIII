@@ -4,20 +4,24 @@ using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
 using System.Threading.Tasks;
 using ApiECommerce.Modelo;
 using ApiECommerce.Data;
+using ApiECommerce.DTOs;
 namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespace sea correcto)
 
 {
     public interface IComprasServicio
     {
         //metodos para obtener la informacion de la base de datos
-        Task<IEnumerable<Compra>> ObtenerComprasAsync();
+        Task<IEnumerable<Compra>> ObtenerComprasAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdProveedor = null);
         Task<Compra> ObtenerComprasAsync(int id);
         Task<bool> CrearComprasAsync(Compra compra);
         Task<bool> ActualizarComprasAsync(Compra compra);
         Task<bool> EliminarComprasAsync(int id);
 
 
-        Task<IEnumerable<Compra>> ObtenerComprasAsync(
+        Task<ResultadoCompras> ObtenerComprasAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProveedor = null,
@@ -37,17 +41,39 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
             _context = context;
 
          }
-        public async Task<IEnumerable<Compra>> ObtenerComprasAsync()
+        public async Task<IEnumerable<Compra>> ObtenerComprasAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdProveedor = null
+        )
         {
 
-            return await _context.compras.
-            Include(p => p.Proveedor).
-            Include(p  => p.DetalleCompras).
-            ToListAsync();
+            var query = _context.compras
+                .Include(c => c.Proveedor)
+                .Include(c => c.DetalleCompras)
+                    .ThenInclude(dc => dc.Producto) // Asumiendo que DetalleCompra tiene navegación a Producto
+                .AsQueryable();
+
+            // Filtro por rango de fechas
+            if (fechaInicio.HasValue)
+                query = query.Where(c => c.Fecha >= fechaInicio.Value);
+
+            if (fechaFin.HasValue)
+                query = query.Where(c => c.Fecha <= fechaFin.Value);
+
+            // Filtro por proveedor
+            if (IdProveedor.HasValue)
+                query = query.Where(c => c.IdProveedor == IdProveedor.Value);
+            
+            var compras = await query
+               .ToListAsync();
+
+            return compras;
+            
         }
 
         //filtros
-        public async Task<IEnumerable<Compra>> ObtenerComprasAsync(
+        public async Task<ResultadoCompras> ObtenerComprasAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProveedor = null,
@@ -72,8 +98,18 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
             // Filtro por proveedor
             if (IdProveedor.HasValue)
                 query = query.Where(c => c.IdProveedor == IdProveedor.Value);
+            var total = query.Count();
+             var compras = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
-            return await query.ToListAsync();
+            var resultado = new ResultadoCompras
+            {
+                Compras = compras,
+                Total = total
+            };
+            return resultado;
         }
 
         public async Task<Compra> ObtenerComprasAsync(int id)
