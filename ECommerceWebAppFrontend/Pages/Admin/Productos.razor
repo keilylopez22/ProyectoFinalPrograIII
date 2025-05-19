@@ -1,5 +1,6 @@
 @page "/admin/productos"
 @using ApiECommerce.Modelo
+@using ApiECommerce.DTOs
 @using ECommerceWebAppFrontend.Services
 @inject ProductoService ProductoService
 
@@ -39,7 +40,7 @@ else
                     <td>@producto.Nombre</td>
                     <td>@producto.Existencias</td>
                     <td>@producto.Precio.ToString("C")</td>
-                    <td>@producto.Categoria?.Nombre</td>
+                    <td>@categorias.FirstOrDefault(c => c.Id == producto.IdCategoria)?.Nombre</td>
                     <td>
                         <button class="btn btn-warning btn-sm" @onclick="() => EditarProducto(producto)">Editar</button>
                         <button class="btn btn-danger btn-sm" @onclick="() => EliminarProducto(producto.Id)">Eliminar</button>
@@ -76,9 +77,9 @@ else
 }
 
 @code {
-    private List<Producto>? productos;
-    private List<Categoria> categorias = new();
-    private Producto productoSeleccionado = new();
+    private List<ProductoDTO>? productos;
+    private List<CategoriaDTO> categorias = new();
+    private ProductoDTO productoSeleccionado = new();
     private int? categoriaSeleccionadaId = null;
     private int _paginaActual = 1;
     private const int _tamanioPagina = 5;
@@ -91,7 +92,8 @@ else
 
     private async Task CargarProductos()
     {
-        productos = await ProductoService.ObtenerProductosAsync(categoriaSeleccionadaId, _paginaActual, _tamanioPagina);
+        var resultado = await ProductoService.ObtenerProductosAsync(categoriaSeleccionadaId, _paginaActual, _tamanioPagina);
+    productos = resultado.Productos; 
     }
 
     private async Task FiltrarPorCategoria(ChangeEventArgs e)
@@ -116,15 +118,17 @@ else
         }
     }
 
-    private void EditarProducto(Producto producto)
+    private void EditarProducto(ProductoDTO producto)
     {
-        productoSeleccionado = new Producto
+        productoSeleccionado = new ProductoDTO
         {
             Id = producto.Id,
             Nombre = producto.Nombre,
             Existencias = producto.Existencias,
             Precio = producto.Precio,
-            IdCategoria = producto.IdCategoria
+            IdCategoria = producto.IdCategoria,
+            ImagenUrl = producto.ImagenUrl,
+            Descripcion = producto.Descripcion
         };
     }
 
@@ -147,13 +151,13 @@ else
             await ProductoService.ModificarProductoAsync(productoSeleccionado);
         }
 
-        productoSeleccionado = new Producto();
+        productoSeleccionado = new ProductoDTO();
         await CargarProductos();
     }
 
     private void CancelarEdicion()
     {
-        productoSeleccionado = new Producto();
+        productoSeleccionado = new ProductoDTO();
     }
 
     private async Task EliminarProducto(int id)

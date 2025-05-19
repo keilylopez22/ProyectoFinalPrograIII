@@ -12,22 +12,22 @@ using ApiECommerce.Controladores; // Para tus controladores (asegúrate de que e
 
 namespace ApiECommerce.Servicio
 {
-    public interface ICategoriaServicio
+    public interface ICategoriaServicio 
     {
         Task<IEnumerable<Categoria>> ObtenerCategoriasAsync();
         Task<Categoria> ObtenerCategoriasAsync(int id);
         Task<bool> ActualizarCategoriaAsync(Categoria categoria);
         Task<bool> CrearCategoriaAsync(Categoria categoria);
         Task<bool> EliminarCategoriaAsync(int id);
-    }
+    } 
 
-    public class CategoriaServicio : ICategoriaServicio
+    public class CategoriaServicio : ICategoriaServicio 
     {
         private readonly ApplicationDbContext _context;
 
         public CategoriaServicio(ApplicationDbContext context)
         {
-            _context = context;
+            _context = context; 
         }
 
         public async Task<IEnumerable<Categoria>> ObtenerCategoriasAsync()
