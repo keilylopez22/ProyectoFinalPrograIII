@@ -17,9 +17,7 @@ namespace ApiECommerce.Servicio
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProductos = null,
-            int? IdProveedor = null,
-            int pageNumber = 1,
-            int pageSize = 10
+            int? IdProveedor = null
             );
 
         
@@ -51,9 +49,8 @@ namespace ApiECommerce.Servicio
            DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProductos = null,
-            int? IdProveedor = null,
-            int pageNumber = 1,
-            int pageSize = 10
+            int? IdProveedor = null
+       
 
             )
          {
@@ -62,9 +59,7 @@ namespace ApiECommerce.Servicio
             (
             fechaInicio,
             fechaFin,
-            IdProveedor,
-            pageNumber,
-            pageSize
+            IdProveedor
             );
       
 
