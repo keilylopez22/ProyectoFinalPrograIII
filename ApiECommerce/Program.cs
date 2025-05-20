@@ -24,6 +24,8 @@ builder.Services.AddScoped<IProductoServicio, ProductoServicio>();
 builder.Services.AddScoped<IKafkaProductorServicio, KafkaProductorServicio>();
 builder.Services.AddScoped<ICategoriaServicio, CategoriaServicio>();
 builder.Services.AddScoped<IMovimientosInventarioServicio, MovimientosInventarioServicio>();
+//builder.Services.AddHostedService<PedidoConsumerService>();
+
 //builder.Services.AddHostedService<KafkaPedidoConsumidor>();
 
 
