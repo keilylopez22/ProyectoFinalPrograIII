@@ -53,8 +53,8 @@ namespace ApiECommerce.Modelo
 
     public enum TipoDocumento
     {
-        compra,
-        pedido,
+        compra ,
+        pedido , 
         ajuste,
         devolucion
     }
