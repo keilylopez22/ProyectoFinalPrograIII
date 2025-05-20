@@ -21,6 +21,7 @@ namespace ECommerceWebAppFrontend
             builder.Services.AddScoped<PedidoService>();
             builder.Services.AddScoped<ReporteService>();
             builder.Services.AddScoped<CompraService>();
+            builder.Services.AddScoped<MovimientoInventarioService>();
             
 
 

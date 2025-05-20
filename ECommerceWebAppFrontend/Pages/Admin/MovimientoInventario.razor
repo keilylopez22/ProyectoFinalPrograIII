@@ -1,0 +1,101 @@
+@page "/admin/MovimientoInventario"
+@using ApiECommerce.Modelo
+@using ECommerceWebAppFrontend.Services
+@using ApiECommerce.DTOs
+@inject MovimientoInventarioService MovimientoService
+
+<h3>Movimientos de Inventario</h3>
+
+<div class="mb-3">
+    <label>Desde:</label>
+    <InputDate @bind-Value="fechaInicio" />
+    <label>Hasta:</label>
+    <InputDate @bind-Value="fechaFin" />
+    <button class="btn btn-primary" @onclick="Buscar">Buscar</button>
+</div>
+
+@if (cargando)
+{
+    <p><em>Cargando datos...</em></p>
+}
+else if (resultado?.Datos is not null && resultado.Datos.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Tipo Movimiento</th>
+                <th>Cantidad</th>
+                <th>Fecha</th>
+                <th>Documento</th>
+                <th>Notas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in resultado.Datos)
+            {
+                <tr>
+                    <td>@item.Producto?.Nombre</td>
+                    <td>@item.TipoMovimiento</td>
+                    <td>@item.Cantidad</td>
+                    <td>@item.FechaMovimiento.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@item.TipoDocumento (#@item.IdDocumento)</td>
+                    <td>@item.Notas</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div>
+        <button class="btn btn-secondary" @onclick="PaginaAnterior" disabled="@(!PuedeRetroceder)">Anterior</button>
+        <span>Página @pagina</span>
+        <button class="btn btn-secondary" @onclick="PaginaSiguiente" disabled="@(!PuedeAvanzar)">Siguiente</button>
+    </div>
+}
+else
+{
+    <p>No hay resultados.</p>
+}
+
+@code {
+    private MovimientoInventarioResultado resultado = new();
+    private DateTime? fechaInicio;
+    private DateTime? fechaFin;
+    private bool cargando = false;
+
+    private int pagina = 1;
+    private int tamanoPagina = 10;
+
+    private bool PuedeRetroceder => pagina > 1;
+    private bool PuedeAvanzar => pagina * tamanoPagina < resultado.TotalRegistros;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Buscar();
+    }
+
+    private async Task Buscar()
+    {
+        cargando = true;
+        resultado = await MovimientoService.ObtenerMovimientosAsync(pagina, tamanoPagina, fechaInicio, fechaFin);
+        cargando = false;
+    }
+
+    private async Task PaginaAnterior()
+    {
+        if (PuedeRetroceder)
+        {
+            pagina--;
+            await Buscar();
+        }
+    }
+
+    private async Task PaginaSiguiente()
+    {
+        if (PuedeAvanzar)
+        {
+            pagina++;
+            await Buscar();
+        }
+    }
+}
