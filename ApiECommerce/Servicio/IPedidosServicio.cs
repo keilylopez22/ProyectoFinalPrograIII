@@ -17,6 +17,9 @@ namespace ApiECommerce.Servicio
         Task<PedidoResultado?> CrearPedidosAsync(PedidoDTO pedidoDto);
         Task<bool> ActualizarPedidosAsync(Pedido pedido);
         Task<bool> EliminarPedidosAsync(int id);
+        
+
+        
 
         Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
             DateTime? fechaInicio = null,
@@ -168,7 +171,7 @@ namespace ApiECommerce.Servicio
              // Registrar los movimientos de inventario tipo compra
             foreach (var detalle in pedido.DetallesPedido)
             {
-                await _movimientoInventarioServicio.RegistrarMovimientoCompraAsync(
+                await _movimientoInventarioServicio.RegistrarMovimientoPedidoAsync(
                     detalle.IdProductos,
                     detalle.CantidadProductos,
                     pedido.Id,
