@@ -14,8 +14,10 @@ namespace ApiECommerce.Servicio
         Task<MovimientoInventarioResultado> ObtenerPedidosAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null
-        ); 
-        Task<bool> RegistrarMovimientoCompraAsync(int idProducto, int cantidad, int idCompra, string? nota = null);       
+        );
+        Task<bool> RegistrarMovimientoCompraAsync(int idProducto, int cantidad, int idCompra, string? nota = null); 
+        Task<bool> RegistrarMovimientoPedidoAsync(int idProducto, int cantidad, int idPedido, string? nota = null);
+             
         
     }
     public class MovimientosInventarioServicio:IMovimientosInventarioServicio
@@ -103,7 +105,7 @@ namespace ApiECommerce.Servicio
                 Cantidad = cantidad,
                 TipoDocumento = TipoDocumento.pedido,
                 IdDocumento = idPedido,
-                Notas = nota
+                Notas = nota  
             };
 
             // Guardar movimiento
