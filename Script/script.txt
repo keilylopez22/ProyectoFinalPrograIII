@@ -82,3 +82,6 @@ CREATE TABLE `movimientosInventario` (
 ) 
 
 
+//agregar nuevos campos a la tabla productos
+ALTER TABLE productos MODIFY COLUMN ImagenUrl TEXT NULL;
+ALTER TABLE productos ADD COLUMN Descripcion VARCHAR(255) NULL;
