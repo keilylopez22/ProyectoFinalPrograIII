@@ -1,0 +1,183 @@
+@page "/"
+@layout EmptyLayout
+@using ECommerceWebAppFrontend.Services
+@using ECommerceWebAppFrontend.Modelo
+@inject LoginService LoginService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
+<div class="login-page">
+    <div class="login-box">
+        <div class="logo-container">
+            <h1>KC-MART</h1>
+        </div>
+        <div class="login-form">
+            <EditForm Model="@loginModelo" OnValidSubmit="HandleLogin">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <InputText @bind-Value="loginModelo.Email" 
+                                 class="form-control" 
+                                 placeholder="Correo electrónico" />
+                    </div>
+                    <ValidationMessage For="@(() => loginModelo.Email)" class="text-danger" />
+                </div>
+
+                <div class="form-group mt-3">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <InputText type="password" 
+                                 @bind-Value="loginModelo.Password" 
+                                 class="form-control" 
+                                 placeholder="Contraseña" />
+                    </div>
+                    <ValidationMessage For="@(() => loginModelo.Password)" class="text-danger" />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-4" disabled="@isLoading">
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <span>Procesando...</span>
+                    }
+                    else
+                    {
+                        <span>Iniciar Sesión</span>
+                    }
+                </button>
+                <button type="submit" class="btn btn-primary w-100 mt-4" disabled="@isLoading">
+                    @if (isLoading)
+                    {
+                        <span class="spinner-border spinner-border-sm me-2"></span>
+                        <span>Procesando...</span>
+                    }
+                    else
+                    {
+                        <span>Registrarse</span>
+                    }
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #1e3c72;
+        --secondary-color: #2a5298;
+    }
+
+    ::deep body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    }
+
+    .login-page {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .login-box {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 2.5rem;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        backdrop-filter: blur(10px);
+    }
+    .logo-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .logo {
+        width: 120px;
+        height: auto;
+        margin-bottom: 1rem;
+    }
+
+    .logo-container h1 {
+        color: #1e3c72;
+        font-size: 1.8rem;
+        margin: 0;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+
+    .input-group .form-control {
+        border-left: none;
+    }
+
+    .input-group .form-control:focus {
+        border-color: #ced4da;
+        box-shadow: none;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        border: none;
+        padding: 0.8rem;
+        font-size: 1.1rem;
+        transition: transform 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+    }
+
+    .text-danger {
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+    }
+</style>
+
+@code {
+    private LoginModelo loginModelo = new();
+    private bool isLoading;
+
+    private async Task HandleLogin()
+    {
+        try
+        {
+            isLoading = true;
+            var result = await LoginService.LoginAsync(loginModelo.Email, loginModelo.Password);
+            
+            if (result)
+            {
+                NavigationManager.NavigateTo("/home");
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "Credenciales inválidas");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

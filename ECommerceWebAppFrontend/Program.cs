@@ -12,7 +12,7 @@ namespace ECommerceWebAppFrontend
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
-//en la url alli hay que sustituir por la variable de entorno
+            //en la url alli hay que sustituir por la variable de entorno
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5172") });
             // Agregar el HttpClient para la API de productos
             builder.Services.AddScoped<ProductoService>();
@@ -21,6 +21,8 @@ namespace ECommerceWebAppFrontend
             builder.Services.AddScoped<PedidoService>();
             builder.Services.AddScoped<ReporteService>();
             builder.Services.AddScoped<CompraService>();
+            builder.Services.AddScoped<PedidoService>();
+            builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<CategoriaService>();
             builder.Services.AddScoped<MovimientoInventarioService>();
             

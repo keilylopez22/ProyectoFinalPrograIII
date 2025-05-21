@@ -1,7 +1,18 @@
-﻿@page "/"
+﻿@page "/login"
+@inject NavigationManager NavigationManager
+@inject LoginService LoginService
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Bienvenido a la página principal</h1>
 
-Welcome to your new app.
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var isAuthenticated = await LoginService.IsAuthenticated();
+        if (!isAuthenticated)
+        {
+            NavigationManager.NavigateTo("/home");
+        }
+    }
+}

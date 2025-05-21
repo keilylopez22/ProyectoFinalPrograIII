@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="ECommerceWebAppFrontend.styles.css" rel="stylesheet" />
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -27,6 +28,41 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
+    <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+
+<!-- Tu archivo personalizado de Firebase config -->
+<script type="module">
+  // Tu configuración Firebase
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAZOy2sYgigtusDGODYLyIX9JaS7ZoCpJ4",
+    authDomain: "kcmart-5a8f1.firebaseapp.com",
+    projectId: "kcmart-5a8f1",
+    storageBucket: "kcmart-5a8f1.appspot.com",
+    messagingSenderId: "492132807423",
+    appId: "1:492132807423:web:8a12fe8ff701718de092ca"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  // Exponer funciones globales
+  window.firebase = {
+    signInWithEmailAndPassword: async (email, password) => {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+      return token;
+    },
+    signOut: async () => {
+      await signOut(auth);
+    }
+  };
+</script>
+
 </body>
 
 </html>

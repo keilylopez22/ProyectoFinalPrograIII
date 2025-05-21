@@ -152,6 +152,58 @@ else
         <div class="modal-backdrop show"></div>
     }
 
+    @if (mostrandoNuevoPedido)
+    {
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nuevo Pedido</h5>
+                        <button type="button" class="btn-close" @onclick="() => mostrandoNuevoPedido = false"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label>Cliente:</label>
+                            <select class="form-select" @bind="nuevoPedido.IdCliente">
+                                <option value="0">Seleccione un cliente</option>
+                                @foreach (var cliente in clientes)
+                                {
+                                    <option value="@cliente.Id">@cliente.Nombre</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div>
+                            <label>Productos:</label>
+                            @foreach (var producto in productos)
+                            {
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="me-2" style="width: 200px;">@producto.Nombre</div>
+                                    <input type="number" min="0" class="form-control me-2" style="width: 100px"
+                                        @oninput="(e) => ActualizarCantidad(producto.Id, e.Value?.ToString())" placeholder="Cantidad" />
+                                    <span>@producto.Precio.ToString("C")</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="mt-3 fw-bold">
+                            Total: @nuevosDetalles.Sum(d => d.CantidadProductos * (d.Producto?.Precio ?? 0)).ToString("C")
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="() => mostrandoNuevoPedido = false">Cancelar</button>
+                        <button class="btn btn-primary" @onclick="GuardarPedido">Guardar Pedido</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+
     <!-- Modal para Ver Detalles -->
     @if (mostrarDetalles)
     {
@@ -228,6 +280,10 @@ else
     private int pedidoIdSeleccionado;
     private string nuevoEstadoSeleccionado = "";
     private bool mostrarModalEstado;
+    private Pedido nuevoPedido = new();
+    private List<DetallePedido> nuevosDetalles = new();
+    private bool mostrandoNuevoPedido = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -305,17 +361,76 @@ else
         }
     }
 
-    //Metodo para crear un nuevo pedido
     private void NuevoPedido()
     {
-       
+        nuevoPedido = new Pedido
+        {
+            Fecha = DateTime.Now,
+            Estado = "Pendiente",
+            IdCliente = 0,
+            DetallesPedido = new List<DetallePedido>()
+        };
+        nuevosDetalles = new();
+        mostrandoNuevoPedido = true;
     }
 
-    //Metodo para guardar un nuevo pedido
-    private async Task GuardarPedido()
+    private void ActualizarCantidad(int idProductos, string? cantidadTexto)
+{
+    if (int.TryParse(cantidadTexto, out int cantidad) && cantidad > 0)
     {
-        
+        var detalleExistente = nuevosDetalles.FirstOrDefault(d => d.IdProductos == idProductos);
+        if (detalleExistente != null)
+        {
+            detalleExistente.CantidadProductos = cantidad;
+        }
+        else
+        {
+            var producto = productos.FirstOrDefault(p => p.Id == idProductos);
+            if (producto != null)
+            {
+                nuevosDetalles.Add(new DetallePedido
+                {
+                    IdProductos = idProductos,
+                    CantidadProductos = cantidad,
+                    Producto = producto
+                });
+            }
+        }
     }
+    else
+    {
+        // Si se ingresa 0 o vacío, eliminar ese detalle si ya existe
+        nuevosDetalles.RemoveAll(d => d.IdProductos == idProductos);
+    }
+
+    // Recalcular el total del pedido
+    nuevoPedido.Total = nuevosDetalles.Sum(d => d.CantidadProductos * (d.Producto?.Precio ?? 0));
+}
+
+
+  private async Task GuardarPedido()
+{
+    if (nuevoPedido.IdCliente == 0 || !nuevosDetalles.Any())
+    {
+        await JS.InvokeVoidAsync("alert", "Debe seleccionar un cliente y agregar al menos un producto.");
+        return;
+    }
+
+    nuevoPedido.DetallesPedido = nuevosDetalles;
+
+    try
+    {
+        var pedidoGuardado = await PedidoService.CrearPedidoAsync(nuevoPedido);
+        mostrandoNuevoPedido = false;
+        await CargarPedidos();
+        await JS.InvokeVoidAsync("alert", "Pedido creado correctamente.");
+    }
+    catch (Exception ex)
+    {
+        await JS.InvokeVoidAsync("alert", $"Error al guardar el pedido: {ex.Message}");
+    }
+}
+
 
     private void EditarPedido(Pedido pedido)
     {

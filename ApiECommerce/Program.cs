@@ -31,6 +31,8 @@ builder.Services.AddScoped<IMovimientosInventarioServicio, MovimientosInventario
 //builder.Services.AddHostedService<PedidoConsumerService>();
 
 //builder.Services.AddHostedService<KafkaPedidoConsumidor>();
+//builder.Services.AddScoped<LoginServicio>();
+
 
 
 //habilitar cors
@@ -57,14 +59,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers(); // Si vas a crear una API con controladores
-
-
-
-
 
 app.Run();
 
