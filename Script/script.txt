@@ -85,3 +85,4 @@ CREATE TABLE `movimientosInventario` (
 //agregar nuevos campos a la tabla productos
 ALTER TABLE productos ADD COLUMN ImagenUrl TEXT NULL;
 ALTER TABLE productos ADD COLUMN Descripcion VARCHAR(255) NULL;
+ALTER TABLE movimientosInventario  ADD COLUMN PrecioUnitario decimal;
