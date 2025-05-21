@@ -73,7 +73,7 @@ CREATE TABLE `movimientosInventario` (
   `TipoMovimiento` enum('entrada','salida') NOT NULL,
   `Cantidad` int NOT NULL,
   `FechaMovimiento` datetime DEFAULT CURRENT_TIMESTAMP,
-  `TipoDocumento` enum('compra','venta','ajuste','devolucion') NOT NULL,
+  `TipoDocumento` enum('compra','pedido','ajuste','devolucion') NOT NULL,
   `IdDocumento` int NOT NULL,
   `Notas` text,
   PRIMARY KEY (`IdMovimiento`),
@@ -83,5 +83,5 @@ CREATE TABLE `movimientosInventario` (
 
 
 //agregar nuevos campos a la tabla productos
-ALTER TABLE productos MODIFY COLUMN ImagenUrl TEXT NULL;
+ALTER TABLE productos ADD COLUMN ImagenUrl TEXT NULL;
 ALTER TABLE productos ADD COLUMN Descripcion VARCHAR(255) NULL;
