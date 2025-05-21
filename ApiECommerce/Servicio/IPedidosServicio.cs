@@ -175,7 +175,8 @@ namespace ApiECommerce.Servicio
                     detalle.IdProductos,
                     detalle.CantidadProductos,
                     pedido.Id,
-                    $"Pedido registrado el {DateTime.Now}"
+                    $"Pedido registrado el {DateTime.Now}",
+                    detalle.PrecioUnitario
                 );
             }
 

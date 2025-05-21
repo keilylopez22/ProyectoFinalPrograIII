@@ -36,6 +36,8 @@ namespace ApiECommerce.Modelo
         // Relación con producto
         [ForeignKey("IdProducto")]
         public Producto Producto { get; set; }
+
+        public decimal PrecioUnitario { get; set; }
     }
     // <summary>
     // Enumeración para el tipo de movimiento

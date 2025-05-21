@@ -15,8 +15,8 @@ namespace ApiECommerce.Servicio
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null
         );
-        Task<bool> RegistrarMovimientoCompraAsync(int idProducto, int cantidad, int idCompra, string? nota = null); 
-        Task<bool> RegistrarMovimientoPedidoAsync(int idProducto, int cantidad, int idPedido, string? nota = null);
+        Task<bool> RegistrarMovimientoCompraAsync(int idProducto, int cantidad, int idCompra, string? nota = null, decimal precioUnitario = 0); 
+        Task<bool> RegistrarMovimientoPedidoAsync(int idProducto, int cantidad, int idPedido, string? nota = null, decimal precioUnitario = 0);
              
         
     }
@@ -61,7 +61,7 @@ namespace ApiECommerce.Servicio
             };
         }
 
-        public async Task<bool> RegistrarMovimientoCompraAsync(int idProducto, int cantidad, int idCompra, string? nota = null)
+        public async Task<bool> RegistrarMovimientoCompraAsync(int idProducto, int cantidad, int idCompra, string? nota = null, decimal precioUnitario = 0)
         {
             // Validar existencia del producto
             var producto = await _context.productos.FindAsync(idProducto);
@@ -78,7 +78,8 @@ namespace ApiECommerce.Servicio
                 Cantidad = cantidad,
                 TipoDocumento = TipoDocumento.compra,
                 IdDocumento = idCompra,
-                Notas = nota
+                Notas = nota,
+                PrecioUnitario = precioUnitario
             };
 
             // Guardar movimiento
@@ -88,7 +89,7 @@ namespace ApiECommerce.Servicio
             return true;
         }
         //RegistrarMovimientoPedidoAsync
-        public async Task<bool> RegistrarMovimientoPedidoAsync(int idProducto, int cantidad, int idPedido, string? nota = null)
+        public async Task<bool> RegistrarMovimientoPedidoAsync(int idProducto, int cantidad, int idPedido, string? nota = null, decimal precioUnitario = 0)
         {
             // Validar existencia del producto
             var producto = await _context.productos.FindAsync(idProducto);
@@ -105,7 +106,8 @@ namespace ApiECommerce.Servicio
                 Cantidad = cantidad,
                 TipoDocumento = TipoDocumento.pedido,
                 IdDocumento = idPedido,
-                Notas = nota  
+                Notas = nota,
+                PrecioUnitario = precioUnitario  
             };
 
             // Guardar movimiento
