@@ -193,7 +193,8 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
                     detalle.IdProductos,
                     detalle.CantidadProductos,
                     compra.Id,
-                    $"Compra registrada el {DateTime.Now}"
+                    $"Compra registrada el {DateTime.Now}",
+                    detalle.PrecioUnitario
                 );
             }
 
