@@ -74,4 +74,18 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+
+    
 }
+
+.btn-pink {
+    background-color: #e83e8c;
+    color: white;
+    border: none;
+}
+
+.btn-pink:hover {
+    background-color: #d63384;
+    color: white;
+}
+

@@ -4,14 +4,36 @@
 @using ApiECommerce.DTOs
 @inject MovimientoInventarioService MovimientoService
 
-<h3>Movimientos de Inventario</h3>
+<!--botn buscar rosita-->
+<style>
+ .btn-pink {
+    background-color: #e83e8c;
+    color: white;
+    border: none;
+}
 
-<div class="mb-3">
-    <label>Desde:</label>
-    <InputDate @bind-Value="fechaInicio" />
-    <label>Hasta:</label>
-    <InputDate @bind-Value="fechaFin" />
-    <button class="btn btn-primary" @onclick="Buscar">Buscar</button>
+.btn-pink:hover {
+    background-color: #d63384;
+    color: white;
+}
+
+</style>
+<h3 class="titulo">Movimientos de Inventario</h3>
+
+<div class="filtros">
+    <div class="row g-2 mb-3">
+        <div class="col-md-3">
+            <label class="form-label">Desde:</label>
+            <InputDate class="form-control" @bind-Value="fechaInicio" />
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Hasta:</label>
+            <InputDate class="form-control" @bind-Value="fechaFin" />
+        </div>
+        <div class="col-md-3 align-self-end">
+            <button class="btn btn-pink" @onclick="Buscar">Buscar</button> @* Botón rosado personalizado *@
+        </div>
+    </div>
 </div>
 
 @if (cargando)
@@ -20,8 +42,8 @@
 }
 else if (resultado?.Datos is not null && resultado.Datos.Any())
 {
-    <table class="table table-bordered">
-        <thead>
+    <table class="table table-hover">
+        <thead class="table-dark">
             <tr>
                 <th>Producto</th>
                 <th>Tipo Movimiento</th>
@@ -46,10 +68,10 @@ else if (resultado?.Datos is not null && resultado.Datos.Any())
         </tbody>
     </table>
 
-    <div>
-        <button class="btn btn-secondary" @onclick="PaginaAnterior" disabled="@(!PuedeRetroceder)">Anterior</button>
-        <span>Página @pagina</span>
-        <button class="btn btn-secondary" @onclick="PaginaSiguiente" disabled="@(!PuedeAvanzar)">Siguiente</button>
+    <div class="paginacion">
+        <button class="btn btn-outline-primary" @onclick="PaginaAnterior" disabled="@(!PuedeRetroceder)">Anterior</button>
+        <span class="mx-2">Página @pagina</span>
+        <button class="btn btn-outline-primary" @onclick="PaginaSiguiente" disabled="@(!PuedeAvanzar)">Siguiente</button>
     </div>
 }
 else

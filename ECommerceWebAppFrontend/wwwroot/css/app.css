@@ -129,3 +129,15 @@ input, select {
     border: 1px solid #ccc;
 }
 
+.btn-pink {
+    background-color: #e83e8c;
+    color: white;
+    border: none;
+}
+
+.btn-pink:hover {
+    background-color: #d63384;
+    color: white;
+}
+
+
