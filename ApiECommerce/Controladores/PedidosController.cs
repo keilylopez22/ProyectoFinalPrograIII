@@ -51,7 +51,7 @@ namespace ApiECommerce.Controladores
         [HttpGet("{id}")]
         public async Task<ActionResult<Pedido>> GetPedido(int id)
         {
-            var pedido = await _pedidosServicio.ObtenerPedidoPorIdAsync(id);
+            var pedido = await _pedidosServicio.ObtenerPedidosAsync(id);
             if (pedido == null)
             {
                 return NotFound($"No se encontró el pedido con ID {id}");
