@@ -31,9 +31,9 @@
                 <button class="btn btn-secondary" @onclick="LimpiarFiltros">
                     <i class="bi bi-x-circle"></i> Limpiar
                 </button>
-                <button class="btn btn-success" @onclick="NuevoPedido">
+                <!--<button class="btn btn-success" @onclick="NuevoPedido">
                     <i class="bi bi-plus-circle"></i> Nuevo Pedido
-                </button>
+                </button>-->
             </div>
         </div>
     </div>
@@ -152,58 +152,6 @@ else
         <div class="modal-backdrop show"></div>
     }
 
-    @if (mostrandoNuevoPedido)
-    {
-        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-
-                    <div class="modal-header">
-                        <h5 class="modal-title">Nuevo Pedido</h5>
-                        <button type="button" class="btn-close" @onclick="() => mostrandoNuevoPedido = false"></button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label>Cliente:</label>
-                            <select class="form-select" @bind="nuevoPedido.IdCliente">
-                                <option value="0">Seleccione un cliente</option>
-                                @foreach (var cliente in clientes)
-                                {
-                                    <option value="@cliente.Id">@cliente.Nombre</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div>
-                            <label>Productos:</label>
-                            @foreach (var producto in productos)
-                            {
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="me-2" style="width: 200px;">@producto.Nombre</div>
-                                    <input type="number" min="0" class="form-control me-2" style="width: 100px"
-                                        @oninput="(e) => ActualizarCantidad(producto.Id, e.Value?.ToString())" placeholder="Cantidad" />
-                                    <span>@producto.Precio.ToString("C")</span>
-                                </div>
-                            }
-                        </div>
-
-                        <div class="mt-3 fw-bold">
-                            Total: @nuevosDetalles.Sum(d => d.CantidadProductos * (d.Producto?.Precio ?? 0)).ToString("C")
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" @onclick="() => mostrandoNuevoPedido = false">Cancelar</button>
-                        <button class="btn btn-primary" @onclick="GuardarPedido">Guardar Pedido</button>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    }
-
-
     <!-- Modal para Ver Detalles -->
     @if (mostrarDetalles)
     {
@@ -284,7 +232,6 @@ else
     private List<DetallePedido> nuevosDetalles = new();
     private bool mostrandoNuevoPedido = false;
 
-
     protected override async Task OnInitializedAsync()
     {
         try
@@ -361,75 +308,41 @@ else
         }
     }
 
-    private void NuevoPedido()
+    //Metodo para crear un nuevo pedido
+   /* private void NuevoPedido()
     {
-        nuevoPedido = new Pedido
+        pedidoSeleccionado = new Pedido
         {
-            Fecha = DateTime.Now,
+            Fecha = DateTime.Today,
             Estado = "Pendiente",
-            IdCliente = 0,
-            DetallesPedido = new List<DetallePedido>()
+            Cliente = clientes.FirstOrDefault()
         };
-        nuevosDetalles = new();
-        mostrandoNuevoPedido = true;
-    }
+        mostrarFormulario = true;
+    } 
 
-    private void ActualizarCantidad(int idProductos, string? cantidadTexto)
+
+private async Task GuardarPedido()
 {
-    if (int.TryParse(cantidadTexto, out int cantidad) && cantidad > 0)
+    try
     {
-        var detalleExistente = nuevosDetalles.FirstOrDefault(d => d.IdProductos == idProductos);
-        if (detalleExistente != null)
+        var resultado = await PedidoService.CrearPedidoAsync(pedidoSeleccionado);
+        if (resultado)
         {
-            detalleExistente.CantidadProductos = cantidad;
+            mostrarFormulario = false;
+            await CargarPedidos();
+            await JS.InvokeVoidAsync("alert", "Pedido guardado exitosamente");
         }
         else
         {
-            var producto = productos.FirstOrDefault(p => p.Id == idProductos);
-            if (producto != null)
-            {
-                nuevosDetalles.Add(new DetallePedido
-                {
-                    IdProductos = idProductos,
-                    CantidadProductos = cantidad,
-                    Producto = producto
-                });
-            }
+            await JS.InvokeVoidAsync("alert", "No se pudo guardar el pedido");
         }
-    }
-    else
-    {
-        // Si se ingresa 0 o vacío, eliminar ese detalle si ya existe
-        nuevosDetalles.RemoveAll(d => d.IdProductos == idProductos);
-    }
-
-    // Recalcular el total del pedido
-    nuevoPedido.Total = nuevosDetalles.Sum(d => d.CantidadProductos * (d.Producto?.Precio ?? 0));
-}
-
-
-  private async Task GuardarPedido()
-{
-    if (nuevoPedido.IdCliente == 0 || !nuevosDetalles.Any())
-    {
-        await JS.InvokeVoidAsync("alert", "Debe seleccionar un cliente y agregar al menos un producto.");
-        return;
-    }
-
-    nuevoPedido.DetallesPedido = nuevosDetalles;
-
-    try
-    {
-        var pedidoGuardado = await PedidoService.CrearPedidoAsync(nuevoPedido);
-        mostrandoNuevoPedido = false;
-        await CargarPedidos();
-        await JS.InvokeVoidAsync("alert", "Pedido creado correctamente.");
     }
     catch (Exception ex)
     {
-        await JS.InvokeVoidAsync("alert", $"Error al guardar el pedido: {ex.Message}");
+        Console.WriteLine($"Error al guardar pedido: {ex.Message}");
+        await JS.InvokeVoidAsync("alert", $"Error al guardar pedido: {ex.Message}");
     }
-}
+} */
 
 
     private void EditarPedido(Pedido pedido)

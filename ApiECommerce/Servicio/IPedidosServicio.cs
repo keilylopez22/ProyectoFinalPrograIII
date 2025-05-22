@@ -11,60 +11,62 @@ namespace ApiECommerce.Servicio
 {
     public interface IPedidosServicio
     {
-        Task<IEnumerable<Pedido>> ObtenerPedidosAsync();
+        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdCliente = null,
+            int? pageNumber = 1,
+            int? pageSize = 10
+        );
         Task<Pedido> ObtenerPedidosAsync(int id);
         Task<bool> CrearPedidosAsync(Pedido pedido);
         Task<PedidoResultado?> CrearPedidosAsync(PedidoDTO pedidoDto);
         Task<bool> ActualizarPedidosAsync(Pedido pedido);
         Task<bool> EliminarPedidosAsync(int id);
-        
+        Task<Pedido?> ObtenerPedidoPorIdAsync(int id);
 
-        
-
-        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
-            DateTime? fechaInicio = null,
-            DateTime? fechaFin = null,
-            int? IdProducto = null,
-            int? IdCliente = null,
-            int? IdProveedor = null);
-
-
-            //para cambiar el estado del pedido
-            Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
+        //para cambiar el estado del pedido
+        Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
 
         
     }
 
 
-    public class PedidoServicio:IPedidosServicio
+    public class PedidoServicio: IPedidosServicio
     {
          private readonly ApplicationDbContext _context;
-        private readonly IMovimientosInventarioServicio _movimientoInventarioServicio;
-        private readonly IKafkaProductorServicio _kafkaProductorServicio;
-        //Constructor
-        public PedidoServicio(ApplicationDbContext context, IMovimientosInventarioServicio movimientoInventarioServicio, IKafkaProductorServicio kafkaProductorServicio)
-        {
-            _kafkaProductorServicio = kafkaProductorServicio;
-            _movimientoInventarioServicio = movimientoInventarioServicio;
+         public PedidoServicio(ApplicationDbContext context)
+         {
             _context = context;
 
         }
+
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync()
         {
+        return await _context.pedidos
+        .Include(p => p.Cliente)
+        .Include(p => p.DetallesPedido)
+        .ToListAsync();
+     }
 
-            return await _context.pedidos.
-            Include(p => p.Cliente).
-            Include(p  => p.DetallesPedido).
-            ToListAsync();
+     public async Task<Pedido?> ObtenerPedidoPorIdAsync(int id)
+        {
+            return await _context.pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallesPedido)
+                    .ThenInclude(dp => dp.Producto)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
+        // Agregar este método a la clase PedidoServicio
         //Aplicar Filtros
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
-            int? IdProducto = null,
             int? IdCliente = null,
-            int? IdProveedor = null)
+            int? pageNumber = 1,
+            int? pageSize = 10
+        )
         {
         var query = _context.pedidos
                 .Include(p => p.Cliente)
@@ -82,25 +84,16 @@ namespace ApiECommerce.Servicio
             // Filtro por cliente
             if (IdCliente.HasValue)
                 query = query.Where(p => p.IdCliente == IdCliente.Value);
-
-            // Filtro por producto
-            if (IdProducto.HasValue)
-                query = query.Where(p => p.DetallesPedido.Any(dp => dp.IdProductos == IdProducto.Value));
-
-            // Filtro por proveedor
-            
                        
             return await query.ToListAsync();
         }
 
         public async Task<Pedido> ObtenerPedidosAsync(int id)
         {
-            
-            return await _context.pedidos.
-            Include(p => p.Cliente).
-            Include(p  => p.DetallesPedido).
-            FirstOrDefaultAsync(p => p.Id == id );
-            
+            return await _context.pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallesPedido)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task<bool> CrearPedidosAsync(Pedido pedido)
         {
@@ -159,7 +152,6 @@ namespace ApiECommerce.Servicio
             {
                 Fecha = pedidoDto.Fecha,
                 IdCliente = pedidoDto.IdCliente,
-                Cliente = await _context.clientes.FindAsync(pedidoDto.IdCliente),
                 Estado = "Pendiente",
                 Total = totalPedido,
                 DetallesPedido = detallesPedido
@@ -167,29 +159,6 @@ namespace ApiECommerce.Servicio
 
             await _context.pedidos.AddAsync(pedido);
             await _context.SaveChangesAsync();
-
-             // Registrar los movimientos de inventario tipo compra
-            foreach (var detalle in pedido.DetallesPedido)
-            {
-                await _movimientoInventarioServicio.RegistrarMovimientoPedidoAsync(
-                    detalle.IdProductos,
-                    detalle.CantidadProductos,
-                    pedido.Id,
-                    $"Pedido registrado el {DateTime.Now}",
-                    detalle.PrecioUnitario
-                );
-            }
-
-            // Enviar el pedido a Kafka
-            var evento = new PedidoEventoDTO
-            {
-                Evento = "PedidoCreado",
-                PedidoId = pedido.Id,
-                Estado = pedido.Estado,
-                ClienteEmail = pedido.Cliente.CorreoElectronico
-            };
-
-            await _kafkaProductorServicio.EnviarEventoAsync("pedidos-eventos", evento);
 
             return new PedidoResultado { Exito = true, Pedido = pedido };
         }
@@ -218,7 +187,7 @@ namespace ApiECommerce.Servicio
         //para el cambio de estado del pedido
         public async Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado)
         {
-            var pedido = await _context.pedidos.Include(p => p.Cliente).FirstOrDefaultAsync(p => p.Id == id );
+            var pedido = await _context.pedidos.FindAsync(id);
             if (pedido == null)
             {
                 return new ResultadoCambioEstado
@@ -262,20 +231,6 @@ namespace ApiECommerce.Servicio
             pedido.Estado = char.ToUpper(nuevoEstado[0]) + nuevoEstado.Substring(1); // "enviado" → "Enviado"
             _context.pedidos.Update(pedido);
             await _context.SaveChangesAsync();
-
-            // Enviar el evento a Kafka
-            var evento = new PedidoEventoDTO
-            {
-                Evento = "EstadoPedidoCambiado",
-                PedidoId = id,
-                Estado = nuevoEstado,
-                EstadoAnterior = estadoActual,
-                EstadoNuevo = nuevoEstado,
-                ClienteEmail = pedido.Cliente.CorreoElectronico
-            };
-
-            await _kafkaProductorServicio.EnviarEventoAsync("pedidos-eventos", evento);
-
 
             return new ResultadoCambioEstado
             {
