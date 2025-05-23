@@ -9,3 +9,5 @@ ECommerceWebAppFrontend/bin
 ECommerceWebAppFrontend/obj
 ApiECommerce.Shared/bin
 ApiECommerce.Shared/obj
+ECommerce.Tests/bin
+ECommerce.Tests/obj
