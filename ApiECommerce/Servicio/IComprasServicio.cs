@@ -188,12 +188,11 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
 
             // Registrar los movimientos de inventario tipo compra
             foreach (var detalle in compra.DetalleCompras)
-            {
-                await _movimientoInventarioServicio.RegistrarMovimientoCompraAsync(
+            {                await _movimientoInventarioServicio.RegistrarMovimientoCompraAsync(
                     detalle.IdProductos,
                     detalle.CantidadProductos,
                     compra.Id,
-                    $"Compra registrada el {DateTime.Now}"
+                    $"Compra registrada el {DateTime.Now} - Precio unitario: {detalle.PrecioUnitario:C}"
                 );
             }
 
