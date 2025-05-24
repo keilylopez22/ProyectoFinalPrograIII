@@ -1,0 +1,620 @@
+@page "/admin/compras"
+@using ApiECommerce.DTOs
+@using ApiECommerce.Modelo
+@inject CompraService CompraService
+@inject ProductoService ProductoService
+@inject ProveedorService ProveedorService
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+
+<h3 class="mt-4 mb-3 text-primary fw-bold">🛒 Gestión de Compras</h3>
+
+@if (mostrarFormulario)
+{
+    <div class="card shadow-sm p-3 mb-4">
+        <h4 class="mb-3">Agregar Nueva Compra</h4>
+        <EditForm Model="@compraDTO" OnValidSubmit="GuardarCompra">
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <label for="fecha">Fecha:</label>
+                <InputDate id="fecha" class="form-control" @bind-Value="compraDTO.Fecha" />
+            </div>
+
+            <div class="form-group">
+                <label for="proveedor">Proveedor:</label>
+                <InputSelect id="proveedor" class="form-control" @bind-Value="compraDTO.IdProveedor">
+                    <option value="0">Seleccione un proveedor...</option>
+                    @foreach (var proveedor in proveedores)
+                    {
+                        <option value="@proveedor.Id">@proveedor.Nombre</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <h4>Detalles de la Compra</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detalle in detalles)
+                    {
+                        <tr>
+                            <td>
+                                <InputSelect class="form-control" @bind-Value="detalle.IdProductos" @onchange="@(() => CargarProducto(detalle.IdProductos))">
+                                    <option value="0">Seleccione un producto...</option>
+                                    @foreach (var producto in productos)
+                                    {
+                                        <option value="@producto.Id">@producto.Nombre</option>
+                                    }
+                                </InputSelect>
+                            </td>
+                            <td>
+                                <InputNumber class="form-control" @bind-Value="detalle.CantidadProductos" @onchange="@(() => CalcularSubtotal(detalle))" />
+                            </td>
+                            <td>
+                                <InputNumber class="form-control" @bind-Value="detalle.PrecioUnitario" @onchange="@(() => CalcularSubtotal(detalle))" />
+                            </td>                            <td>
+                                @((detalle.CantidadProductos * (decimal)detalle.PrecioUnitario).ToString("C"))
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-danger" @onclick="@(() => EliminarDetalle(detalle))">
+                                    Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right">
+                            <button type="button" class="btn btn-secondary" @onclick="AgregarDetalle">
+                                Agregar Detalle
+                            </button>
+                        </td>
+                        <td colspan="2">
+                            <strong>Total: @total.ToString("C")</strong>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Guardar Compra</button>
+                <button type="button" class="btn btn-secondary" @onclick="@(() => mostrarFormulario = false)">Cancelar</button>
+            </div>
+        </EditForm>
+    </div>
+}
+else if (isLoading)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+}
+else
+{
+    <div class="card shadow-sm p-3 mb-4">
+        <div class="row g-3 align-items-end mb-3">            <div class="col-md-3">
+                <label class="form-label">Fecha Inicio</label>
+                <input type="date" class="form-control" @bind="fechaInicio" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Fecha Fin</label>
+                <input type="date" class="form-control" @bind="fechaFin" />
+            </div>              
+            <div class="col-md-3">
+                <label class="form-label">Solicitar</label>
+                <select class="form-select" 
+                        @bind="proveedorSeleccionado"
+                        style="border-left: none;">
+                    <option value="">Todos los proveedores</option>
+                    @if (proveedoresFiltrados != null)
+                    {
+                        @foreach (var proveedor in proveedoresFiltrados)
+                        {
+                            <option value="@proveedor.Id">@proveedor.Nombre</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary me-2" @onclick="BuscarCompras">
+                    <i class="fas fa-search"></i> Buscar
+                </button>
+                <button class="btn btn-success" @onclick="NuevaCompra">
+                    <i class="fas fa-plus"></i> Nueva Compra
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if (compras != null && compras.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var compra in compras)
+                    {
+                        <tr>
+                            <td>@compra.Id</td>
+                            <td>@compra.Fecha.ToShortDateString()</td>
+                            <td>@(compra.Proveedor?.Nombre ?? $"Proveedor {compra.IdProveedor}")</td>
+                            <td>@compra.Total.ToString("C")</td>                            <td>                                <div class="dropdown">
+                                    <button class="btn btn-sm dropdown-toggle badge bg-@GetEstadoBadgeColor(compra.Estado)"
+                                            type="button"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            style="min-width: 100px;">
+                                        @compra.Estado
+                                    </button>
+                                    <ul class="dropdown-menu shadow-sm">                                        <li><button type="button" class="dropdown-item d-flex align-items-center gap-2 @(compra.Estado == "Pendiente" ? "active" : "")"
+                                            @onclick=@(() => CambiarEstadoCompra(compra, "Pendiente"))>
+                                            <i class="fas fa-clock"></i> Pendiente
+                                        </button></li>
+                                        <li><button type="button" class="dropdown-item d-flex align-items-center gap-2 @(compra.Estado == "Enviado" ? "active" : "")"
+                                            @onclick=@(() => CambiarEstadoCompra(compra, "Enviado"))>
+                                            <i class="fas fa-shipping-fast"></i> Enviado
+                                        </button></li>
+                                        <li><button type="button" class="dropdown-item d-flex align-items-center gap-2 @(compra.Estado == "Entregado" ? "active" : "")"
+                                            @onclick=@(() => CambiarEstadoCompra(compra, "Entregado"))>
+                                            <i class="fas fa-box"></i> Entregado
+                                        </button></li>
+                                        <li><button type="button" class="dropdown-item d-flex align-items-center gap-2 @(compra.Estado == "Completada" ? "active" : "")"
+                                            @onclick=@(() => CambiarEstadoCompra(compra, "Completada"))>
+                                            <i class="fas fa-check-circle"></i> Completada
+                                        </button></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><button type="button" class="dropdown-item d-flex align-items-center gap-2 @(compra.Estado == "Cancelado" ? "active" : "")"
+                                            @onclick=@(() => CambiarEstadoCompra(compra, "Cancelado"))>
+                                            <i class="fas fa-times-circle"></i> Cancelado
+                                        </button></li>
+                                    </ul>
+                                </div>
+                            </td>
+                             <td class="text-nowrap">
+                                <button class="btn btn-info btn-sm me-1" @onclick="() => VerDetalles(compra.Id)"
+                                    title="Ver detalles">
+                                    <i class="fas fa-eye"></i> Ver
+                                </button>
+                                <button class="btn btn-primary btn-sm me-1" @onclick="() => ActualizarCompra(compra.Id)"
+                                    title="Editar">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                                <button class="btn btn-danger btn-sm" @onclick="() => EliminarCompra(compra.Id)"
+                                    title="Eliminar">
+                                    <i class="fas fa-trash"></i>Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div>
+                Mostrando página @paginaActual de @totalPaginas
+            </div>
+            <div>
+                <button class="btn btn-secondary me-2" @onclick="PaginaAnterior" disabled="@(!PuedeRetroceder)">
+                    <i class="fas fa-chevron-left"></i> Anterior
+                </button>
+                <button class="btn btn-secondary" @onclick="PaginaSiguiente" disabled="@(!PuedeAvanzar)">
+                    Siguiente <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No se encontraron compras que coincidan con los criterios de búsqueda.
+        </div>
+    }
+}
+
+@if (compraSeleccionada != null)
+{
+    <div class="modal fade show" style="display: block; background: rgba(0,0,0,0.5);" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles de Compra #@compraSeleccionada.Id</h5>
+                    <button type="button" class="btn-close" @onclick="CerrarModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <strong>Fecha:</strong> @compraSeleccionada.Fecha.ToShortDateString()
+                    </div>
+
+                    <div class="mb-3">
+                        <strong>Proveedor:</strong> @(compraSeleccionada.Proveedor?.Nombre ?? $"Proveedor {compraSeleccionada.IdProveedor}")
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detalle in compraSeleccionada.DetalleCompras)
+                                {
+                                    <tr>
+                                        <td>@(nombresProductos.ContainsKey(detalle.IdProductos) ? nombresProductos[detalle.IdProductos] : $"Producto {detalle.IdProductos}")</td>
+                                        <td>@detalle.CantidadProductos</td>
+                                        <td>@detalle.PrecioUnitario.ToString("C")</td>
+                                        <td>@detalle.SubTotal.ToString("C")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td><strong>@compraSeleccionada.Total.ToString("C")</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {    
+    public static class EstadosPedido
+    {
+        public const string Pendiente = "Pendiente";
+        public const string Enviado = "Enviado";
+        public const string Entregado = "Entregado";
+        public const string Completada = "Completada";
+        public const string Cancelado = "Cancelado";
+    }
+
+    private List<Compra> compras = new();
+    private List<Proveedor> proveedores = new();
+    private List<Proveedor> proveedoresFiltrados = new();
+    private List<ProductoDTO> productos = new();
+    private CompraDTO compraDTO = new() { Fecha = DateTime.Now };
+    private List<DetalleCompraDto> detalles = new();
+    private decimal total = 0;
+    private bool mostrarFormulario = false;
+    private Dictionary<int, string> nombresProductos = new();
+    private Dictionary<double, string> preciosUnitarios = new();
+    private Compra? compraSeleccionada;
+    private bool isLoading = true;
+    private DateTime? fechaInicio;
+    private DateTime? fechaFin;
+    private string? proveedorSeleccionado;
+    private string? filtroProveedor;
+    private int paginaActual = 1;
+    private int cantidadPorPagina = 5;
+    private int totalPaginas = 1;    private bool PuedeRetroceder => paginaActual > 1;
+    private bool PuedeAvanzar => paginaActual < totalPaginas && compras.Count >= cantidadPorPagina;    private async Task CargarProducto(int idProducto)
+    {
+        try 
+        {
+           var productos = await ProductoService?.ObtenerListaProductosAsync();
+            if (productos != null)
+            {
+                var producto = productos.FirstOrDefault(p => p.Id == idProducto);
+                if (producto != null)
+                {
+                    nombresProductos[idProducto] = producto.Nombre;
+                    return;
+                }
+            }
+            nombresProductos[idProducto] = $"Producto {idProducto}";
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar producto {idProducto}: {ex.Message}");
+            nombresProductos[idProducto] = $"Producto {idProducto}";
+        }
+    }    private void AgregarDetalle()
+    {
+        detalles.Add(new DetalleCompraDto());
+        CalcularTotal();
+    }
+
+    private void EliminarDetalle(DetalleCompraDto detalle)
+    {
+        detalles.Remove(detalle);
+        CalcularTotal();
+    }
+
+    private void CalcularSubtotal(DetalleCompraDto detalle)
+    {
+        // No need to store subtotal in the DTO, we calculate it when needed
+        CalcularTotal();
+    }
+
+    private void CalcularTotal()
+    {
+        total = detalles.Sum(d => d.CantidadProductos * (decimal)d.PrecioUnitario);
+    }
+
+    private async Task GuardarCompra()
+    {
+        try
+        {
+            compraDTO.DetalleCompras = detalles;
+            var resultado = await CompraService.CrearCompraAsync(compraDTO);
+
+            if (resultado != null && resultado.Exito)
+            {
+                await JS.InvokeVoidAsync("alert", "Compra registrada exitosamente");
+                mostrarFormulario = false;
+                await CargarCompras(); 
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", resultado?.Mensaje ?? "Error al registrar la compra");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error: {ex.Message}");
+        }
+    }
+
+    private void CancelarNuevaCompra()
+    {
+        mostrarFormulario = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.WhenAll(
+            CargarCompras(),
+            CargarProveedores()
+        );
+        productos = await ProductoService.ObtenerListaProductosAsync();
+    }    
+    private async Task CargarProveedores()
+    {
+        try
+        {
+            if (ProveedorService != null)
+            {
+                var resultado = await ProveedorService.ObtenerProveedoresAsync(string.Empty, 1, 1000);
+                if (resultado != null)
+                {
+                    proveedores = resultado.Proveedores;
+                    proveedoresFiltrados = proveedores;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al cargar los proveedores: {ex.Message}");
+        }
+    }
+
+    private void FiltrarProveedores()
+    {
+        if (string.IsNullOrWhiteSpace(filtroProveedor))
+        {
+            proveedoresFiltrados = proveedores;
+        }
+        else
+        {
+            proveedoresFiltrados = proveedores
+                .Where(p => p.Nombre.Contains(filtroProveedor, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        StateHasChanged();
+    }
+
+    private async Task CargarCompras()
+    {
+        isLoading = true;
+        try
+        {
+            int? idProveedor = null;
+            if (!string.IsNullOrEmpty(proveedorSeleccionado) && int.TryParse(proveedorSeleccionado, out int id))
+            {
+                idProveedor = id;
+            }            var resultado = await CompraService.ObtenerComprasPaginadasAsync(
+                fechaInicio: fechaInicio,
+                fechaFin: fechaFin,
+                idProveedor: idProveedor,
+                pageNumber: paginaActual,
+                pageSize: cantidadPorPagina);
+
+            compras = resultado.Compras;
+            totalPaginas = (resultado.Total + cantidadPorPagina - 1) / cantidadPorPagina;
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al cargar las compras: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task BuscarCompras()
+    {
+        paginaActual = 1;
+        await CargarCompras();
+    }    private void NuevaCompra()
+    {
+        compraDTO = new CompraDTO { Fecha = DateTime.Now };
+        detalles = new List<DetalleCompraDto>();
+        mostrarFormulario = true;
+        AgregarDetalle();
+    }
+
+    private async Task VerDetalles(int id)
+    {
+        try
+        {
+            var compra = await CompraService.ObtenerCompraAsync(id);
+            if (compra != null)
+            {
+                compraSeleccionada = compra;
+                foreach (var detalle in compra.DetalleCompras)
+                {
+                    await CargarProducto(detalle.IdProductos);
+                }
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "No se pudo cargar los detalles de la compra");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al cargar los detalles: {ex.Message}");
+        }
+    }
+
+    private async Task EliminarCompra(int id)
+    {
+        if (await JS.InvokeAsync<bool>("confirm", "¿Está seguro que desea eliminar esta compra?"))
+        {
+            try
+            {
+                if (await CompraService.EliminarCompraAsync(id))
+                {
+                    await CargarCompras();
+                }
+                else
+                {
+                    await JS.InvokeVoidAsync("alert", "No se pudo eliminar la compra");
+                }
+            }
+            catch (Exception ex)
+            {
+                await JS.InvokeVoidAsync("alert", $"Error al eliminar la compra: {ex.Message}");
+            }
+        }
+    }    private async Task ActualizarCompra(int id)
+    {
+        try 
+        {
+            var compra = await CompraService.ObtenerCompraAsync(id);
+            if (compra != null)
+            {
+                compraDTO = new CompraDTO 
+                { 
+                    Fecha = compra.Fecha,
+                    IdProveedor = compra.IdProveedor
+                };
+                
+                detalles = compra.DetalleCompras.Select(d => new DetalleCompraDto
+                {
+                    IdProductos = d.IdProductos,
+                    CantidadProductos = d.CantidadProductos,
+                    PrecioUnitario = (double)d.PrecioUnitario
+                }).ToList();
+
+                await CargarProveedores();
+                productos = await ProductoService.ObtenerListaProductosAsync();
+                
+                foreach (var detalle in compra.DetalleCompras)
+                {
+                    await CargarProducto(detalle.IdProductos);
+                }
+                
+                CalcularTotal();
+                mostrarFormulario = true;
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "No se pudo cargar la compra para editar");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al cargar la compra para editar: {ex.Message}");
+        }
+    }
+
+    private void CerrarModal()
+    {
+        compraSeleccionada = null;
+    }
+
+    private async Task PaginaAnterior()
+    {
+        if (PuedeRetroceder)
+        {
+            paginaActual--;
+            await CargarCompras();
+        }
+    }
+
+    private async Task PaginaSiguiente()
+    {
+        if (PuedeAvanzar)
+        {
+            paginaActual++;
+            await CargarCompras();
+        }
+    }
+
+    private string GetEstadoBadgeColor(string estado)
+    {
+        return estado.ToLower() switch
+        {
+            "pendiente" => "warning",
+            "enviado" => "info",
+            "entregado" => "success",
+            "cancelado" => "danger",
+            "completada" => "success",
+            _ => "secondary"
+        };
+    }
+
+    private async Task CambiarEstadoCompra(Compra compra, string nuevoEstado)
+    {
+        try
+        {
+            compra.Estado = nuevoEstado;
+            if (await CompraService.ActualizarCompraAsync(compra))
+            {
+                await JS.InvokeVoidAsync("alert", $"Estado cambiado a {nuevoEstado} exitosamente");
+                await CargarCompras();
+            }
+            else
+            {
+                await JS.InvokeVoidAsync("alert", "No se pudo cambiar el estado de la compra");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al cambiar el estado: {ex.Message}");
+        }
+    }
+}
