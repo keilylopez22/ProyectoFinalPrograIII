@@ -31,7 +31,7 @@ builder.Services.AddScoped<IMovimientosInventarioServicio, MovimientosInventario
 builder.Services.AddScoped<IProveedoresServicio, ProveedorServicio>();
 //builder.Services.AddHostedService<PedidoConsumerService>();
 
-//builder.Services.AddHostedService<KafkaPedidoConsumidor>();
+builder.Services.AddHostedService<KafkaPedidoConsumidor>();
 //builder.Services.AddScoped<LoginServicio>();
 
 
