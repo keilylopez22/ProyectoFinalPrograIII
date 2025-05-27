@@ -29,7 +29,7 @@ public class CompraServicioTests
             Id = 1,
             Nombre = "Producto A",
             Existencias = 10,
-            Precio = 100
+            Precio = 100        
         });
 
         contexto.compras.Add(new Compra
@@ -37,6 +37,7 @@ public class CompraServicioTests
             Id = 1,
             Fecha = DateTime.Today,
             IdProveedor = 1,
+            Estado = "pendiente",
             Proveedor = contexto.proveedores.Find(1),
             DetalleCompras = new List<DetalleCompra>
             {
@@ -45,11 +46,12 @@ public class CompraServicioTests
                     Id = 1,
                     IdProductos = 1,
                     CantidadProductos = 2,
-                    PrecioUnitario = 50
+                    PrecioUnitario = 50,
+
                 }
             }
         });
-
+        
         contexto.SaveChanges();
     }
 
@@ -95,12 +97,15 @@ public class CompraServicioTests
 
         var mockMov = new Mock<IMovimientosInventarioServicio>();
         var servicio = new CompraServicio(contexto, mockMov.Object);
-
-        var editarCompra = new Compra
+        var editarCompra = await contexto.compras.FindAsync(1);
+        editarCompra.Estado = "Completada";
+        editarCompra.DetalleCompras.First().CantidadProductos = 3;
+        /*var editarCompra = new Compra
         {
             Id = 1,
             Fecha = DateTime.Today.AddDays(-1),
             IdProveedor = 1,
+            Estado = "Completada",
             DetalleCompras = new List<DetalleCompra>
             {
                 new DetalleCompra
@@ -110,7 +115,7 @@ public class CompraServicioTests
                     PrecioUnitario = 60
                 }
             }
-        };
+        };*/
 
         var resultado = await servicio.ActualizarComprasAsync(editarCompra);
 
