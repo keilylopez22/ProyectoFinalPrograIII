@@ -29,6 +29,5 @@ namespace ECommerceWebAppFrontend.Services
 
             return await http.GetFromJsonAsync<MovimientoInventarioResultado>(url);
         }
-
     }
 }

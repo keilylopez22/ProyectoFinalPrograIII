@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using ECommerceWebAppFrontend;
-using ECommerceWebAppFrontend.Services; // Asegúrate de que este namespace sea correcto
+using ECommerceWebAppFrontend.Services; 
 
 namespace ECommerceWebAppFrontend
 {

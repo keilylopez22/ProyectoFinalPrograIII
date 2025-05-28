@@ -17,6 +17,6 @@ namespace ApiECommerce.Modelo
         [JsonIgnore]
         public Compra Compra { get; set; }
         public Producto Producto { get; set; }
-        public decimal SubTotal { get; set; } // Agregado para el subtotal
+        public decimal SubTotal { get; set; } 
     }
 }

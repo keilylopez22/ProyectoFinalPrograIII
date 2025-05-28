@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
+using Microsoft.EntityFrameworkCore; 
 using ApiECommerce.Modelo;
 using ApiECommerce.Data;
 using ApiECommerce.DTOs;

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc; // Para ControllerBase, RouteAttribute, ApiControllerAttribute, ActionResult, IActionResult, etc. 
-using ApiECommerce.Modelo; // Para tus modelos (asegúrate de que el namespace sea correcto)
-using ApiECommerce.Data;  // Para ApplicationDbContext (si lo inyectas directamente en el controlador)
-using ApiECommerce.Servicio; // Si estás usando una capa de servicios
+using Microsoft.AspNetCore.Mvc; 
+using ApiECommerce.Modelo; 
+using ApiECommerce.Data;  
+using ApiECommerce.Servicio; 
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;

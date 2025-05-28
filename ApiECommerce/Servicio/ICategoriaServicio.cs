@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ApiECommerce.Modelo;
-using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
-using ApiECommerce.Data; // Para ApplicationDbContext
-using ApiECommerce.IServices; // Para tus interfaces de servicio
-using ApiECommerce.DTOs; // Para tus DTOs (asegúrate de que el namespace sea correcto)
-using Microsoft.AspNetCore.Mvc; // Para ControllerBase, RouteAttribute, ApiControllerAttribute, ActionResult, IActionResult, etc.
-using ApiECommerce.Controladores; // Para tus controladores (asegúrate de que el namespace sea correcto)
+using Microsoft.EntityFrameworkCore; 
+using ApiECommerce.Data; 
+using ApiECommerce.IServices; 
+using ApiECommerce.DTOs; 
+using Microsoft.AspNetCore.Mvc; 
+using ApiECommerce.Controladores; 
 
 namespace ApiECommerce.Servicio
 {

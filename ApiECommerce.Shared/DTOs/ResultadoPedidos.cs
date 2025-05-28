@@ -9,8 +9,6 @@ namespace ApiECommerce.DTOs
     public class ResultadoPedidos
     {
         public List<Pedido> Pedidos { get; set; } = new();
-        
-       
+               
     }
-
 }

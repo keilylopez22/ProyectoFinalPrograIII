@@ -12,14 +12,12 @@ namespace ApiECommerce.DTOs
         public int IdCliente { get; set; }
         public List<DetallePedidoDto> DetallesPedido { get; set; } = new();
     }
-
     public class DetallePedidoDto
     {
         public int IdProductos { get; set; }
         public int CantidadProductos { get; set; }
         
     }
-
     public class PedidoResultado
     {
         public bool Exito { get; set; }

@@ -31,7 +31,6 @@ namespace ECommerceWebAppFrontend.Services
             await http.PutAsJsonAsync($"api/Proveedores/{proveedor.Id}", proveedor);
 
         public async Task EliminarProveedorAsync(int id) =>
-            await http.DeleteAsync($"api/Proveedores/{id}");
-        
+            await http.DeleteAsync($"api/Proveedores/{id}");        
     }
 }

@@ -17,11 +17,11 @@ namespace ECommerceWebAppFrontend.Services
         }
 
         public async Task<List<Pedido>> ObtenerPedidosAsync(
-    int? idCliente = null,
-    DateTime? fechaInicio = null,
-    DateTime? fechaFin = null,
-    int pageNumber = 1,
-    int pageSize = 10)
+            int? idCliente = null,
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int pageNumber = 1,
+            int pageSize = 10)
         {
             try
             {

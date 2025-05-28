@@ -8,7 +8,7 @@ namespace ApiECommerce.Modelo
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
         public int IdProveedor { get; set; } // Clave foránea
-        // Otras propiedades de la compra
+        
 
         public double Total {get; set;}
 

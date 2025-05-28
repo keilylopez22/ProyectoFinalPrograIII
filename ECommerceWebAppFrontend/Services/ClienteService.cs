@@ -23,7 +23,6 @@ namespace ECommerceWebAppFrontend.Services
         }
 
         //Se agrega un nuevo método para obtener todos los clientes en pedidos
-        //Agregado por Chamo
         public async Task<List<Cliente>> ObtenerTodosLosClientesAsync()
         {
             try
@@ -47,5 +46,4 @@ namespace ECommerceWebAppFrontend.Services
         public async Task EliminarClienteAsync(int id) =>
             await http.DeleteAsync($"api/clientes/{id}");
     }
-
 }

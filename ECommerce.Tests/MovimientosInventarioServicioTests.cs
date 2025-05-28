@@ -33,7 +33,6 @@ namespace ApiECommerce.Tests
         {
             var context = await GetDbContextWithDataAsync();
             var servicio = new MovimientosInventarioServicio(context);
-
             var resultado = await servicio.RegistrarMovimientoCompraAsync(1, 10, 101, "Compra test", 5.5m);
 
             Assert.True(resultado);
@@ -50,7 +49,6 @@ namespace ApiECommerce.Tests
 
             var context = new ApplicationDbContext(options);
             var servicio = new MovimientosInventarioServicio(context);
-
             var resultado = await servicio.RegistrarMovimientoCompraAsync(999, 10, 101, "Compra inválida");
 
             Assert.False(resultado);
@@ -61,7 +59,6 @@ namespace ApiECommerce.Tests
         {
             var context = await GetDbContextWithDataAsync();
             var servicio = new MovimientosInventarioServicio(context);
-
             var resultado = await servicio.RegistrarMovimientoPedidoAsync(1, 5, 202, "Pedido test", 6m);
 
             Assert.True(resultado);
