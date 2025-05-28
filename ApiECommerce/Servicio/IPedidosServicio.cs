@@ -24,14 +24,13 @@ namespace ApiECommerce.Servicio
         Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
-            int? IdProducto = null,
             int? IdCliente = null,
-            int? IdProveedor = null);
+            int? pageNumber = 1,
+            int? pageSize = 10);
 
 
             //para cambiar el estado del pedido
-            Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
-
+        Task<ResultadoCambioEstado> CambiarEstadoPedidoAsync(int id, string nuevoEstado);
         
     }
 
@@ -60,19 +59,19 @@ namespace ApiECommerce.Servicio
 
         //Aplicar Filtros
         public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
-            DateTime? fechaInicio = null,
-            DateTime? fechaFin = null,
-            int? IdProducto = null,
-            int? IdCliente = null,
-            int? IdProveedor = null)
+        DateTime? fechaInicio = null,
+        DateTime? fechaFin = null,
+        int? IdCliente = null,
+        int? pageNumber = 1,
+        int? pageSize = 10)
         {
-        var query = _context.pedidos
+            var query = _context.pedidos
                 .Include(p => p.Cliente)
                 .Include(p => p.DetallesPedido)
-                    .ThenInclude(dp => dp.Producto) // Asumiendo que DetallesPedido tiene una relación con Producto
+                    .ThenInclude(dp => dp.Producto)
                 .AsQueryable();
 
-            // Filtro por rango de fechas (periodo de tiempo)
+            // Filtro por rango de fechas
             if (fechaInicio.HasValue)
                 query = query.Where(p => p.Fecha >= fechaInicio.Value);
 
@@ -83,13 +82,12 @@ namespace ApiECommerce.Servicio
             if (IdCliente.HasValue)
                 query = query.Where(p => p.IdCliente == IdCliente.Value);
 
-            // Filtro por producto
-            if (IdProducto.HasValue)
-                query = query.Where(p => p.DetallesPedido.Any(dp => dp.IdProductos == IdProducto.Value));
+            // Paginación
+            int skip = ((pageNumber ?? 1) - 1) * (pageSize ?? 10);
+            query = query
+                .Skip(skip)
+                .Take(pageSize ?? 10);
 
-            // Filtro por proveedor
-            
-                       
             return await query.ToListAsync();
         }
 

@@ -286,24 +286,35 @@ else
 
 
     protected override async Task OnInitializedAsync()
+{
+    try
     {
-        try
-        {
-            var resultadoClientes = await ClienteService.ObtenerClientesAsync(
-                filtro: "",
-                pagina: 1,
-                porPagina: 100
-            );
-            clientes = resultadoClientes.Clientes;
-            
-           // productos = await ProductoService.ObtenerProductosAsync();
-            await CargarPedidos();
-        }
-        catch (Exception ex)
-        {
-            await JS.InvokeVoidAsync("alert", $"Error al cargar datos: {ex.Message}");
-        }
+        var resultadoClientes = await ClienteService.ObtenerClientesAsync(
+            filtro: "",
+            pagina: 1,
+            porPagina: 100
+        );
+        clientes = resultadoClientes.Clientes;
+
+        var resultadoProductos = await ProductoService.ObtenerProductosAsync();
+        productos = resultadoProductos.Productos
+            .Select(dto => new Producto
+            {
+                Id = dto.Id,
+                Nombre = dto.Nombre,
+                Precio = dto.Precio,
+                // Mapea aquí las demás propiedades necesarias
+            })
+            .ToList();
+
+        await CargarPedidos();
     }
+    catch (Exception ex)
+    {
+        await JS.InvokeVoidAsync("alert", $"Error al cargar datos: {ex.Message}");
+    }
+}
+
 
     private async Task AplicarFiltros()
     {
@@ -324,7 +335,7 @@ else
     {
         try
         {
-            pedidos = await PedidoService.ObtenerPedidosAsync(
+                pedidos = await PedidoService.ObtenerPedidosAsync(
                 idCliente: filtroIdCliente,    
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
