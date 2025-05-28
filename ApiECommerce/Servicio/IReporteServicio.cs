@@ -12,25 +12,20 @@ using System.Linq;
 namespace ApiECommerce.Servicio
 {
     public interface IReporteServicio
-    {
-        Task<byte[]>GenerarReporteCompras(
+    {       
+        Task<byte[]> GenerarReporteCompras(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProductos = null,
             int? IdProveedor = null
             );
 
-        
-        
-
-         Task<byte[]>GenerarReportePedidos(
+         Task<byte[]> GenerarReportePedidos(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdProducto = null,
             int? IdCliente = null,
-            int? IdProveedor = null);
-
-         
+            int? IdProveedor = null);         
     }
     public class ReporteServicio:IReporteServicio
     {
@@ -82,8 +77,6 @@ namespace ApiECommerce.Servicio
                      filaDeDatos.CreateCell(3).SetCellValue(compra.Estado);
                      filaDeDatos.CreateCell(4).SetCellValue(compra.IdProveedor);
                      filaDeDatos.CreateCell(5).SetCellValue(compra.Proveedor.Nombre);
-
-
 
                 }
                 using(var stream= new MemoryStream())
@@ -153,12 +146,6 @@ namespace ApiECommerce.Servicio
                 //con el CreateCell creo las celdas y con SetCellValue le doy valor a esas celdas
                 filaEncabezados.CreateCell(i).SetCellValue(encabezados[i]);
             }
-            
-                
-            
-
          }
-
-
     }
 }

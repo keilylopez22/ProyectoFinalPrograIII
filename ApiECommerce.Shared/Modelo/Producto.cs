@@ -19,8 +19,6 @@ namespace ApiECommerce.Modelo
         [ForeignKey("Categoria")]
         public int? IdCategoria { get; set; }
         public Categoria Categoria { get; set; }
-        // Otras propiedades del producto
-
-       
+               
     }
 }

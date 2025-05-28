@@ -1,6 +1,6 @@
-using ApiECommerce.Modelo; // Si tus modelos están en este namespace
-using ApiECommerce.Data;  // Si tu ApplicationDbContext está en este namespace
-using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
+using ApiECommerce.Modelo; 
+using ApiECommerce.Data;  
+using Microsoft.EntityFrameworkCore; 
 using ApiECommerce.IServices;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,19 +36,7 @@ namespace ApiECommerce.Servicio
                 Total = total
             };
             return resultado;
-            /*if (!string.IsNullOrEmpty(nombre))
-            {
-                return await _context.clientes
-                    .Where(c => c.Nombre.Contains(nombre))
-                    .Skip((pageNumber - 1) * pageSize)
-                    .Take(pageSize)
-                    .ToListAsync();
-            }
             
-            return await _context.clientes
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();*/
         }
 
         public async Task<Cliente> ObtenerClienteAsync(int id)

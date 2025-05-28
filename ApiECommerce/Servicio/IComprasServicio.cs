@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore; // Para DbContext, DbSet, etc.
+using Microsoft.EntityFrameworkCore; 
 using System.Threading.Tasks;
 using ApiECommerce.Modelo;
 using ApiECommerce.Data;
 using ApiECommerce.DTOs;
-namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespace sea correcto)
 
-
+namespace ApiECommerce.Servicio
 {
     public interface IComprasServicio
     {
@@ -124,19 +123,7 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
             FirstOrDefaultAsync(p => p.Id == id );
             
         }
-       /* public async Task<bool> CrearComprasAsync(Compra compra)
-        {
-            if(compra == null)
-            {
-                return false;
-            }
-
-            await _context.compras.AddAsync(compra);
-            await _context.SaveChangesAsync();
-            return true;
-
-        }
-        */
+       
         public async Task<CompraResultado> CrearComprasAsync(CompraDTO compraDto)
         {
             if (compraDto == null || compraDto.DetalleCompras == null || !compraDto.DetalleCompras.Any())
@@ -205,8 +192,6 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
             };
         }
 
-
-
         public async Task<bool> ActualizarComprasAsync(Compra compra)
         {
             _context.compras.Update(compra);
@@ -225,8 +210,6 @@ namespace ApiECommerce.Servicio// Para tus modelos (asegúrate de que el namespa
                 return true;
             }
             return false;
-
         }
-
     }
 }

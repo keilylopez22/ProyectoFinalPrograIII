@@ -7,13 +7,11 @@ namespace ApiECommerce.DTOs
 {
     public class PedidoEventoDTO
     {
-        public string Evento { get; set; }              // "pedido_creado" o "estado_actualizado"
+        public string Evento { get; set; }              
         public int PedidoId { get; set; }
-        public string Estado { get; set; }              // estado actual
-        public string EstadoAnterior { get; set; }      // si aplica
-        public string EstadoNuevo { get; set; }         // si aplica
+        public string Estado { get; set; }              
+        public string EstadoAnterior { get; set; }     
+        public string EstadoNuevo { get; set; }         
         public string ClienteEmail { get; set; }
-    }
-
-   
+    }   
 }

@@ -3,8 +3,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;               
 using System.Collections.Generic;  
 using ApiECommerce.DTOs;         
-//using ApiECommerce.Modelo;                  
-
+                 
 namespace ECommerceWebAppFrontend.Services
 {
     public class ProductoService
@@ -61,7 +60,5 @@ namespace ECommerceWebAppFrontend.Services
             var response = await _http.DeleteAsync($"api/Producto/{id}");
             response.EnsureSuccessStatusCode();
         }
-
     }
-
 }

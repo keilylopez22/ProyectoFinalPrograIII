@@ -24,14 +24,12 @@ namespace ApiECommerce.Tests
         {
             var proveedores = new List<Proveedor>
             {
-               new Proveedor { Nombre = "Suministros Globales" , Direccion = "Calle 123", Nit= 1546446, CorreoElectronico= "SuministrosGlobalesPrueba@gmail.com", Telefono = 1234567890},
+                new Proveedor { Nombre = "Suministros Globales" , Direccion = "Calle 123", Nit= 1546446, CorreoElectronico= "SuministrosGlobalesPrueba@gmail.com", Telefono = 1234567890},
                 new Proveedor { Nombre = "Proveedores Express", Direccion = "Calle 456", Nit= 1546446, CorreoElectronico= "cbuawcuewfqf", Telefono = 1234567890},
                 new Proveedor { Nombre = "Distribuciones Rápidas", Direccion = "Calle 789", Nit= 1546446, CorreoElectronico= "ijedwskckac", Telefono = 1234567890},
                 new Proveedor { Nombre = "Logística Avanzada", Direccion = "Calle 101", Nit= 1546446, CorreoElectronico= "qwdxowojw", Telefono = 1234567890},
                 new Proveedor { Nombre = "Servicios de Transporte", Direccion = "Calle 202", Nit= 1546446, CorreoElectronico= "hciaisfowaj", Telefono = 1234567890}
             };
-        
-
             context.proveedores.AddRange(proveedores);
             await context.SaveChangesAsync();
         }

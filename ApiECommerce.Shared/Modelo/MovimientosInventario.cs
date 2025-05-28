@@ -2,9 +2,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
-
-
 namespace ApiECommerce.Modelo
 {
     public class MovimientosInventario
@@ -60,5 +57,4 @@ namespace ApiECommerce.Modelo
         ajuste,
         devolucion
     }
-
 }

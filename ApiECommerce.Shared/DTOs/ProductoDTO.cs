@@ -13,6 +13,6 @@ namespace ApiECommerce.DTOs
         public int Existencias { get; set; }
         public int? IdCategoria { get; set; }
         public string? ImagenUrl { get; set; }
-        public string? Descripcion { get; set; } // <-- Agrega esta línea
+        public string? Descripcion { get; set; } 
     }
 }

@@ -11,5 +11,4 @@ namespace ApiECommerce.DTOs
         public List<Cliente> Clientes { get; set; }
         public int Total { get; set; }
     }
-
 }

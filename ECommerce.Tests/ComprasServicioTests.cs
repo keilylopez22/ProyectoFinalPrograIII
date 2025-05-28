@@ -100,22 +100,6 @@ public class CompraServicioTests
         var editarCompra = await contexto.compras.FindAsync(1);
         editarCompra.Estado = "Completada";
         editarCompra.DetalleCompras.First().CantidadProductos = 3;
-        /*var editarCompra = new Compra
-        {
-            Id = 1,
-            Fecha = DateTime.Today.AddDays(-1),
-            IdProveedor = 1,
-            Estado = "Completada",
-            DetalleCompras = new List<DetalleCompra>
-            {
-                new DetalleCompra
-                {
-                    IdProductos = 1,
-                    CantidadProductos = 3,
-                    PrecioUnitario = 60
-                }
-            }
-        };*/
 
         var resultado = await servicio.ActualizarComprasAsync(editarCompra);
 
@@ -150,11 +134,8 @@ public class CompraServicioTests
 
         var mockMov = new Mock<IMovimientosInventarioServicio>();
         var servicio = new CompraServicio(contexto, mockMov.Object);
-
-
         var compras = await servicio.ObtenerComprasAsync(null, null, null);
         Assert.Single(compras);
-        //Assert.Equal(1, compras[0].Id);
     }
 
     [Fact]
@@ -166,7 +147,6 @@ public class CompraServicioTests
 
         var mockMov = new Mock<IMovimientosInventarioServicio>();
         var servicio = new CompraServicio(contexto, mockMov.Object);
-
         var compra = await servicio.ObtenerComprasAsync(1);
 
         Assert.NotNull(compra);

@@ -1,4 +1,4 @@
-using ApiECommerce.DTOs; // Cambia el namespace según corresponda
+using ApiECommerce.DTOs; 
 
 namespace ApiECommerce.DTOs
 {

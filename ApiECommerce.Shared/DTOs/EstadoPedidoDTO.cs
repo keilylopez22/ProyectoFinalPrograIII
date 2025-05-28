@@ -5,12 +5,8 @@ using System.Threading.Tasks;
 
 namespace ApiECommerce.DTOs
 {
-    //DTO
-    //data transfer objet
-    //objeto de transferencia de datos
     public class EstadoPedidoDTO
     {
-        public string Estado {get; set;}
-        
+        public string Estado {get; set;}        
     }
 }

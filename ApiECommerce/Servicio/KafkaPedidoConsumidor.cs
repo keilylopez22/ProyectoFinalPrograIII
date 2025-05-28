@@ -14,74 +14,73 @@ using System.Text.Json.Nodes;
 
 namespace ApiECommerce.Servicio
 {
-    public class KafkaPedidoConsumidor : BackgroundService
-{
-    private readonly IServiceScopeFactory _scopeFactory;
-    private readonly IConfiguration _configuration;
-
-    public KafkaPedidoConsumidor(IServiceScopeFactory scopeFactory, IConfiguration configuration)
+        public class KafkaPedidoConsumidor : BackgroundService
     {
-        _scopeFactory = scopeFactory;
-        _configuration = configuration;
-    }
+        private readonly IServiceScopeFactory _scopeFactory;
+        private readonly IConfiguration _configuration;
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        var config = new ConsumerConfig
+        public KafkaPedidoConsumidor(IServiceScopeFactory scopeFactory, IConfiguration configuration)
         {
-            BootstrapServers = _configuration["Kafka:BootstrapServers"],
-            GroupId = "grupo-pedidos",
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
+            _scopeFactory = scopeFactory;
+            _configuration = configuration;
+        }
 
-        using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
-        consumer.Subscribe("crear-pedido");
-
-        while (!stoppingToken.IsCancellationRequested)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var result = consumer.Consume(stoppingToken);
-            var pedidoDto = JsonSerializer.Deserialize<PedidoKafkaDTO>(result.Message.Value);
-
-            using var scope = _scopeFactory.CreateScope();
-            var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-            // procesamiento similar al servicio original
-            decimal total = 0;
-            var detalles = new List<DetallePedido>();
-
-            foreach (var item in pedidoDto.DetallesPedido)
+            var config = new ConsumerConfig
             {
-                var producto = await db.productos.FindAsync(item.IdProductos);
-                if (producto == null || producto.Existencias < item.CantidadProductos)
-                    continue;
-
-                var subtotal = producto.Precio * item.CantidadProductos;
-                producto.Existencias -= item.CantidadProductos;
-
-                detalles.Add(new DetallePedido
-                {
-                    IdProductos = item.IdProductos,
-                    CantidadProductos = item.CantidadProductos,
-                    PrecioUnitario = producto.Precio,
-                    SubTotal = subtotal
-                });
-
-                total += subtotal;
-            }
-
-            var pedido = new Pedido
-            {
-                Fecha = pedidoDto.Fecha,
-                IdCliente = pedidoDto.IdCliente,
-                Total = total,
-                Estado = "Pendiente",
-                DetallesPedido = detalles
+                BootstrapServers = _configuration["Kafka:BootstrapServers"],
+                GroupId = "grupo-pedidos",
+                AutoOffsetReset = AutoOffsetReset.Earliest
             };
 
-            await db.pedidos.AddAsync(pedido);
-            await db.SaveChangesAsync();
+            using var consumer = new ConsumerBuilder<Ignore, string>(config).Build();
+            consumer.Subscribe("crear-pedido");
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                var result = consumer.Consume(stoppingToken);
+                var pedidoDto = JsonSerializer.Deserialize<PedidoKafkaDTO>(result.Message.Value);
+
+                using var scope = _scopeFactory.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                // procesamiento similar al servicio original
+                decimal total = 0;
+                var detalles = new List<DetallePedido>();
+
+                foreach (var item in pedidoDto.DetallesPedido)
+                {
+                    var producto = await db.productos.FindAsync(item.IdProductos);
+                    if (producto == null || producto.Existencias < item.CantidadProductos)
+                        continue;
+
+                    var subtotal = producto.Precio * item.CantidadProductos;
+                    producto.Existencias -= item.CantidadProductos;
+
+                    detalles.Add(new DetallePedido
+                    {
+                        IdProductos = item.IdProductos,
+                        CantidadProductos = item.CantidadProductos,
+                        PrecioUnitario = producto.Precio,
+                        SubTotal = subtotal
+                    });
+
+                    total += subtotal;
+                }
+
+                var pedido = new Pedido
+                {
+                    Fecha = pedidoDto.Fecha,
+                    IdCliente = pedidoDto.IdCliente,
+                    Total = total,
+                    Estado = "Pendiente",
+                    DetallesPedido = detalles
+                };
+
+                await db.pedidos.AddAsync(pedido);
+                await db.SaveChangesAsync();
+            }
         }
     }
-}
-
 }

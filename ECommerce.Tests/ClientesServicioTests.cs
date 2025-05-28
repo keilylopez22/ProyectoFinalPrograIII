@@ -25,16 +25,10 @@ namespace ApiECommerce.Tests
             var clientes = new List<Cliente>
             {
                 new Cliente { Nombre = "Ana López" , Direccion = "Calle 123", Nit= 1546446, CorreoElectronico= "AnaPrueba@gmail.com", Telefono = 1234567890},
-                //crear 5 clientes con todos los atributos Nombre, Direccion, Nit, CorreoElectronico y Telefono
                 new Cliente { Nombre = "Mario Pérez", Direccion = "Calle 456", Nit= 1546446, CorreoElectronico= "nkjnfkfkkmclmer", Telefono = 1234567890},
                 new Cliente { Nombre = "María García", Direccion = "Calle 789", Nit= 1546446, CorreoElectronico= "nfefefjoer", Telefono = 1234567890},
                 new Cliente { Nombre = "Juan Mendoza", Direccion = "Calle 101", Nit= 1546446, CorreoElectronico= "hfiefijero", Telefono = 1234567890},
-                new Cliente { Nombre = "Luisa Fernández", Direccion = "Calle 202", Nit= 1546446, CorreoElectronico= "efejfjoiqf", Telefono = 1234567890},
-
-                
-
-
-      
+                new Cliente { Nombre = "Luisa Fernández", Direccion = "Calle 202", Nit= 1546446, CorreoElectronico= "efejfjoiqf", Telefono = 1234567890},     
             };
 
             context.clientes.AddRange(clientes);
@@ -50,8 +44,7 @@ namespace ApiECommerce.Tests
             await SembrarDatos(context);
             //crear el servicio de cliente
             var servicio = new ClienteServicio(context);
-            //obtener todos los clientes invocamos que vamos  a probar
-            //el metodo ObtenerClientesAsync
+            //obtener todos los clientes invocamos el metodo que vamos a probar
             var resultado = await servicio.ObtenerClientesAsync();
             //verificamos  el total de clientes en  el resultado 
             Assert.Equal(5, resultado.Clientes.Count);

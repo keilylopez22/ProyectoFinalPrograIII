@@ -16,7 +16,5 @@ namespace ApiECommerce.DTOs
     {
         public int IdProductos { get; set; }
         public int CantidadProductos { get; set; }
-    }
-
-    
+    }    
 }
