@@ -1,18 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ApiECommerce.IServices;
 using ApiECommerce.Servicio;
-using ApiECommerce.Data; // Asegúrate de tener esta línea
+using ApiECommerce.Data;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Agregar servicios al contenedor.
 builder.Services.AddControllers();
-/*.AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
-    })*/ // Si vas a crear una API con controladores
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    // Incluir los comentarios XML en Swagger
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 // Configurar la conexión a la base de datos MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -21,7 +25,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 builder.Services.AddScoped<IClienteService, ClienteServicio>();
 builder.Services.AddScoped<IReporteServicio, ReporteServicio>();
-
 builder.Services.AddScoped<IComprasServicio, CompraServicio>();
 builder.Services.AddScoped<IPedidosServicio, PedidoServicio>();
 builder.Services.AddScoped<IProductoServicio, ProductoServicio>();
@@ -49,26 +52,20 @@ builder.Services.AddCors(options =>
         });
 });
 
-
-
 var app = builder.Build();
+
 app.UseCors("PermitirFrontend");
-// Configure the HTTP request pipeline.
+
+// Configurar el pipeline HTTP
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(); 
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers(); // Si vas a crear una API con controladores
+app.MapControllers();
 
 app.Run();
-
-// Definición de la clase WeatherForecast (si la necesitas para pruebas)
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
