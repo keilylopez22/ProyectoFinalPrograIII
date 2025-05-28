@@ -87,7 +87,7 @@ Este es un sistema de E-Commerce desarrollado en .NET 8, que incluye una API RES
 ---
 
 **Desarrollado por:**  
-Keily Lopez
-Delmy Fajardo
-Cristia Chamo
-Cristian Lopez
+- Keily Lopez
+- Delmy Fajardo
+- Cristia Chamo
+- Cristian Lopez
