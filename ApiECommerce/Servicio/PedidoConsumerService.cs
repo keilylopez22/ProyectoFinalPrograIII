@@ -79,10 +79,42 @@ namespace ApiECommerce.Servicio
             }
         }
 
+        /* private async Task EnviarNotificacionConResend(PedidoEventoDTO evento)
+         {
+             Console.WriteLine($"Notificación enviada para el pedido #{evento.PedidoId}");
+             //enviar notificacion con resend 
+
+
+             await Task.CompletedTask; // Simula una llamada async real
+         }*/
         private async Task EnviarNotificacionConResend(PedidoEventoDTO evento)
         {
-            Console.WriteLine($"Notificación enviada para el pedido #{evento.PedidoId}");
-            await Task.CompletedTask; // Simula una llamada async real
+            var apiKey = _configuration["Resend:ApiKey"]; // Guarda tu API Key en appsettings.json
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+
+            var emailData = new
+            {
+                from = "onboarding@resend.dev",
+                to = "klopezh16@miumg.edu.gt", 
+                subject = $"Pedido #{evento.PedidoId} recibido",
+                html = $"<p>¡Gracias por tu pedido #{evento.PedidoId}!</p>"
+            };
+
+            var response = await httpClient.PostAsJsonAsync(
+                "https://api.resend.com/emails",
+                emailData
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Notificación enviada para el pedido #{evento.PedidoId}");
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error al enviar notificación: {error}");
+            }
         }
     }
 }
