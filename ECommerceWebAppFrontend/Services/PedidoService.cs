@@ -17,11 +17,11 @@ namespace ECommerceWebAppFrontend.Services
         }
 
         public async Task<List<Pedido>> ObtenerPedidosAsync(
-            int? idCliente = null,
-            DateTime? fechaInicio = null,
-            DateTime? fechaFin = null,
-            int pageNumber = 1,
-            int pageSize = 10)
+    int? idCliente = null,
+    DateTime? fechaInicio = null,
+    DateTime? fechaFin = null,
+    int paginaActual = 1,
+    int tamanioPagina = 10)
         {
             try
             {
@@ -29,8 +29,8 @@ namespace ECommerceWebAppFrontend.Services
                 string url = "api/pedidos";
 
                 var queryParams = new List<string>();
-                queryParams.Add($"pageNumber={pageNumber}");
-                queryParams.Add($"pageSize={pageSize}");
+                queryParams.Add($"paginaActual={paginaActual}");
+                queryParams.Add($"tamanioPagina={tamanioPagina}");
 
                 if (idCliente.HasValue)
                     queryParams.Add($"idCliente={idCliente.Value}");
