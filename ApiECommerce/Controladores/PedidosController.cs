@@ -109,7 +109,7 @@ namespace ApiECommerce.Controladores
         /// <param name="pedido">Datos del pedido actualizados.</param>
         /// <returns>Resultado de la operación.</returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarPedidos(int id, [FromBody] Pedido pedido)
+        public async Task<IActionResult> ActualizarPedidos(int id, [FromBody] PedidoUpdateDTO pedido)
         {
             if (id != pedido.Id)
             {
