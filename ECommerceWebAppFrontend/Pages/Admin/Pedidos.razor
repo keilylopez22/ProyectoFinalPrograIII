@@ -133,7 +133,7 @@ else
                             <select class="form-select" @bind="nuevoEstadoSeleccionado">
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="Enviado">Enviado</option>
-                                <option value="Completado">Entregado</option>
+                                <option value="Entregado">Entregado</option>
                                 <option value="Cancelado">Cancelado</option>
                             </select>
                         </div>
@@ -285,7 +285,7 @@ else
     private bool mostrandoNuevoPedido = false;
 
 
-    protected override async Task OnInitializedAsync()
+protected override async Task OnInitializedAsync()
 {
     try
     {
@@ -314,11 +314,11 @@ else
         await JS.InvokeVoidAsync("alert", $"Error al cargar datos: {ex.Message}");
     }
 }
-
-
     private async Task AplicarFiltros()
     {
-        paginaActual = 1; 
+        paginaActual = 1;
+        //pageSize = 10; 
+        
         await CargarPedidos();
     }
 
@@ -328,6 +328,7 @@ else
         fechaInicio = null;
         fechaFin = null;
         paginaActual = 1;
+       // pageSize = 10;
         await CargarPedidos();
     }
 
@@ -339,8 +340,8 @@ else
                 idCliente: filtroIdCliente,    
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
-                pageNumber: paginaActual,
-                pageSize: tamanioPagina
+                paginaActual: paginaActual,
+                tamanioPagina: tamanioPagina
             );
                 
             if (pedidos != null && pedidos.Any())
@@ -363,14 +364,16 @@ else
         }
     }
 
-    private async Task CambiarPagina(int numeroPagina)
+    private async Task CambiarPagina(int nuevaPagina)
+{
+    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas)
     {
-        if (numeroPagina >= 1 && numeroPagina <= totalPaginas)
-        {
-            paginaActual = numeroPagina;
-            await CargarPedidos();
-        }
+        paginaActual = nuevaPagina;
+        await CargarPedidos();
     }
+}
+
+
 
     private void NuevoPedido()
     {
