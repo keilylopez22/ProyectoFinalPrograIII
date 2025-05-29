@@ -3,9 +3,10 @@ using ApiECommerce.IServices;
 using ApiECommerce.Servicio;
 using ApiECommerce.Data;
 using System.Reflection;
+using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
-
+Env.Load();
 // Agregar servicios al contenedor.
 builder.Services.AddControllers();
 
