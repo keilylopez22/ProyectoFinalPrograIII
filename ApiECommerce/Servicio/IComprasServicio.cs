@@ -17,7 +17,7 @@ namespace ApiECommerce.Servicio
             int? IdProveedor = null);
         Task<Compra> ObtenerComprasAsync(int id);
         Task<CompraResultado> CrearComprasAsync(CompraDTO compraDTO);
-        Task<bool> ActualizarComprasAsync(Compra compra);
+        Task<bool> ActualizarComprasAsync(CompraUpdateDTO compra);
         Task<bool> EliminarComprasAsync(int id);
 
 
@@ -192,9 +192,48 @@ namespace ApiECommerce.Servicio
             };
         }
 
-        public async Task<bool> ActualizarComprasAsync(Compra compra)
+        public async Task<bool> ActualizarComprasAsync(CompraUpdateDTO compra)
         {
-            _context.compras.Update(compra);
+            var CompraExistente = await _context.compras
+                .Include(c => c.DetalleCompras)
+                .FirstOrDefaultAsync(c => c.Id == compra.Id);
+            if (CompraExistente == null)    
+            {
+                return false; // Compra no encontrada
+            }
+            // Actualizar los campos de la compra
+           CompraExistente.Proveedor = await _context.proveedores.FindAsync(compra.IdProveedor);
+           CompraExistente.IdProveedor = compra.IdProveedor;
+           CompraExistente.Fecha = compra.Fecha;
+
+            //iterar sobre los detalles de la compra
+            foreach (var detalle in compra.DetalleCompras)
+            {
+                var detalleExistente = CompraExistente.DetalleCompras
+                    .FirstOrDefault(dc => dc.Id == detalle.Id);
+
+                if (detalleExistente != null)
+                {
+                    // Actualizar el detalle existente
+                    detalleExistente.IdProductos = detalle.IdProductos;
+                    detalleExistente.CantidadProductos = detalle.CantidadProductos;
+                    detalleExistente.PrecioUnitario = (decimal)detalle.PrecioUnitario;
+                    detalleExistente.SubTotal = (decimal)(detalle.PrecioUnitario * detalle.CantidadProductos);
+                }
+                else
+                {
+                    // Agregar un nuevo detalle
+                    var nuevoDetalle = new DetalleCompra
+                    {
+                        IdProductos = detalle.IdProductos,
+                        CantidadProductos = detalle.CantidadProductos,
+                        PrecioUnitario = (decimal)detalle.PrecioUnitario,
+                        SubTotal = (decimal)(detalle.PrecioUnitario * detalle.CantidadProductos)
+                    };
+                    CompraExistente.DetalleCompras.Add(nuevoDetalle);
+                }
+            }
+            _context.compras.Update(CompraExistente);
             await _context.SaveChangesAsync();
             return true;
 

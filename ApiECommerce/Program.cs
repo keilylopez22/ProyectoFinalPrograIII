@@ -62,6 +62,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+// Configurar la autenticación y autorización
+/*public static IHostBuilder CreateHostBuilder(string[] args) =>
+    Host.CreateDefaultBuilder(args)
+        .ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddEnvironmentVariables(); // Esto ya viene en Host.CreateDefaultBuilder
+        })
+        .ConfigureWebHostDefaults(webBuilder =>
+        {
+            webBuilder.UseStartup<Startup>();
+        });*/
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

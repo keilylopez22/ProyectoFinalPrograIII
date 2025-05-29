@@ -16,7 +16,7 @@ namespace ApiECommerce.DTOs
     {
         public int IdProductos { get; set; }
         public int CantidadProductos { get; set; }
-        
+
     }
     public class PedidoResultado
     {
@@ -24,5 +24,21 @@ namespace ApiECommerce.DTOs
         public string? Mensaje { get; set; }
         public Pedido? Pedido { get; set; }
     }
+    
+     public class PedidoUpdateDTO
+    {
+        public int Id { get; set; }
+        public DateTime Fecha { get; set; }
+        public int IdCliente { get; set; }
+        public List<DetallePedidoDto> DetallesPedido { get; set; } = new();
+    }
+    public class DetallePedidoUpdateDto
+    {
+        public int Id { get; set; }
+        public int IdProductos { get; set; }
+        public int CantidadProductos { get; set; }
+        
+    }
+
 
 }

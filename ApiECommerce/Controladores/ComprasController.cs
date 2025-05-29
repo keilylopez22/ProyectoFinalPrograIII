@@ -86,7 +86,7 @@ namespace ApiECommerce.Controladores
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<IActionResult> ActualizarCompras(int id, [FromBody] Compra compra)
+        public async Task<IActionResult> ActualizarCompras(int id, [FromBody] CompraUpdateDTO compra)
         {
             if (id != compra.Id)
             {

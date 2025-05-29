@@ -15,7 +15,7 @@ namespace ApiECommerce.Servicio
         Task<Pedido> ObtenerPedidosAsync(int id);
         Task<bool> CrearPedidosAsync(Pedido pedido);
         Task<PedidoResultado?> CrearPedidosAsync(PedidoDTO pedidoDto);
-        Task<bool> ActualizarPedidosAsync(Pedido pedido);
+        Task<bool> ActualizarPedidosAsync(PedidoUpdateDTO pedido);
         Task<bool> EliminarPedidosAsync(int id);
         
 
@@ -194,9 +194,38 @@ namespace ApiECommerce.Servicio
             return new PedidoResultado { Exito = true, Pedido = pedido };
         }
 
-        public async Task<bool> ActualizarPedidosAsync(Pedido pedido)
+        public async Task<bool> ActualizarPedidosAsync(PedidoUpdateDTO pedido)
         {
-            _context.pedidos.Update(pedido);
+            if (pedido == null || pedido.Id <= 0)
+            {
+                return false;
+            }
+            var pedidoExistente = await _context.pedidos
+                .Include(p => p.DetallesPedido)
+                .FirstOrDefaultAsync(p => p.Id == pedido.Id);
+            if (pedidoExistente == null)
+            {
+                return false;
+            }
+            // Actualizar los campos del pedido
+            pedidoExistente.Fecha = pedido.Fecha;
+            pedidoExistente.IdCliente = pedido.IdCliente;
+            pedidoExistente.DetallesPedido.Clear(); // Limpiar los detalles existentes
+            foreach (var detalle in pedido.DetallesPedido)
+            {
+                var detalleExistente = new DetallePedido
+                {
+                    IdProductos = detalle.IdProductos,
+                    CantidadProductos = detalle.CantidadProductos,
+                    PrecioUnitario = 0, // Asignar un valor por defecto o calcularlo si es necesario
+                    SubTotal = 0 // Asignar un valor por defecto o calcularlo si es necesario
+                };
+                pedidoExistente.DetallesPedido.Add(detalleExistente);
+            }
+            // Aquí podrías recalcular el total del pedido si es necesario
+            pedidoExistente.Total = pedidoExistente.DetallesPedido.Sum(dp => dp.SubTotal);
+
+            _context.pedidos.Update(pedidoExistente);
             await _context.SaveChangesAsync();
             return true;
 
