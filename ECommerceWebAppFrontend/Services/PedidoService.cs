@@ -1,9 +1,9 @@
+using ApiECommerce.DTOs;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using ApiECommerce.Modelo;
-using ApiECommerce.DTOs;
 
 namespace ECommerceWebAppFrontend.Services
 {
@@ -67,11 +67,11 @@ namespace ECommerceWebAppFrontend.Services
                 return null;
             }
         }
-        public async Task<PedidoDTO> CrearPedidoAsync(Pedido pedido)
+        public async Task<PedidoResultado> CrearPedidoAsync(PedidoDTO pedido)
         {
             var response = await _http.PostAsJsonAsync("api/pedidos", pedido);
             response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<PedidoDTO>();
+            var result = await response.Content.ReadFromJsonAsync<PedidoResultado>();
             return result ?? throw new Exception("No se pudo crear el pedido");
         }
 

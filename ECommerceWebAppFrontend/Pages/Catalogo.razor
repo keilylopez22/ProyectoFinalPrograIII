@@ -3,6 +3,7 @@
 @page "/catalogo"
 @inject ProductoService ProductoService
 @inject CategoriaService CategoriaService
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
 <h3 class="mt-4 mb-3 text-success fw-bold">🛍️ Catálogo de Productos</h3>
 
@@ -19,6 +20,11 @@
 </div>
 
 <p>Productos encontrados: @productos?.Count()</p>
+
+@if (!string.IsNullOrEmpty(mensajeCatalogo))
+{
+    <div class="alert alert-success">@mensajeCatalogo</div>
+}
 
 <!-- Grid de tarjetas de productos -->
 @if (productos is null)
@@ -41,6 +47,7 @@ else
                         <h5 class="card-title">@producto.Nombre</h5>
                         <p class="card-text">@producto.Descripcion</p>
                         <p class="card-text fw-bold text-primary">💵 $@producto.Precio</p>
+                        <button class="btn btn-success mt-auto" @onclick="() => AgregarAlCarrito(producto)">🛒 Agregar al carrito</button>
                     </div>
                 </div>
             </div>
@@ -61,6 +68,7 @@ else
     private List<ProductoDTO> productos = new();
     private List<CategoriaDTO> categorias = new();
     private int? categoriaSeleccionada = null;
+    private string mensajeCatalogo = string.Empty;
 
     // Paginación
     private int paginaActual = 1;
@@ -112,5 +120,33 @@ else
             paginaActual++;
             await CargarProductos();
         }
+    }
+
+     private async Task AgregarAlCarrito(ProductoDTO producto)
+    {
+        var carrito = await localStorage.GetItemAsync<List<DetallePedidoDto>>("carrito") ?? new List<DetallePedidoDto>();
+
+        var existente = carrito.FirstOrDefault(p => p.IdProductos == producto.Id);
+        if (existente != null)
+        {
+            existente.CantidadProductos++;
+        }
+        else
+        {
+            carrito.Add(new DetallePedidoDto
+            {
+                IdProductos = producto.Id,
+                CantidadProductos = 1,
+                Precio = producto.Precio
+            });
+        }
+
+        await localStorage.SetItemAsync("carrito", carrito);
+
+        mensajeCatalogo = "✅ Se ha agregado a tu carrito";
+        StateHasChanged();
+        await Task.Delay(1500); // El mensaje se muestra 1.5 segundos
+        mensajeCatalogo = string.Empty;
+        StateHasChanged();
     }
 }

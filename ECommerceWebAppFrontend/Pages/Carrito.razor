@@ -1,0 +1,106 @@
+@page "/carrito"
+@using ApiECommerce.DTOs
+@using ECommerceWebAppFrontend.Services
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject PedidoService PedidoService
+@inject NavigationManager NavigationManager
+
+<h3 class="mt-4 mb-3 text-success fw-bold">🛒 Carrito de Compras</h3>
+
+@if (carrito.Count == 0)
+{
+    <div class="alert alert-info">Tu carrito está vacío.</div>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                 <th>Precio unitario</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in carrito)
+            {
+                <tr>
+                    <td>@item.IdProductos</td> <!-- O muestra nombre si lo tienes -->
+                    <td>@item.CantidadProductos</td>
+                    <td>@item.Precio.ToString("C")</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @onclick="() => QuitarDelCarrito(item)">❌ Quitar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5 class="fw-bold">Total productos: @TotalProductos()</h5>
+    <h5 class="fw-bold">Total a pagar: @total.ToString("C")</h5>
+    @if (!string.IsNullOrEmpty(mensaje))
+    {
+        <div class="alert alert-info">@mensaje</div>
+    }
+
+    <button class="btn btn-primary mt-3" @onclick="ConfirmarCompra">✅ Realizar Compra</button>
+}
+
+@code {
+    private List<DetallePedidoDto> carrito = new();
+    private decimal total = 0;
+    private string mensaje = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        carrito = await localStorage.GetItemAsync<List<DetallePedidoDto>>("carrito") ?? new();
+        CalcularTotal();
+    }
+
+    private int TotalProductos()
+    {
+        return carrito.Sum(x => x.CantidadProductos);
+    }
+
+    private void CalcularTotal()
+    {
+        total = carrito.Sum(x => x.Precio * x.CantidadProductos);
+    }
+
+    private async Task QuitarDelCarrito(DetallePedidoDto item)
+    {
+        carrito.Remove(item);
+        await localStorage.SetItemAsync("carrito", carrito);
+        CalcularTotal();
+    }
+
+    [Inject] IJSRuntime JSRuntime { get; set; }
+
+    private async Task ConfirmarCompra()
+    {
+        bool confirmado = await JSRuntime.InvokeAsync<bool>("confirm", "¿Estás seguro de realizar la compra?");
+        if (!confirmado)
+            return;
+        
+        var pedido = new PedidoDTO
+        {
+            Fecha = DateTime.Now,
+            IdCliente = 1, // puedes reemplazar esto por el cliente actual si lo tienes
+            DetallesPedido = carrito
+        };
+
+        var resultado = await PedidoService.CrearPedidoAsync(pedido);
+        if (resultado?.Exito == true) 
+        {
+            await localStorage.RemoveItemAsync("carrito");
+            carrito.Clear();
+            total = 0;
+            mensaje = "✅ Pedido realizado con éxito";
+        }
+        else
+        {
+            mensaje = "❌ Error al realizar el pedido: " + resultado?.Mensaje;
+        }
+    }
+}
