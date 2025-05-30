@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Blazored.LocalStorage;
 using ECommerceWebAppFrontend;
 using ECommerceWebAppFrontend.Services; 
 
@@ -25,6 +26,7 @@ namespace ECommerceWebAppFrontend
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<CategoriaService>();
             builder.Services.AddScoped<MovimientoInventarioService>();
+            builder.Services.AddBlazoredLocalStorage();
             
 
 

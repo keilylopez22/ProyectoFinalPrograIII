@@ -25,6 +25,11 @@ namespace ECommerceWebAppFrontend.Services
             return response ?? new ResultadoPaginadoProductoDTO();
         }
 
+        public async Task<ProductoDTO?> ObtenerProductoPorIdAsync(int id)
+        {
+            var response = await _http.GetFromJsonAsync<ProductoDTO>($"api/Producto/{id}");
+            return response;
+        }
         public async Task<List<ProductoDTO>> ObtenerListaProductosAsync(int? categoriaId = null, int pageNumber = 1, int pageSize = 100)
         {
             string url = $"api/Producto?pageNumber={pageNumber}&pageSize={pageSize}";
@@ -36,7 +41,7 @@ namespace ECommerceWebAppFrontend.Services
 
             var response = await _http.GetFromJsonAsync<ResultadoPaginadoProductoDTO>(url);
             return response.Productos ?? new List<ProductoDTO>();
-            
+
         }
 
                // Si necesitas obtener categorías, usa el DTO también

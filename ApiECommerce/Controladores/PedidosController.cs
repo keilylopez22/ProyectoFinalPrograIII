@@ -93,13 +93,14 @@ namespace ApiECommerce.Controladores
         public async Task<ActionResult> CrearPedidos([FromBody] PedidoDTO pedidoDto)
         {
             var resultado = await _pedidosServicio.CrearPedidosAsync(pedidoDto);
+            return Ok(resultado);
 
-            if (resultado.Exito && resultado.Pedido != null)
-            {
-                return CreatedAtAction(nameof(GetPedido), new { id = resultado.Pedido.Id }, resultado.Pedido);
-            }
+            //if (resultado.Exito && resultado.Pedido != null)
+            //{
+            //    return CreatedAtAction(nameof(GetPedido), new { id = resultado.Pedido.Id }, resultado.Pedido);
+            //}
 
-            return BadRequest(resultado.Mensaje);
+            //return BadRequest(resultado.Mensaje);
         }
 
         /// <summary>
