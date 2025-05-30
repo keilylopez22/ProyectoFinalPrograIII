@@ -20,6 +20,9 @@ namespace ApiECommerce.DTOs
         public decimal Precio { get; set; }
 
     }
+    /// <summary>
+    /// Resultado de la creación o actualización de un pedido.
+    /// </summary>
     public class PedidoResultado
     {
         public bool Exito { get; set; }

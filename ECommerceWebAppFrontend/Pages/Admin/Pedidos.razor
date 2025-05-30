@@ -336,25 +336,15 @@ protected override async Task OnInitializedAsync()
     {
         try
         {
-                pedidos = await PedidoService.ObtenerPedidosAsync(
+                var resultado = await PedidoService.ObtenerPedidosPaginadosAsync(
                 idCliente: filtroIdCliente,    
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
                 paginaActual: paginaActual,
                 tamanioPagina: tamanioPagina
             );
-                
-            if (pedidos != null && pedidos.Any())
-            {
-                totalRegistros = pedidos.Count;
-                totalPaginas = (int)Math.Ceiling(totalRegistros / (double)tamanioPagina);
-            }
-            else
-            {
-                pedidos = new List<Pedido>();
-                totalRegistros = 0;
-                totalPaginas = 1;
-            }
+            pedidos = resultado.Pedidos;
+            totalPaginas = (resultado.Total + tamanioPagina - 1) / tamanioPagina;
         }
         catch (Exception ex)
         {

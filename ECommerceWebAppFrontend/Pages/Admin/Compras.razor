@@ -411,7 +411,8 @@ else
             if (!string.IsNullOrEmpty(proveedorSeleccionado) && int.TryParse(proveedorSeleccionado, out int id))
             {
                 idProveedor = id;
-            }            var resultado = await CompraService.ObtenerComprasPaginadasAsync(
+            }            
+            var resultado = await CompraService.ObtenerComprasPaginadasAsync(
                 fechaInicio: fechaInicio,
                 fechaFin: fechaFin,
                 idProveedor: idProveedor,

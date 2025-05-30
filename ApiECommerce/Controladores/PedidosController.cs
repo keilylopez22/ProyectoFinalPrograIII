@@ -38,7 +38,7 @@ namespace ApiECommerce.Controladores
         /// <param name="pageSize">Tamaño de página (por defecto 10).</param>
         /// <returns>Una lista paginada de pedidos(ventas).</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pedido>>> GetPedidos(
+        public async Task<ActionResult<ResultadoPedidos>> GetPedidos(
             [FromQuery] DateTime? fechaInicio = null,
             [FromQuery] DateTime? fechaFin = null,
             [FromQuery] int? IdCliente = null,

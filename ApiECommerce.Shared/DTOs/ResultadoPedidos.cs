@@ -6,10 +6,13 @@ using ApiECommerce.Modelo;
 
 namespace ApiECommerce.DTOs
 {
+    /// <summary>
+    /// Resultado de la consulta de pedidos paginados.
+    /// </summary>
     public class ResultadoPedidos
     {
         public List<Pedido> Pedidos { get; set; } = new();
-        public int TotalRegistros { get; set; }
-       
+        public int Total { get; set; }
+
     }
 }

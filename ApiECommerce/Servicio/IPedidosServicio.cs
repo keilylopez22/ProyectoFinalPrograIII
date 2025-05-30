@@ -21,12 +21,18 @@ namespace ApiECommerce.Servicio
 
         
 
-        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+        Task<ResultadoPedidos> ObtenerPedidosAsync(
             DateTime? fechaInicio = null,
             DateTime? fechaFin = null,
             int? IdCliente = null,
             int? pageNumber = 1,
             int? pageSize = 10);
+
+        Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+            DateTime? fechaInicio = null,
+            DateTime? fechaFin = null,
+            int? IdCliente = null
+        );
 
 
             //para cambiar el estado del pedido
@@ -58,7 +64,7 @@ namespace ApiECommerce.Servicio
         }
 
         //Aplicar Filtros
-        public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+        public async Task<ResultadoPedidos> ObtenerPedidosAsync(
         DateTime? fechaInicio = null,
         DateTime? fechaFin = null,
         int? IdCliente = null,
@@ -82,23 +88,57 @@ namespace ApiECommerce.Servicio
             if (IdCliente.HasValue)
                 query = query.Where(p => p.IdCliente == IdCliente.Value);
 
+            var total = query.Count();
             // Paginación
             int skip = ((pageNumber ?? 1) - 1) * (pageSize ?? 10);
-            query = query
+            var pedidos = await query
                 .Skip(skip)
-                .Take(pageSize ?? 10);
+                .Take(pageSize ?? 10)
+                .ToListAsync();
+            var resultado = new ResultadoPedidos
+            {
+                Pedidos = pedidos,
+                Total = total
+            };
+            return resultado;
+        }
 
-            return await query.ToListAsync();
+        public async Task<IEnumerable<Pedido>> ObtenerPedidosAsync(
+        DateTime? fechaInicio = null,
+        DateTime? fechaFin = null,
+        int? IdCliente = null
+        )
+        {
+            var query = _context.pedidos
+                .Include(p => p.Cliente)
+                .Include(p => p.DetallesPedido)
+                    .ThenInclude(dp => dp.Producto)
+                .AsQueryable();
+
+            // Filtro por rango de fechas
+            if (fechaInicio.HasValue)
+                query = query.Where(p => p.Fecha >= fechaInicio.Value);
+
+            if (fechaFin.HasValue)
+                query = query.Where(p => p.Fecha <= fechaFin.Value);
+
+            // Filtro por cliente
+            if (IdCliente.HasValue)
+                query = query.Where(p => p.IdCliente == IdCliente.Value);
+            // Paginación
+            var pedidos = await query
+                .ToListAsync();
+            return pedidos;
         }
 
         public async Task<Pedido> ObtenerPedidosAsync(int id)
         {
-            
+
             return await _context.pedidos.
             Include(p => p.Cliente).
-            Include(p  => p.DetallesPedido).
-            FirstOrDefaultAsync(p => p.Id == id );
-            
+            Include(p => p.DetallesPedido).
+            FirstOrDefaultAsync(p => p.Id == id);
+
         }
         public async Task<bool> CrearPedidosAsync(Pedido pedido)
         {
