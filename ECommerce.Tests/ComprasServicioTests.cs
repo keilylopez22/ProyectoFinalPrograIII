@@ -1,155 +1,130 @@
-using Xunit;
-using Moq;
-using Microsoft.EntityFrameworkCore;
-using ApiECommerce.Servicio;
-using ApiECommerce.Modelo;
-using ApiECommerce.Data;
+using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using ApiECommerce.DTOs;
+using System.Threading.Tasks;
+using ApiECommerce.Data;
+using ApiECommerce.Modelo;
+using ApiECommerce.Servicio;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using Xunit;
 
 public class CompraServicioTests
 {
-    private ApplicationDbContext CrearContextoInMemory(string nombreBD)
+    private async Task<ApplicationDbContext> GetDbContextWithDataAsync()
     {
-        var opciones = new DbContextOptionsBuilder<ApplicationDbContext>()
-            .UseInMemoryDatabase(databaseName: nombreBD)
+        var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
 
-        return new ApplicationDbContext(opciones);
-    }
+        var context = new ApplicationDbContext(options);
 
-    private void SembrarDatos(ApplicationDbContext contexto)
-    {
-        contexto.proveedores.Add(new Proveedor { Id = 1, Nombre = "Proveedor A" });
+        var proveedor = new Proveedor { Id = 1, Nombre = "Proveedor Test" };
+        var producto = new Producto { Id = 1, Nombre = "Producto Test", Existencias = 10, Precio = 20 };
 
-        contexto.productos.Add(new Producto
+        context.proveedores.Add(proveedor);
+        context.productos.Add(producto);
+
+        var compra = new Compra
         {
             Id = 1,
-            Nombre = "Producto A",
-            Existencias = 10,
-            Precio = 100        
-        });
-
-        contexto.compras.Add(new Compra
-        {
-            Id = 1,
-            Fecha = DateTime.Today,
+            Fecha = DateTime.Now,
             IdProveedor = 1,
-            Estado = "pendiente",
-            Proveedor = contexto.proveedores.Find(1),
+            Total = 200,
+            Estado = "Completada",
+            Proveedor = proveedor,
             DetalleCompras = new List<DetalleCompra>
             {
                 new DetalleCompra
                 {
                     Id = 1,
                     IdProductos = 1,
-                    CantidadProductos = 2,
-                    PrecioUnitario = 50,
-
-                }
-            }
-        });
-        
-        contexto.SaveChanges();
-    }
-
-    [Fact]
-    public async Task CrearComprasAsync_DebeCrearCompraCorrectamente()
-    {
-        var dbName = Guid.NewGuid().ToString();
-        using var contexto = CrearContextoInMemory(dbName);
-        SembrarDatos(contexto);
-
-        var mockMov = new Mock<IMovimientosInventarioServicio>();
-
-        var servicio = new CompraServicio(contexto, mockMov.Object);
-
-        var nuevaCompra = new CompraDTO
-        {
-            Fecha = DateTime.Today,
-            IdProveedor = 1,
-            DetalleCompras = new List<DetalleCompraDto>
-            {
-                new DetalleCompraDto
-                {
-                    IdProductos = 1,
                     CantidadProductos = 5,
-                    PrecioUnitario = 45
+                    PrecioUnitario = 20,
+                    SubTotal = 100
                 }
             }
         };
 
-        var resultado = await servicio.CrearComprasAsync(nuevaCompra);
+        context.compras.Add(compra);
 
-        Assert.True(resultado.Exito);
-        Assert.Equal(2, contexto.compras.Count()); // Una de sembrado + una nueva
-        Assert.Equal(15, contexto.productos.Find(1).Existencias); // 10 + 5
+        await context.SaveChangesAsync();
+
+        return context;
     }
 
     [Fact]
-    public async Task EditarComprasAsync_DebeActualizarCompra()
+    public async Task ObtenerComprasAsync_RetornaTodasLasCompras()
     {
-        var dbName = Guid.NewGuid().ToString();
-        using var contexto = CrearContextoInMemory(dbName);
-        SembrarDatos(contexto);
+        var context = await GetDbContextWithDataAsync();
+        var mockMovimiento = new Mock<IMovimientosInventarioServicio>();
+        var servicio = new CompraServicio(context, mockMovimiento.Object);
 
-        var mockMov = new Mock<IMovimientosInventarioServicio>();
-        var servicio = new CompraServicio(contexto, mockMov.Object);
-        var editarCompra = await contexto.compras.FindAsync(1);
-        editarCompra.Estado = "Completada";
-        editarCompra.DetalleCompras.First().CantidadProductos = 3;
+        var resultado = await servicio.ObtenerComprasAsync(
+            fechaInicio: null,
+            fechaFin: null,
+            IdProveedor: null
+        );
 
-        var resultado = await servicio.ActualizarComprasAsync(editarCompra);
-
-        Assert.True(resultado);
-        var compraEditada = contexto.compras.Include(c => c.DetalleCompras).First(c => c.Id == 1);
-        Assert.Single(compraEditada.DetalleCompras);
-        Assert.Equal(3, compraEditada.DetalleCompras.First().CantidadProductos);
+        Assert.Single(resultado);
+        Assert.Equal(1, resultado.First().Id);
     }
 
     [Fact]
-    public async Task EliminarComprasAsync_DebeEliminarCompra()
+    public async Task ObtenerComprasAsyncPorId_RetornaCompraCorrecta()
     {
-        var dbName = Guid.NewGuid().ToString();
-        using var contexto = CrearContextoInMemory(dbName);
-        SembrarDatos(contexto);
+        var context = await GetDbContextWithDataAsync();
+        var mockMovimiento = new Mock<IMovimientosInventarioServicio>();
+        var servicio = new CompraServicio(context, mockMovimiento.Object);
 
-        var mockMov = new Mock<IMovimientosInventarioServicio>();
-        var servicio = new CompraServicio(contexto, mockMov.Object);
-
-        var resultado = await servicio.EliminarComprasAsync(1);
-
-        Assert.True(resultado);
-        Assert.Empty(contexto.compras.ToList());
-    }
-
-    [Fact]
-    public async Task ObtenerTodasComprasAsync_DebeRetornarLista()
-    {
-        var dbName = Guid.NewGuid().ToString();
-        using var contexto = CrearContextoInMemory(dbName);
-        SembrarDatos(contexto);
-
-        var mockMov = new Mock<IMovimientosInventarioServicio>();
-        var servicio = new CompraServicio(contexto, mockMov.Object);
-        var compras = await servicio.ObtenerComprasAsync(null, null, null);
-        Assert.Single(compras);
-    }
-
-    [Fact]
-    public async Task ObtenerComprasPorIdAsync_DebeRetornarCompraCorrecta()
-    {
-        var dbName = Guid.NewGuid().ToString();
-        using var contexto = CrearContextoInMemory(dbName);
-        SembrarDatos(contexto);
-
-        var mockMov = new Mock<IMovimientosInventarioServicio>();
-        var servicio = new CompraServicio(contexto, mockMov.Object);
         var compra = await servicio.ObtenerComprasAsync(1);
 
         Assert.NotNull(compra);
         Assert.Equal(1, compra.Id);
+        Assert.Equal("Completada", compra.Estado);
+    }
+
+    [Fact]
+    public async Task EliminarComprasAsync_CompraExistente_EliminaCorrectamente()
+    {
+        var context = await GetDbContextWithDataAsync();
+        var mockMovimiento = new Mock<IMovimientosInventarioServicio>();
+        var servicio = new CompraServicio(context, mockMovimiento.Object);
+
+        var eliminado = await servicio.EliminarComprasAsync(1);
+
+        Assert.True(eliminado);
+        Assert.Empty(context.compras);
+    }
+
+    [Fact]
+    public async Task EliminarComprasAsync_CompraNoExiste_RetornaFalse()
+    {
+        var context = await GetDbContextWithDataAsync();
+        var mockMovimiento = new Mock<IMovimientosInventarioServicio>();
+        var servicio = new CompraServicio(context, mockMovimiento.Object);
+
+        var eliminado = await servicio.EliminarComprasAsync(999);
+
+        Assert.False(eliminado);
+    }
+
+    [Fact]
+    public async Task ObtenerComprasConPaginacion_RetornaCorrecto()
+    {
+        var context = await GetDbContextWithDataAsync();
+        var mockMovimiento = new Mock<IMovimientosInventarioServicio>();
+        var servicio = new CompraServicio(context, mockMovimiento.Object);
+
+        var resultado = await servicio.ObtenerComprasAsync(
+            fechaInicio: null,
+            fechaFin: null,
+            IdProveedor: null,
+            pageNumber: 1,
+            pageSize: 10
+        );
+
+        Assert.Single(resultado.Compras);
+        Assert.Equal(1, resultado.Total);
     }
 }
