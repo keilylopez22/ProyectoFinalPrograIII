@@ -9,6 +9,10 @@ h1:focus {
 a, .btn-link {
     color: #0071c1;
 }
+body {
+    background: linear-gradient(to bottom, #f8f9fa, #e3e3e3); /* fondo más suave */
+}
+
 
 .btn-primary {
     color: #fff;

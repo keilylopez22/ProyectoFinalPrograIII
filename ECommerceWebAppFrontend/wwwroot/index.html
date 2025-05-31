@@ -5,12 +5,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>KC-MART</title>
-    <base href="/" />    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
+    <base href="/" />
+    <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="ECommerceWebAppFrontend.styles.css" rel="stylesheet" />
-     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -27,46 +29,46 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
-    <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
 
-<!-- Tu archivo personalizado de Firebase config -->
-<script type="module">
-  // Tu configuración Firebase
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    <!-- Firebase compat SDKs para Blazor -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAZOy2sYgigtusDGODYLyIX9JaS7ZoCpJ4",
-    authDomain: "kcmart-5a8f1.firebaseapp.com",
-    projectId: "kcmart-5a8f1",
-    storageBucket: "kcmart-5a8f1.appspot.com",
-    messagingSenderId: "492132807423",
-    appId: "1:492132807423:web:8a12fe8ff701718de092ca"
-  };
+    <!-- Inicialización y funciones para Blazor -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZOy2sYgigtusDGODYLyIX9JaS7ZoCpJ4",
+            authDomain: "kcmart-5a8f1.firebaseapp.com",
+            projectId: "kcmart-5a8f1",
+            storageBucket: "kcmart-5a8f1.appspot.com",
+            messagingSenderId: "492132807423",
+            appId: "1:492132807423:web:8a12fe8ff701718de092ca"
+        };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+        // Inicializar Firebase usando compat
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
 
-  // Exponer funciones globales
-  window.firebase = {
-    signInWithEmailAndPassword: async (email, password) => {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const token = await userCredential.user.getIdToken();
-      return token;
-    },
-    signOut: async () => {
-      await signOut(auth);
-    }
-  };
-</script>
-
-    
-    
+        window.firebase = {
+            signInWithEmailAndPassword: async function (email, password) {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                const token = await userCredential.user.getIdToken();
+                return token;
+            },
+            createUserWithEmailAndPassword: async function (email, password) {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const token = await userCredential.user.getIdToken();
+                return token;
+            },
+            signOut: async function () {
+                await auth.signOut();
+            }
+        };
+    </script>
 </body>
 
 </html>

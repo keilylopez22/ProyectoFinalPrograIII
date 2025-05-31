@@ -20,59 +20,82 @@ namespace ECommerceWebAppFrontend.Services
         {
             try
             {
-                // Llamar a la API de Firebase para autenticar
-                var result = await _jsRuntime.InvokeAsync<string>(
-                    "firebase.signInWithEmailAndPassword",
-                    email,
-                    password
-                );
+                var token = await _jsRuntime.InvokeAsync<string>(
+                    "firebase.signInWithEmailAndPassword", email, password);
 
-                if (!string.IsNullOrEmpty(result))
+                if (!string.IsNullOrEmpty(token))
                 {
-                    // Guardar el token en localStorage
-                    await _jsRuntime.InvokeVoidAsync(
-                        "localStorage.setItem",
-                        "firebase_token",
-                        result
-                    );
-
-                    // Guardar también el email del usuario para mostrarlo en el sistema
-                    await _jsRuntime.InvokeVoidAsync(
-                        "localStorage.setItem",
-                        "userEmail",
-                        email
-                    );
-
+                    await GuardarCredenciales(token, email);
                     return true;
                 }
-                return false;
+            }
+            catch (JSException jsEx)
+            {
+                Console.WriteLine($"[LoginService] JS Error al iniciar sesión: {jsEx.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error en login: {ex.Message}");
-                return false;
+                Console.WriteLine($"[LoginService] Error general al iniciar sesión: {ex.Message}");
             }
+
+            return false;
+        }
+
+        public async Task<bool> RegistrarAsync(string email, string password)
+        {
+            try
+            {
+                var token = await _jsRuntime.InvokeAsync<string>(
+                    "firebase.createUserWithEmailAndPassword", email, password);
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    await GuardarCredenciales(token, email);
+                    return true;
+                }
+            }
+            catch (JSException jsEx)
+            {
+                Console.WriteLine($"[LoginService] JS Error al registrar usuario: {jsEx.Message}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[LoginService] Error general al registrar: {ex.Message}");
+            }
+
+            return false;
         }
 
         public async Task<bool> IsAuthenticated()
         {
-            var token = await _jsRuntime.InvokeAsync<string>(
-                "localStorage.getItem",
-                "firebase_token"
-            );
-            return !string.IsNullOrEmpty(token);
+            var token = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "firebase_token");
+            return !string.IsNullOrWhiteSpace(token);
         }
 
         public async Task<string> GetUserEmail()
         {
-            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "userEmail");
+            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "userEmail") ?? "";
         }
 
         public async Task LogoutAsync()
         {
-            await _jsRuntime.InvokeVoidAsync("firebase.signOut");
+            try
+            {
+                await _jsRuntime.InvokeVoidAsync("firebase.signOut");
+            }
+            catch (JSException jsEx)
+            {
+                Console.WriteLine($"[LoginService] JS Error al cerrar sesión: {jsEx.Message}");
+            }
+
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "firebase_token");
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "userEmail");
         }
+
+        private async Task GuardarCredenciales(string token, string email)
+        {
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "firebase_token", token);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "userEmail", email);
+        }
     }
-} 
+}
