@@ -56,8 +56,8 @@ namespace ECommerceWebAppFrontend.Services
 
                 var url = $"api/compras?{string.Join("&", queryParams)}";
                 var response = await _httpClient.GetFromJsonAsync<ResultadoCompras>(url);
-                return response ?? new ResultadoCompras 
-                { 
+                return response ?? new ResultadoCompras
+                {
                     Compras = new List<Compra>(),
                     Total = 0
                 };
@@ -139,6 +139,32 @@ namespace ECommerceWebAppFrontend.Services
             {
                 Console.WriteLine($"Error al eliminar compra: {ex.Message}");
                 return false;
+            }
+        }
+        public async Task<byte[]> ExportarComprasAExcelAsync(DateTime? fechaInicio = null, DateTime? fechaFin = null, int? idProveedor = null)
+        {
+            // Construir los parámetros de la URL
+            var queryParams = new List<string>();
+             if (idProveedor.HasValue)
+                    queryParams.Add($"idProveedor={idProveedor.Value}");
+
+                if (fechaInicio.HasValue)
+                    queryParams.Add($"fechaInicio={Uri.EscapeDataString(fechaInicio.Value.ToString("yyyy-MM-dd"))}");
+
+                if (fechaFin.HasValue)
+                    queryParams.Add($"fechaFin={Uri.EscapeDataString(fechaFin.Value.ToString("yyyy-MM-dd"))}");
+
+            var url = $"api/Reportes/compras{ (queryParams.Any() ? "?" + string.Join("&", queryParams) : "") }";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte de compras.", ex);
             }
         }
     }

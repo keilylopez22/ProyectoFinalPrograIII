@@ -32,7 +32,11 @@
                     <i class="bi bi-x-circle"></i> Limpiar
                 </button>
                 <button class="btn btn-success" @onclick="NuevoPedido">
-                    <i class="bi bi-plus-circle"></i> Nuevo Pedido
+                    <i class="bi bi-plus-circle"></i> Nuevo 
+                </button>
+                <!-- Botón para Generar Reporte Excel -->
+                <button class="btn btn-success" @onclick="GenerarReporteExcel">
+                    <i class="bi bi-file-earmark-excel"></i> Reporte 
                 </button>
             </div>
         </div>
@@ -89,7 +93,7 @@ else
     <!-- Paginación -->
     <div class="d-flex justify-content-between align-items-center">
         <div>
-            Mostrando @((paginaActual - 1) * tamanioPagina + 1) - @Math.Min(paginaActual * tamanioPagina, totalRegistros) 
+            Mostrando @((paginaActual - 1) * tamanioPagina + 1) - @Math.Min(paginaActual * tamanioPagina, totalRegistros)
             de @totalRegistros registros
         </div>
         <nav>
@@ -117,7 +121,7 @@ else
         </nav>
     </div>
 
-       <!-- Modal para Cambiar Estado -->
+    <!-- Modal para Cambiar Estado -->
     @if (mostrarModalEstado)
     {
         <div class="modal" tabindex="-1" style="display:block; background-color: rgba(0,0,0,0.5)">
@@ -157,12 +161,10 @@ else
         <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-
                     <div class="modal-header">
                         <h5 class="modal-title">Nuevo Pedido</h5>
                         <button type="button" class="btn-close" @onclick="() => mostrandoNuevoPedido = false"></button>
                     </div>
-
                     <div class="modal-body">
                         <div class="mb-3">
                             <label>Cliente:</label>
@@ -174,7 +176,6 @@ else
                                 }
                             </select>
                         </div>
-
                         <div>
                             <label>Productos:</label>
                             @foreach (var producto in productos)
@@ -182,27 +183,25 @@ else
                                 <div class="d-flex align-items-center mb-2">
                                     <div class="me-2" style="width: 200px;">@producto.Nombre</div>
                                     <input type="number" min="0" class="form-control me-2" style="width: 100px"
-                                        @oninput="(e) => ActualizarCantidad(producto.Id, e.Value?.ToString())" placeholder="Cantidad" />
+                                        @oninput="(e) => ActualizarCantidad(producto.Id, e.Value?.ToString())"
+                                        placeholder="Cantidad" />
                                     <span>@producto.Precio.ToString("C")</span>
                                 </div>
                             }
                         </div>
-
                         <div class="mt-3 fw-bold">
-                            Total: @nuevosDetalles.Sum(d => d.CantidadProductos * (productos.FirstOrDefault(p => p.Id == d.IdProductos)?.Precio ?? 0)).ToString("C")
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" @onclick="() => mostrandoNuevoPedido = false">Cancelar</button>
-                        <button class="btn btn-primary" @onclick="GuardarPedido">Guardar Pedido</button>
-                    </div>
-
+                            Total: @nuevosDetalles.Sum(d => d.CantidadProductos * (productos.FirstOrDefault(p => p.Id ==
+                                                d.IdProductos)?.Precio ?? 0)).ToString("C")
                 </div>
             </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" @onclick="() => mostrandoNuevoPedido = false">Cancelar</button>
+                <button class="btn btn-primary" @onclick="GuardarPedido">Guardar Pedido</button>
+            </div>
         </div>
-    }
-
+    </div>
+</div>
+}
 
     <!-- Modal para Ver Detalles -->
     @if (mostrarDetalles)
@@ -223,13 +222,12 @@ else
                                 <strong>Fecha:</strong> @pedidoSeleccionado.Fecha.ToShortDateString()
                             </div>
                             <div class="col">
-                                <strong>Estado:</strong> 
+                                <strong>Estado:</strong>
                                 <span class="badge bg-@GetEstadoClass(pedidoSeleccionado.Estado)">
                                     @pedidoSeleccionado.Estado
                                 </span>
                             </div>
                         </div>
-
                         <table class="table table-sm">
                             <thead>
                                 <tr>
@@ -284,41 +282,36 @@ else
     private List<DetallePedidoDto> nuevosDetalles = new();
     private bool mostrandoNuevoPedido = false;
 
-
-protected override async Task OnInitializedAsync()
-{
-    try
+    protected override async Task OnInitializedAsync()
     {
-        var resultadoClientes = await ClienteService.ObtenerClientesAsync(
+        try
+        {
+            var resultadoClientes = await ClienteService.ObtenerClientesAsync(
             filtro: "",
             pagina: 1,
             porPagina: 100
-        );
-        clientes = resultadoClientes.Clientes;
-
-        var resultadoProductos = await ProductoService.ObtenerProductosAsync();
-        productos = resultadoProductos.Productos
+            );
+            clientes = resultadoClientes.Clientes;
+            var resultadoProductos = await ProductoService.ObtenerProductosAsync();
+            productos = resultadoProductos.Productos
             .Select(dto => new Producto
             {
                 Id = dto.Id,
                 Nombre = dto.Nombre,
                 Precio = dto.Precio,
-                // Mapea aquí las demás propiedades necesarias
             })
             .ToList();
+            await CargarPedidos();
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al cargar datos: {ex.Message}");
+        }
+    }
 
-        await CargarPedidos();
-    }
-    catch (Exception ex)
-    {
-        await JS.InvokeVoidAsync("alert", $"Error al cargar datos: {ex.Message}");
-    }
-}
     private async Task AplicarFiltros()
     {
         paginaActual = 1;
-        //pageSize = 10; 
-        
         await CargarPedidos();
     }
 
@@ -328,7 +321,6 @@ protected override async Task OnInitializedAsync()
         fechaInicio = null;
         fechaFin = null;
         paginaActual = 1;
-       // pageSize = 10;
         await CargarPedidos();
     }
 
@@ -336,14 +328,15 @@ protected override async Task OnInitializedAsync()
     {
         try
         {
-                var resultado = await PedidoService.ObtenerPedidosPaginadosAsync(
-                idCliente: filtroIdCliente,    
-                fechaInicio: fechaInicio,
-                fechaFin: fechaFin,
-                paginaActual: paginaActual,
-                tamanioPagina: tamanioPagina
+            var resultado = await PedidoService.ObtenerPedidosPaginadosAsync(
+            idCliente: filtroIdCliente,
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            paginaActual: paginaActual,
+            tamanioPagina: tamanioPagina
             );
             pedidos = resultado.Pedidos;
+            totalRegistros = resultado.Total;
             totalPaginas = (resultado.Total + tamanioPagina - 1) / tamanioPagina;
         }
         catch (Exception ex)
@@ -355,22 +348,19 @@ protected override async Task OnInitializedAsync()
     }
 
     private async Task CambiarPagina(int nuevaPagina)
-{
-    if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas)
     {
-        paginaActual = nuevaPagina;
-        await CargarPedidos();
+        if (nuevaPagina >= 1 && nuevaPagina <= totalPaginas)
+        {
+            paginaActual = nuevaPagina;
+            await CargarPedidos();
+        }
     }
-}
-
-
 
     private void NuevoPedido()
     {
         nuevoPedido = new PedidoDTO
         {
             Fecha = DateTime.Now,
-            //Estado = "Pendiente",
             IdCliente = 0,
             DetallesPedido = new List<DetallePedidoDto>()
         };
@@ -379,74 +369,64 @@ protected override async Task OnInitializedAsync()
     }
 
     private void ActualizarCantidad(int idProductos, string? cantidadTexto)
-{
-    var producto = productos.FirstOrDefault(p => p.Id == idProductos);
-    if (int.TryParse(cantidadTexto, out int cantidad) && cantidad > 0)
     {
-        var detalleExistente = nuevosDetalles.FirstOrDefault(d => d.IdProductos == idProductos);
-        if (detalleExistente != null)
+        var producto = productos.FirstOrDefault(p => p.Id == idProductos);
+        if (int.TryParse(cantidadTexto, out int cantidad) && cantidad > 0)
         {
-            detalleExistente.CantidadProductos = cantidad;
+            var detalleExistente = nuevosDetalles.FirstOrDefault(d => d.IdProductos == idProductos);
+            if (detalleExistente != null)
+            {
+                detalleExistente.CantidadProductos = cantidad;
+            }
+            else
+            {
+                if (producto != null)
+                {
+                    nuevosDetalles.Add(new DetallePedidoDto
+                    {
+                        IdProductos = idProductos,
+                        CantidadProductos = cantidad,
+                    });
+                }
+            }
         }
         else
         {
-            //var producto = productos.FirstOrDefault(p => p.Id == idProductos);
-            if (producto != null)
-            {
-                nuevosDetalles.Add(new DetallePedidoDto
-                {
-                    IdProductos = idProductos,
-                    CantidadProductos = cantidad,
-                    //Producto = producto
-                });
-            }
+            nuevosDetalles.RemoveAll(d => d.IdProductos == idProductos);
+        }
+        nuevoPedido.Total = nuevosDetalles.Sum(d => d.CantidadProductos * (producto?.Precio ?? 0));
+    }
+
+    private async Task GuardarPedido()
+    {
+        if (nuevoPedido.IdCliente == 0 || !nuevosDetalles.Any())
+        {
+            await JS.InvokeVoidAsync("alert", "Debe seleccionar un cliente y agregar al menos un producto.");
+            return;
+        }
+        nuevoPedido.DetallesPedido = nuevosDetalles;
+        try
+        {
+            var pedidoGuardado = await PedidoService.CrearPedidoAsync(nuevoPedido);
+            mostrandoNuevoPedido = false;
+            await CargarPedidos();
+            await JS.InvokeVoidAsync("alert", "Pedido creado correctamente.");
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al guardar el pedido: {ex.Message}");
         }
     }
-    else
-    {
-        // Si se ingresa 0 o vacío, eliminar ese detalle si ya existe
-        nuevosDetalles.RemoveAll(d => d.IdProductos == idProductos);
-    }
-
-    // Recalcular el total del pedido
-    //producto = ProductoService.ObtenerProductoPorIdAsync(idProductos);
-    nuevoPedido.Total = nuevosDetalles.Sum(d => d.CantidadProductos * (producto?.Precio ?? 0));
-}
-
-
-  private async Task GuardarPedido()
-{
-    if (nuevoPedido.IdCliente == 0 || !nuevosDetalles.Any())
-    {
-        await JS.InvokeVoidAsync("alert", "Debe seleccionar un cliente y agregar al menos un producto.");
-        return;
-    }
-
-    nuevoPedido.DetallesPedido = nuevosDetalles;
-
-    try
-    {
-        var pedidoGuardado = await PedidoService.CrearPedidoAsync(nuevoPedido);
-        mostrandoNuevoPedido = false;
-        await CargarPedidos();
-        await JS.InvokeVoidAsync("alert", "Pedido creado correctamente.");
-    }
-    catch (Exception ex)
-    {
-        await JS.InvokeVoidAsync("alert", $"Error al guardar el pedido: {ex.Message}");
-    }
-}
-
 
     private void EditarPedido(Pedido pedido)
     {
-    pedidoIdSeleccionado = pedido.Id;
-    nuevoEstadoSeleccionado = pedido.Estado;
-    mostrarModalEstado = true;
-    StateHasChanged();
+        pedidoIdSeleccionado = pedido.Id;
+        nuevoEstadoSeleccionado = pedido.Estado;
+        mostrarModalEstado = true;
+        StateHasChanged();
     }
 
-   private async Task GuardarNuevoEstado()
+    private async Task GuardarNuevoEstado()
     {
         try
         {
@@ -456,12 +436,10 @@ protected override async Task OnInitializedAsync()
                 return;
             }
 
-            // Validar transiciones de estado
             var estadoActual = pedidos.FirstOrDefault(p => p.Id == pedidoIdSeleccionado)?.Estado;
             if (estadoActual != null)
             {
                 bool transicionNoPermitida = false;
-
                 switch (estadoActual.ToLower())
                 {
                     case "enviado" when nuevoEstadoSeleccionado.ToLower() == "pendiente":
@@ -477,7 +455,6 @@ protected override async Task OnInitializedAsync()
                         await JS.InvokeVoidAsync("alert", "No se puede modificar el estado de un pedido cancelado");
                         break;
                 }
-
                 if (transicionNoPermitida)
                 {
                     return;
@@ -555,4 +532,29 @@ protected override async Task OnInitializedAsync()
         "Cancelado" => "danger",
         _ => "secondary"
     };
+
+    private async Task GenerarReporteExcel()
+    {
+        try
+        {
+            byte[] archivoExcel = await PedidoService.ExportarPedidosAExcelAsync(
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            idCliente: filtroIdCliente
+            );
+
+            var file = new FileByteContent(
+            data: archivoExcel,
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            name: $"ReportePedidos_{DateTime.Now:yyyyMMddHHmm}.xlsx"
+            );
+
+            await JS.InvokeVoidAsync("downloadFile", file);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al generar el reporte: {ex.Message}");
+        }
+    }
+
 }

@@ -16,12 +16,12 @@ namespace ECommerceWebAppFrontend.Services
             _httpClient = http;
         }
 
-         public async Task<ResultadoPedidos> ObtenerPedidosPaginadosAsync(
-            int? idCliente = null,
-            DateTime? fechaInicio = null,
-            DateTime? fechaFin = null,
-            int paginaActual = 1,
-            int tamanioPagina = 10)
+        public async Task<ResultadoPedidos> ObtenerPedidosPaginadosAsync(
+           int? idCliente = null,
+           DateTime? fechaInicio = null,
+           DateTime? fechaFin = null,
+           int paginaActual = 1,
+           int tamanioPagina = 10)
         {
             try
             {
@@ -41,7 +41,7 @@ namespace ECommerceWebAppFrontend.Services
                 var url = $"api/pedidos?{string.Join("&", queryParams)}";
                 var response = await _httpClient.GetFromJsonAsync<ResultadoPedidos>(url);
                 return response ?? new ResultadoPedidos
-                { 
+                {
                     Pedidos = new List<Pedido>(),
                     Total = 0
                 };
@@ -163,6 +163,33 @@ namespace ECommerceWebAppFrontend.Services
             {
                 Console.WriteLine($"Error al actualizar estado del pedido: {ex.Message}");
                 throw;
+            }
+        }
+        
+        public async Task<byte[]> ExportarPedidosAExcelAsync(DateTime? fechaInicio = null, DateTime? fechaFin = null, int? idCliente = null)
+        {
+            // Construir los parámetros de la URL
+            var queryParams = new List<string>();
+             if (idCliente.HasValue)
+                    queryParams.Add($"idCliente={idCliente.Value}");
+
+                if (fechaInicio.HasValue)
+                    queryParams.Add($"fechaInicio={Uri.EscapeDataString(fechaInicio.Value.ToString("yyyy-MM-dd"))}");
+
+                if (fechaFin.HasValue)
+                    queryParams.Add($"fechaFin={Uri.EscapeDataString(fechaFin.Value.ToString("yyyy-MM-dd"))}");
+
+            var url = $"api/Reportes/pedidos{ (queryParams.Any() ? "?" + string.Join("&", queryParams) : "") }";
+
+            try
+            {
+                var response = await _httpClient.GetAsync(url);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al obtener el reporte de pedidos.", ex);
             }
         }
     }

@@ -132,7 +132,10 @@ else
                     <i class="fas fa-search"></i> Buscar
                 </button>
                 <button class="btn btn-success" @onclick="NuevaCompra">
-                    <i class="fas fa-plus"></i> Nueva Compra
+                    <i class="fas fa-plus"></i> Nueva 
+                </button>
+                <button class="btn btn-success" @onclick="GenerarReporteExcel">
+                    <i class="bi bi-file-earmark-excel"></i> Reporte 
                 </button>
             </div>
         </div>
@@ -585,6 +588,34 @@ else
         catch (Exception ex)
         {
             await JS.InvokeVoidAsync("alert", $"Error al cambiar el estado: {ex.Message}");
+        }
+    }
+    private async Task GenerarReporteExcel()
+    {
+        try
+        {
+            int? idProveedor = null;
+            if (!string.IsNullOrEmpty(proveedorSeleccionado) && int.TryParse(proveedorSeleccionado, out int id))
+            {
+                idProveedor = id;
+            }            
+            byte[] archivoExcel = await CompraService.ExportarComprasAExcelAsync(
+            fechaInicio: fechaInicio,
+            fechaFin: fechaFin,
+            idProveedor: idProveedor
+            );
+
+            var file = new FileByteContent(
+            data: archivoExcel,
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            name: $"ReporteCompras_{DateTime.Now:yyyyMMddHHmm}.xlsx"
+            );
+
+            await JS.InvokeVoidAsync("downloadFile", file);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("alert", $"Error al generar el reporte: {ex.Message}");
         }
     }
 }
