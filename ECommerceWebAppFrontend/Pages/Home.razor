@@ -1,6 +1,10 @@
 ﻿@page "/login"
 @inject NavigationManager NavigationManager
 @inject LoginService LoginService
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
 
 <PageTitle>Home</PageTitle>
 

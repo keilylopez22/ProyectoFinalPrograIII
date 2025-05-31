@@ -1,9 +1,13 @@
 @page "/carrito"
 @using ApiECommerce.DTOs
 @using ECommerceWebAppFrontend.Services
+@using Microsoft.AspNetCore.Authorization
+
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject PedidoService PedidoService
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
+
 
 <h3 class="mt-4 mb-3 text-success fw-bold">🛒 Carrito de Compras</h3>
 

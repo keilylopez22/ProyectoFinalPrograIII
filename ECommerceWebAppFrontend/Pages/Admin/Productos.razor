@@ -1,8 +1,12 @@
 @page "/admin/productos"
 @using ApiECommerce.Modelo
 @using ApiECommerce.DTOs
+@using Microsoft.AspNetCore.Authorization
+
 @using ECommerceWebAppFrontend.Services
 @inject ProductoService ProductoService
+@attribute [Authorize]
+
 
 <h3 class="titulo">Gestión de productos</h3>
 

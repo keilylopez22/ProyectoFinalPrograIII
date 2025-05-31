@@ -1,6 +1,10 @@
 @page "/admin/proveedores" 
 @inject ProveedorService ProveedorService
 @inject IJSRuntime JS
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+
 
 <h3 class="mt-4 mb-3 text-primary fw-bold">📋 Gestión de Proveedores</h3>
 

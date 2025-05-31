@@ -1,9 +1,13 @@
 @using ApiECommerce.DTOs
 @using ECommerceWebAppFrontend.Services 
+@using Microsoft.AspNetCore.Authorization
+
 @page "/catalogo"
 @inject ProductoService ProductoService
 @inject CategoriaService CategoriaService
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
+@attribute [Authorize]
+
 
 <h3 class="mt-4 mb-3 text-success fw-bold">🛍️ Catálogo de Productos</h3>
 

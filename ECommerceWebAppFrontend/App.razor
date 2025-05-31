@@ -1,16 +1,71 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <NotAuthorized>
-                <RedirectToLogin />
-            </NotAuthorized>
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
+﻿@inject IJSRuntime JS
+@inject CustomAuthStateProvider AuthProvider
+@inject NavigationManager NavigationManager
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            @if (isAuthChecked)
+            {
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+    @code {
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                var authState = await AuthProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+
+                if (!user.Identity?.IsAuthenticated ?? true)
+                {
+                    if (!NavigationManager.Uri.Contains("login", StringComparison.OrdinalIgnoreCase))
+                    {
+                        NavigationManager.NavigateTo("/Admin/Login", true);
+                    }
+                }
+            }
+        }
+    }
+</NotAuthorized>
+
+                </AuthorizeRouteView>
+            }
+            else
+            {
+                <LayoutView Layout="@typeof(MainLayout)">
+                    <p class="text-center">Cargando autenticación...</p>
+                </LayoutView>
+            }
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <PageTitle>No encontrado</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Lo sentimos, no se encontró la página.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    private bool isAuthChecked = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "firebase_token");
+
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            var identity = new System.Security.Claims.ClaimsIdentity(new[]
+            {
+                new System.Security.Claims.Claim("firebase_token", token)
+            }, "firebase");
+
+            var user = new System.Security.Claims.ClaimsPrincipal(identity);
+            AuthProvider.SetUser(user);
+        }
+
+        isAuthChecked = true;
+    }
+}

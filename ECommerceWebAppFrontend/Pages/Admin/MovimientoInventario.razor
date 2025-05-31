@@ -3,6 +3,10 @@
 @using ECommerceWebAppFrontend.Services
 @using ApiECommerce.DTOs
 @inject MovimientoInventarioService MovimientoService
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+
+
 
 <!--botn buscar rosita-->
 <style>

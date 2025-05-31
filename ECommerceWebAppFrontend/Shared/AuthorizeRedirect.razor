@@ -1,0 +1,19 @@
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            if (!NavigationManager.Uri.Contains("login", StringComparison.OrdinalIgnoreCase))
+            {
+                NavigationManager.NavigateTo("/Admin/Login", true);
+            }
+        }
+    }
+}

@@ -2,69 +2,97 @@ using System.Net.Http.Json;
 using Microsoft.JSInterop;
 using System;
 using System.Threading.Tasks;
+using System.Security.Claims;
+
 
 namespace ECommerceWebAppFrontend.Services
 {
-    public class LoginService
+   
+
+   public class LoginService
+{
+    private readonly IJSRuntime _jsRuntime;
+    private readonly CustomAuthStateProvider _authProvider;
+
+    public LoginService(IJSRuntime jsRuntime, CustomAuthStateProvider authProvider)
     {
-        private readonly IJSRuntime _jsRuntime;
-        private readonly HttpClient _httpClient;
+        _jsRuntime = jsRuntime;
+        _authProvider = authProvider;
+    }
 
-        public LoginService(IJSRuntime jsRuntime, HttpClient httpClient)
+    public async Task<bool> LoginAsync(string email, string password)
+    {
+        try
         {
-            _jsRuntime = jsRuntime;
-            _httpClient = httpClient;
-        }
+            var token = await _jsRuntime.InvokeAsync<string>(
+                "firebase.signInWithEmailAndPassword", email, password);
 
-        public async Task<bool> LoginAsync(string email, string password)
-        {
-            try
+            if (!string.IsNullOrEmpty(token))
             {
-                var token = await _jsRuntime.InvokeAsync<string>(
-                    "firebase.signInWithEmailAndPassword", email, password);
+                await GuardarCredenciales(token, email);
 
-                if (!string.IsNullOrEmpty(token))
+                // Crear identidad y ClaimsPrincipal
+                var identity = new ClaimsIdentity(new[]
                 {
-                    await GuardarCredenciales(token, email);
-                    return true;
-                }
-            }
-            catch (JSException jsEx)
-            {
-                Console.WriteLine($"[LoginService] JS Error al iniciar sesión: {jsEx.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[LoginService] Error general al iniciar sesión: {ex.Message}");
-            }
+                    new Claim(ClaimTypes.Name, email)
+                }, "firebase");
 
-            return false;
+                var user = new ClaimsPrincipal(identity);
+
+                // Actualizar el estado de autenticación
+                _authProvider.SetUser(user);
+
+                return true;
+            }
         }
+        catch (JSException jsEx)
+        {
+            Console.WriteLine($"[LoginService] JS Error al iniciar sesión: {jsEx.Message}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[LoginService] Error general al iniciar sesión: {ex.Message}");
+        }
+
+        return false;
+    }
+
+    private Task GuardarCredenciales(string token, string email)
+    {
+        // Aquí puedes guardar el token y correo en localStorage si deseas
+        Console.WriteLine($"Token guardado: {token} para {email}");
+        return Task.CompletedTask;
+    }
+    
+    
+
+
+
 
         public async Task<bool> RegistrarAsync(string email, string password)
-        {
-            try
             {
-                var token = await _jsRuntime.InvokeAsync<string>(
-                    "firebase.createUserWithEmailAndPassword", email, password);
-
-                if (!string.IsNullOrEmpty(token))
+                try
                 {
-                    await GuardarCredenciales(token, email);
-                    return true;
-                }
-            }
-            catch (JSException jsEx)
-            {
-                Console.WriteLine($"[LoginService] JS Error al registrar usuario: {jsEx.Message}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"[LoginService] Error general al registrar: {ex.Message}");
-            }
+                    var token = await _jsRuntime.InvokeAsync<string>(
+                        "firebase.createUserWithEmailAndPassword", email, password);
 
-            return false;
-        }
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        await GuardarCredenciales(token, email);
+                        return true;
+                    }
+                }
+                catch (JSException jsEx)
+                {
+                    Console.WriteLine($"[LoginService] JS Error al registrar usuario: {jsEx.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[LoginService] Error general al registrar: {ex.Message}");
+                }
+
+                return false;
+            }
 
         public async Task<bool> IsAuthenticated()
         {
@@ -92,10 +120,6 @@ namespace ECommerceWebAppFrontend.Services
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "userEmail");
         }
 
-        private async Task GuardarCredenciales(string token, string email)
-        {
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "firebase_token", token);
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "userEmail", email);
-        }
+        
     }
 }

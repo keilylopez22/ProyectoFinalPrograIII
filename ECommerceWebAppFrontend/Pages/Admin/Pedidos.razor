@@ -5,6 +5,10 @@
 @inject ClienteService ClienteService
 @inject ProductoService ProductoService
 @inject IJSRuntime JS
+@attribute [Authorize]
+@using Microsoft.AspNetCore.Authorization
+
+
 
 <h3 class="text-center my-4">📦 Gestión de Pedidos</h3>
 
