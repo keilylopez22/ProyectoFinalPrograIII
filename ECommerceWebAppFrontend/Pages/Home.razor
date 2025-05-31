@@ -1147,7 +1147,7 @@
     private List<ProductoDTO> productosDestacados = new();
     private List<ProductoDTO> resultadosBusqueda = new();
     private List<ProductoDTO> todosLosProductos = new();
-    private List<Categoria> categorias = new();
+    private List<CategoriaDTO> categorias = new();
     private string searchQuery = "";
     private bool buscando = false;
     private bool mostrarResultados = false;
@@ -1164,10 +1164,8 @@
     {
         try
         {
-            var categoriasTask = ProductoService.ObtenerCategoriasAsync();
+            categorias =  await ProductoService.ObtenerCategoriasAsync();
             var productosTask = ProductoService.ObtenerProductosAsync();
-            await Task.WhenAll(categoriasTask, productosTask);
-            categorias =  categoriasTask;
             var resultadoProductos = await productosTask;
             todosLosProductos = resultadoProductos.Productos;
             ActualizarProductosDestacados();
@@ -1227,7 +1225,7 @@
             mostrarMenuCategorias = false;
               var resultado = await ProductoService.ObtenerProductosAsync(categoriaId);
             if (resultado != null) {
-                todosLosProductos = resultado;
+                todosLosProductos = resultado.Productos;
                 resultadosBusqueda = todosLosProductos.Select(p => new ProductoDTO {
                     Id = p.Id,
                     Nombre = p.Nombre,

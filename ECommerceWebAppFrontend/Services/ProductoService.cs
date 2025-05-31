@@ -1,8 +1,9 @@
 using System.Net.Http;                   
 using System.Net.Http.Json;                 
 using System.Threading.Tasks;               
-using System.Collections.Generic;  
-using ApiECommerce.DTOs;         
+using System.Collections.Generic;
+using ApiECommerce.DTOs;   
+using ApiECommerce.Modelo;      
                  
 namespace ECommerceWebAppFrontend.Services
 {
