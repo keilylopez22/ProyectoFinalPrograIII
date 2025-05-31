@@ -1,0 +1,989 @@
+type: collection.insomnia.rest/5.0
+name: ApiECommerce
+meta:
+  id: wrk_60814f82c2924c1583a845727cc5989d
+  created: 1748401711607
+  modified: 1748401711607
+collection:
+  - name: Categorias
+    meta:
+      id: fld_c68d590792d648798df674065cb7d4b0
+      created: 1748401871569
+      modified: 1748410337241
+      sortKey: -1748401871569
+    children:
+      - url: http://localhost:5172/api/Categorias
+        name: Get Categorias
+        meta:
+          id: req_dabb5c4efbe040c7831725e59a49c73f
+          created: 1748401732565
+          modified: 1748401876076
+          isPrivate: false
+          sortKey: -1748401876012
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Categorias/1
+        name: Get categorias {id}
+        meta:
+          id: req_d8e2ebb3d29d4b8b95d8b5d90eae339d
+          created: 1748401887632
+          modified: 1748412604684
+          isPrivate: false
+          sortKey: -1748401876112
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Categorias
+        name: post categorias
+        meta:
+          id: req_a3892aa773e04528828b7a1873326966
+          created: 1748411968548
+          modified: 1748446577912
+          isPrivate: false
+          sortKey: -1748411968548
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              
+              "nombre": "prueba a ser borrada"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Categorias/6
+        name: put categorias{id}
+        meta:
+          id: req_faa5867448c34558a92f55998fa2f1fd
+          created: 1748411984018
+          modified: 1748446641301
+          isPrivate: false
+          sortKey: -1748411984018
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": 6,
+              "nombre": "puebas en insomia"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Categorias/9
+        name: delete categorias{id}
+        meta:
+          id: req_fa127136c3634fe4ae9cecd407931067
+          created: 1748411999097
+          modified: 1748447053156
+          isPrivate: false
+          sortKey: -1748411999097
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            		"id": 9,
+            		"nombre": "prueba a ser borrada"
+            	},
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Clientes
+    meta:
+      id: fld_304b20d3ce4940dd8967825dc263c28b
+      created: 1748410057979
+      modified: 1748410396504
+      sortKey: -1748410057979
+    children:
+      - url: http://localhost:5172/api/Clientes?pageNumber=2&pageSize=10
+        name: get clientes
+        meta:
+          id: req_d44e808cbf0249b89804b7ed57eeea46
+          created: 1748410358739
+          modified: 1748448325739
+          isPrivate: false
+          sortKey: -1748410358739
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Clientes/2
+        name: get  clientes {id}
+        meta:
+          id: req_14c1e8378d204e30b575344240ce5634
+          created: 1748410412868
+          modified: 1748412614599
+          isPrivate: false
+          sortKey: -1748410412868
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Clientes
+        name: post clientes
+        meta:
+          id: req_f23c8f687cf14e7c98acf8305d16dc7a
+          created: 1748412127695
+          modified: 1748448258402
+          isPrivate: false
+          sortKey: -1748412127695
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              
+              "nombre": "keily prueba insomia para borrar",
+              "direccion": "post insomia borrada",
+              "nit": 5172,
+              "correoElectronico": "prueba@gmailborrada.com",
+              "telefono": 51785
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Clientes/15
+        name: put clientes{id}
+        meta:
+          id: req_e6fcec20496648b08da548666834c04c
+          created: 1748412143940
+          modified: 1748447659987
+          isPrivate: false
+          sortKey: -1748412143940
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |2-
+               {
+                  "id": 15,
+                  "nombre": "keily prueba insomia editada",
+                  "direccion": "post insomia",
+                  "nit": 5172,
+                  "correoElectronico": "prueba15@gmail.com",
+                  "telefono": 517858
+                }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Clientes/16
+        name: delate clientes{id}
+        meta:
+          id: req_c799ee50e8814ce9b71c45e2544dec27
+          created: 1748412147226
+          modified: 1748448334805
+          isPrivate: false
+          sortKey: -1748412147226
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            			"id": 16,
+            			"nombre": "keily prueba insomia para borrar",
+            			"direccion": "post insomia borrada",
+            			"nit": 5172,
+            			"correoElectronico": "prueba@gmailborrada.com",
+            			"telefono": 51785
+            		}
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Compras
+    meta:
+      id: fld_95a81b9a16f94a68942fd771644fdc99
+      created: 1748410502913
+      modified: 1748412047130
+      sortKey: -1748410502913
+    children:
+      - url: http://localhost:5172/api/Compras?pageNumber=2&pageSize=10
+        name: get compras
+        meta:
+          id: req_22a9d42806474d7bb6fbe3233bb163f8
+          created: 1748410506808
+          modified: 1748448641957
+          isPrivate: false
+          sortKey: -1748410506809
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Compras/4
+        name: get  compras {id}
+        meta:
+          id: req_38d1caf68d074d1e9e290c5a32e4fbae
+          created: 1748410546450
+          modified: 1748412625430
+          isPrivate: false
+          sortKey: -1748410546450
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Compras
+        name: post compras
+        meta:
+          id: req_8fb249e8b44148e5a269e8d0c659d421
+          created: 1748412237734
+          modified: 1748448557359
+          isPrivate: false
+          sortKey: -1748412237734
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+             
+              "idProveedor": 3,
+              "detalleCompras": [
+                {
+                  "idProductos": 2,
+                  "cantidadProductos": 1,
+                  "precioUnitario": 100
+                }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Compras/1
+        name: put compras  {id}
+        meta:
+          id: req_0cf0281d367a48e7864b66ee599a2cf7
+          created: 1748412241197
+          modified: 1748485622107
+          isPrivate: false
+          sortKey: -1748412241197
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": 1,
+              "fecha": "2024-01-10T14:20:00",
+              "idProveedor": 1,
+              "detalleCompras": [
+                {
+                  "id": 1,
+                  "idProductos": 1,
+                  "cantidadProductos": 7,
+                  "precioUnitario": 25
+                }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Compras/29
+        name: delate compras   {id}
+        meta:
+          id: req_1392841e48d949428329fcc0aa69a8a0
+          created: 1748412244608
+          modified: 1748485672741
+          isPrivate: false
+          sortKey: -1748412244608
+        method: DELETE
+        body:
+          mimeType: application/json
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Movimiento Inventario
+    meta:
+      id: fld_923a2eb2ea1b4984878fc23d6a0ecc7d
+      created: 1748410812328
+      modified: 1748410812328
+      sortKey: -1748410812328
+    children:
+      - url: http://localhost:5172/api/MovimientoInventario
+        name: get movimientos
+        meta:
+          id: req_4317930a8a5045ccb55c429b473abb05
+          created: 1748411169988
+          modified: 1748411214715
+          isPrivate: false
+          sortKey: -1748411169988
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Pedidos(ventas)
+    meta:
+      id: fld_0afac7d913834dd3a816cd728a28427b
+      created: 1748411255452
+      modified: 1748411255452
+      sortKey: -1748411255452
+    children:
+      - url: http://localhost:5172/api/Pedidos?pageNumber=2&pageSize=10
+        name: get pedidos
+        meta:
+          id: req_75c173cb3c13488a87fa8910e58e96df
+          created: 1748411259629
+          modified: 1748449252235
+          isPrivate: false
+          sortKey: -1748411259629
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Pedidos/5
+        name: get id pedidos
+        meta:
+          id: req_86fda52726284bafb97613c24b672fc7
+          created: 1748411273706
+          modified: 1748411425368
+          isPrivate: false
+          sortKey: -1748411273706
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Pedidos
+        name: post pedidos
+        meta:
+          id: req_3f088c0c208c43478b3822f84393c45b
+          created: 1748412314241
+          modified: 1748485844862
+          isPrivate: false
+          sortKey: -1748412314241
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "fecha": "2025-05-29T02:29:27.706Z",
+              "idCliente": 4,
+              "detallesPedido": [
+                {
+                  "idProductos": 1,
+                  "cantidadProductos": 4
+                }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Pedidos/1
+        name: put pedidos {id}
+        meta:
+          id: req_a4710a03622242ed882a834c3ce8b53c
+          created: 1748412333444
+          modified: 1748486529685
+          isPrivate: false
+          sortKey: -1748412333444
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "id": 1,
+              "fecha": "2024-01-02T10:00:00",
+              "idCliente": 1,
+              "detallesPedido": [
+                {
+                  "id": 1,      
+                  "idProductos": 1,
+                  "cantidadProductos": 5
+                  
+                }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Pedidos/29
+        name: delete pedidos {id}
+        meta:
+          id: req_2461578e97fe401aaf0298fe25937d45
+          created: 1748412336329
+          modified: 1748486537065
+          isPrivate: false
+          sortKey: -1748412336329
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Pedidos/V2
+        name: post pedidos/v2 asincrono
+        meta:
+          id: req_304862e051f748369cda6acd4fdd37ca
+          created: 1748412338927
+          modified: 1748485741360
+          isPrivate: false
+          sortKey: -1748412338927
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "idCliente": 1,
+              "fecha": "2025-05-28T16:17:34.256Z",
+              "detallesPedido": [
+                {
+                  "idProductos": 1,
+                  "cantidadProductos": 1
+                }
+              ]
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Pedidos/1/estado
+        name: patch  cambio estado pedidos {id}
+        meta:
+          id: req_45ec6251e879466bad8ff70484b4890b
+          created: 1748412341490
+          modified: 1748486680850
+          isPrivate: false
+          sortKey: -1748412341490
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "estado": "enviado"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Productos
+    meta:
+      id: fld_829418a8c5534145b98d262700c5c0df
+      created: 1748411477712
+      modified: 1748411477712
+      sortKey: -1748411477713
+    children:
+      - url: http://localhost:5172/api/Producto?pageNumber=2&pageSize=10
+        name: get productos
+        meta:
+          id: req_3d72889768f042c2bd903cfded5ab709
+          created: 1748411489487
+          modified: 1748450884538
+          isPrivate: false
+          sortKey: -1748411489487
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Producto/9
+        name: get productos {id}
+        meta:
+          id: req_0eb9beb8a74c4f57805981900b6c38e3
+          created: 1748411503653
+          modified: 1748412593804
+          isPrivate: false
+          sortKey: -1748411503653
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Producto
+        name: post producto
+        meta:
+          id: req_52fa1f34930342359bc3a1b5edeb4512
+          created: 1748412524879
+          modified: 1748450842691
+          isPrivate: false
+          sortKey: -1748412524879
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+              "nombre": "cable potente para borrar ",
+              "precio": 15,
+              "existencias": 800,
+              "idCategoria": 4,
+              "imagenUrl": "string",
+              "descripcion": "con calibre 50 nunca la pasaras mal borrado"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Producto/15
+        name: put producto {id}
+        meta:
+          id: req_5aa4bc21543b47f0bfd094ed500edcd0
+          created: 1748412528075
+          modified: 1748450950365
+          isPrivate: false
+          sortKey: -1748412528075
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |-
+            
+            		{
+            			"id": 15,
+            			"nombre": "cable potente calibre 50 ",
+            			"precio": 15,
+            			"existencias": 1000,
+            			"idCategoria": 4,
+            			"imagenUrl": "",
+            			"descripcion": "prueba"
+            		}
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Producto/16
+        name: delete producto {id}
+        meta:
+          id: req_f24b0fa1d09846499696d7e1c43feebb
+          created: 1748412530465
+          modified: 1748450855926
+          isPrivate: false
+          sortKey: -1748412530465
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Proveedores
+    meta:
+      id: fld_21b73c1b33e84e5793b56397259d8434
+      created: 1748411589662
+      modified: 1748411589662
+      sortKey: -1748411589663
+    children:
+      - url: http://localhost:5172/api/Proveedores?pageNumber=1&pageSize=10
+        name: get proveedores
+        meta:
+          id: req_85933cd8ca844d8e89953f714e6a55f7
+          created: 1748411594516
+          modified: 1748411659944
+          isPrivate: false
+          sortKey: -1748411594516
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Proveedores/2
+        name: get id proveedores
+        meta:
+          id: req_e08ca3436df24c4795e545d7de14cc0b
+          created: 1748411621015
+          modified: 1748411703738
+          isPrivate: false
+          sortKey: -1748411621015
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Proveedores
+        name: post proveedores
+        meta:
+          id: req_38b82a8d4ea646059c020828aac64956
+          created: 1748412672419
+          modified: 1748451507412
+          isPrivate: false
+          sortKey: -1748412672419
+        method: POST
+        body:
+          mimeType: application/json
+          text: |
+            {
+              "nombre": "prueba insomia para borrar",
+              "direccion": "insomia creadoa  borrada",
+              "nit":5178,
+              "correoElectronico": "insommia@gmail.com",
+              "telefono": 488566
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Proveedores/9
+        name: put proveedores {id}
+        meta:
+          id: req_0847b2c3c0ec43cf9472e42607b917d8
+          created: 1748412674884
+          modified: 1748451481326
+          isPrivate: false
+          sortKey: -1748412674884
+        method: PUT
+        body:
+          mimeType: application/json
+          text: |
+            {
+            	"id": 9,
+              "nombre": "prueba insomia ",
+              "direccion": "insomia editada",
+              "nit":5178,
+              "correoElectronico": "insommia@gmail.com",
+              "telefono": 488566
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Proveedores/10
+        name: delete proveedores {id}
+        meta:
+          id: req_4504ba6aa44347539544cf3819f4b58e
+          created: 1748412676820
+          modified: 1748451519863
+          isPrivate: false
+          sortKey: -1748412676820
+        method: DELETE
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Reportes
+    meta:
+      id: fld_3815757d0a1a46d5a0a366a4f287f5d5
+      created: 1748411725470
+      modified: 1748411725470
+      sortKey: -1748411725470
+    children:
+      - url: http://localhost:5172/api/Reportes/compras
+        name: get reportes compras
+        meta:
+          id: req_1cef29b2a6e94fe6a7a198faa7678e2b
+          created: 1748411729934
+          modified: 1748411783174
+          isPrivate: false
+          sortKey: -1748411729934
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: http://localhost:5172/api/Reportes/pedidos
+        name: get reportes pedidos(ventas)
+        meta:
+          id: req_8799f5155cb349a7b320c5df4f0288c5
+          created: 1748411745953
+          modified: 1748411812671
+          isPrivate: false
+          sortKey: -1748411745953
+        method: GET
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_4a3562e5a4eaa2c3f838eae55639783734a6dfa8
+    created: 1748401711616
+    modified: 1748401711616
+environments:
+  name: Base Environment
+  meta:
+    id: env_4a3562e5a4eaa2c3f838eae55639783734a6dfa8
+    created: 1748401711611
+    modified: 1748401711611
+    isPrivate: false
